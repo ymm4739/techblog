@@ -1,5 +1,8 @@
 <template>
-  <h1>Home {{name}}</h1>
+  <div>
+    <h1>Home {{name}}</h1>
+    <button @click="$router.push({name:'HelloWorld'})">Vue</button>
+  </div>
 </template>
 
 <script>
