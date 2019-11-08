@@ -1,16 +1,17 @@
 <template>
-  <div>
-    <h1>Home {{name}}</h1>
-    <button @click="$router.push({name:'HelloWorld'})">Vue</button>
-  </div>
 </template>
 
 <script>
 export default {
   name: 'Home',
+  components: {
+  },
   data () {
     return {
-      name: 'Youfan'
+      author: 'fadedfat3',
+      title: '编程技术博客',
+      description: '学习技术，分享经验，提升能力，快乐生活',
+      activeIndex: '/'
     }
   }
 }
