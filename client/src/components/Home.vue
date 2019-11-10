@@ -1,11 +1,11 @@
 <template>
+  <div>111111</div>
 </template>
 
 <script>
 export default {
   name: 'Home',
-  components: {
-  },
+  components: {},
   data () {
     return {
       author: 'fadedfat3',

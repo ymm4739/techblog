@@ -1,5 +1,5 @@
 <template>
-  <div class="login">
+  <div class="registry">
     <el-form :model="form"
              label-position="left"
              label-width="60px"
@@ -17,33 +17,28 @@
                   placeholder="请输入密码"
                   show-password></el-input>
       </el-form-item>
-      <el-form-item>
-        <el-checkbox v-model="form.isRememberMe"
-                     style="float:left">记住我</el-checkbox>
+      <el-form-item label="用户名"
+                    prop="username">
+        <el-input v-model="form.username"
+                  placeholder="请输入用户名"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary"
-                   @click="submit">登陆</el-button>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary"
-                   @click="$router.push({name: 'registry'})">注册</el-button>
-        <el-button type="primary"
-                   @click="resetpassword">忘记密码</el-button>
+                   @click="submit">注册</el-button>
       </el-form-item>
     </el-form>
   </div>
 </template>
 <script>
-import axios from 'axios'
+import qs from 'qs'
 export default {
-  name: 'login',
+  name: 'registry',
   data () {
     return {
       form: {
         email: '',
         password: '',
-        isRememberMe: false
+        username: ''
       },
       rules: {
         email: [
@@ -57,24 +52,26 @@ export default {
         password: [
           { require: true, message: '请输入密码', trigger: 'blur' },
           { min: 6, message: '密码长度为6位及以上', trigger: 'blur' }
+        ],
+        username: [
+          { require: true, message: '用户名不能为空', trigger: 'blue' }
         ]
       }
     }
   },
   methods: {
     submit: function () {
-      console.log('登陆')
-      axios
-        .get('/login')
-        .then(res => {
-          console.log(res.data)
-        })
-    },
-    signup: function () {
-      console.log('注册')
-    },
-    resetpassword: function () {
-      console.log('重置密码')
+      console.log(this.form.username, this.form.email, this.form.password)
+      let data = {
+        username: this.form.username,
+        email: this.form.email,
+        password: this.form.password
+      }
+      this.$axios.post('/registry', qs.stringify(data)).then(res => {
+        console.log(res)
+      }).catch(error => {
+        console.log(error)
+      })
     }
   }
 }
