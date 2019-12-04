@@ -1,10 +1,11 @@
 package com.zhumingbei.techblog.service;
 
-import com.zhumingbei.techblog.bean.Users;
-import com.zhumingbei.techblog.mapper.UserMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.zhumingbei.techblog.bean.UserBean;
 
 public interface UserService {
 
-    int insert(Users user);
+    int insert(UserBean user);
+    UserBean findByEmail(String email, String password);
+    void update(UserBean user);
+    UserBean findByToken(String token);
 }

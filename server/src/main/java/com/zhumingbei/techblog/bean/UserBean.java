@@ -5,18 +5,23 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.context.annotation.Bean;
 
+import java.io.Serializable;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Users {
+public class UserBean implements Serializable {
+    private static final Long serialVersionID = 1L;
     private Integer id;
     private String username;
     private String password;
     private String email;
-
-    public Users(String username, String email, String password){
+    private String token;
+    private Integer isRememberMe;
+    public UserBean(String username, String email, String password){
         this.username = username;
         this.password = password;
         this.email = email;
     }
+
 }
