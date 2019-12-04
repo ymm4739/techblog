@@ -3,15 +3,18 @@ import Router from 'vue-router'
 import Home from '@/components/Home'
 import login from '@/components/login'
 import registry from '@/components/registry'
+import userInfo from '@/components/userInfo'
+import Layout from '@/layout'
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
   routes: [
+    /*
     {
       path: '/',
       name: 'Home',
       component: Home
-    },
+    }, */
     {
       path: '/login',
       name: 'login',
@@ -22,15 +25,37 @@ export default new Router({
       name: 'registry',
       component: registry
     },
+    /*
     {
-      path: '/api/movie/top250',
-      name: 'top250'
-    },
+      path: '/userInfo',
+      name: 'userInfo',
+      component: userInfo
+    }, */
     {
-      path: '/api'
-    },
-    {
-      path: '/api/registry'
+      path: '/',
+      name: 'index',
+      component: Layout,
+      children: [{
+        path: 'user/info',
+        name: 'userInfo',
+        component: userInfo
+      },
+      {
+        path: 'home',
+        name: 'home',
+        component: Home
+      }
+      ]
     }
+
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  if (to.fullPath === '/login') {
+    next()
+  } else {
+    next()
+  }
+})
+export default router

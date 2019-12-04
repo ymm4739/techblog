@@ -7,6 +7,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.util.HashMap;
+
 @Slf4j
 @RestController
 public class User {
@@ -32,6 +37,24 @@ public class User {
         user.setEmail(email);
         userService.insert(user);
         return ApiResponse.of(200, "注册成功");
+    }
+    @PostMapping("/login")
+    public ApiResponse login(String email, String password, HttpServletRequest request){
+        log.info(email);
+        log.info(password);
+        Users user = userService.findByEmail(email, password);
+        if (user != null){
+            HttpSession session = request.getSession();
+            if (!session.isNew()){
+                session.invalidate();
+                session = request.getSession(true);
+            }
+
+            HashMap<String, String> map = new HashMap<>();
+            map.put("X-Token", session.getId());
+            return ApiResponse.of(20000, "登陆成功", map);
+        }
+        return ApiResponse.of(20000, "用户名或者密码错误");
     }
     private Boolean verify(String s){
         if(s == null){

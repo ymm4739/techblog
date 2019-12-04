@@ -31,6 +31,7 @@
 </template>
 <script>
 import qs from 'qs'
+import request from '@/utils/request'
 export default {
   name: 'registry',
   data () {
@@ -61,17 +62,24 @@ export default {
   },
   methods: {
     submit: function () {
-      console.log(this.form.username, this.form.email, this.form.password)
       let data = {
         username: this.form.username,
         email: this.form.email,
         password: this.form.password
       }
-      this.$axios.post('/registry', qs.stringify(data)).then(res => {
-        console.log(res)
-      }).catch(error => {
-        console.log(error)
-      })
+
+      request.post('/registry', qs.stringify(data))
+        .then(res => {
+          this.$router.push({ name: 'login' })
+        })
+
+      /*
+       this.$axios.post('/registry', qs.stringify(data)).then(res => {
+         console.log('global axios', res.data)
+       }).catch(error => {
+         console.log(error)
+       })
+       */
     }
   }
 }

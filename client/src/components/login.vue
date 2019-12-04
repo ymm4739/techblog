@@ -35,7 +35,9 @@
   </div>
 </template>
 <script>
-import axios from 'axios'
+import qs from 'qs'
+import request from '@/utils/request'
+import { mapGetters } from 'vuex'
 export default {
   name: 'login',
   data () {
@@ -61,17 +63,31 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapGetters([
+      'token'
+    ])
+  },
   methods: {
     submit: function () {
-      console.log('登陆')
-      axios
-        .get('/login')
+      let data = {
+        'email': this.form.email,
+        'password': this.form.password,
+        'isRememberMe': this.form.isRememberMe
+      }
+      request
+        .post('/login', qs.stringify(data))
         .then(res => {
-          console.log(res.data)
+          console.log(res)
+          let data = res.data
+          this.$store.dispatch('setUserInfo', data)
+          let redirect = this.$route.query.redirect
+          if (redirect === location.hostname) {
+            this.$router.go(-1)
+          } else {
+            this.$router.push({ name: 'home' })
+          }
         })
-    },
-    signup: function () {
-      console.log('注册')
     },
     resetpassword: function () {
       console.log('重置密码')
