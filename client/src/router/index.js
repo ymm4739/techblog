@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '@/components/Home'
-import login from '@/components/login'
-import registry from '@/components/registry'
-import userInfo from '@/components/userInfo'
+import Login from '@/components/login'
+import Registry from '@/components/registry'
+import UserInfo from '@/layout/components/navigation/userInfo'
 import Layout from '@/layout'
 Vue.use(Router)
 
@@ -18,19 +18,13 @@ const router = new Router({
     {
       path: '/login',
       name: 'login',
-      component: login
+      component: Login
     },
     {
       path: '/registry',
       name: 'registry',
-      component: registry
+      component: Registry
     },
-    /*
-    {
-      path: '/userInfo',
-      name: 'userInfo',
-      component: userInfo
-    }, */
     {
       path: '/',
       name: 'index',
@@ -38,7 +32,7 @@ const router = new Router({
       children: [{
         path: 'user/info',
         name: 'userInfo',
-        component: userInfo
+        component: UserInfo
       },
       {
         path: 'home',

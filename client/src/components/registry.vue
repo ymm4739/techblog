@@ -30,10 +30,10 @@
   </div>
 </template>
 <script>
-import qs from 'qs'
-import request from '@/utils/request'
+// import qs from 'qs'
+import { registry } from '@/api/user'
 export default {
-  name: 'registry',
+  name: 'Registry',
   data () {
     return {
       form: {
@@ -67,12 +67,17 @@ export default {
         email: this.form.email,
         password: this.form.password
       }
-
+      registry(data)
+        .then(res => {
+          this.$router.push({ name: 'login' })
+        }
+        )
+      /*
       request.post('/registry', qs.stringify(data))
         .then(res => {
           this.$router.push({ name: 'login' })
         })
-
+      */
       /*
        this.$axios.post('/registry', qs.stringify(data)).then(res => {
          console.log('global axios', res.data)

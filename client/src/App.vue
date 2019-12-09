@@ -9,13 +9,13 @@ export default {
   name: 'App',
   created () {
     // 在页面加载时读取local/sessionStorage里的状态信息, localStorage永久保存，sessionStorage只保存在会话，关闭页面数据消失
-    if (localStorage.getItem('store')) {
-      this.$store.replaceState(Object.assign({}, this.$store.state, JSON.parse(localStorage.getItem('store'))))
+    if (sessionStorage.getItem('store')) {
+      this.$store.replaceState(Object.assign({}, this.$store.state, JSON.parse(sessionStorage.getItem('store'))))
     }
 
     // 在页面刷新时将vuex里的信息保存到sessionStorage里
     window.addEventListener('beforeunload', () => {
-      localStorage.setItem('store', JSON.stringify(this.$store.state))
+      sessionStorage.setItem('store', JSON.stringify(this.$store.state))
     })
   }
 }

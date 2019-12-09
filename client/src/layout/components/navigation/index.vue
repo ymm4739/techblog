@@ -8,53 +8,82 @@
              text-color="white"
              active-text-color="yellow"
              router>
-      <el-menu-item index="/">首页</el-menu-item>
+      <el-menu-item index="/home">首页</el-menu-item>
       <el-menu-item index="/post">文章</el-menu-item>
       <el-menu-item index="/book">书籍</el-menu-item>
-      <el-submenu index="4">
+      <el-submenu index="/tutors">
         <template slot="title">教程</template>
-        <el-menu-item index="4-1">Java</el-menu-item>
-        <el-menu-item index="4-2">Vue</el-menu-item>
-        <el-menu-item index="4-2">Python</el-menu-item>
+        <el-menu-item index="/java">Java</el-menu-item>
+        <el-menu-item index="/vue">Vue</el-menu-item>
+        <el-menu-item index="/python">Python</el-menu-item>
       </el-submenu>
-      <el-menu-item index="/hello">杂谈</el-menu-item>
+      <el-menu-item index="/talk">杂谈</el-menu-item>
       <el-menu-item index="/login"
                     v-if="!login"
                     class="nav-login">登陆</el-menu-item>
       <el-submenu v-if="login"
                   class="nav-user">
-        <template slot="title">{{ user.name }}</template>
+        <template slot="title">{{ userInfo.username }}</template>
         <el-menu-item :index="userPath">个人资料</el-menu-item>
         <el-menu-item :index="userPassword">修改密码</el-menu-item>
+        <el-menu-item @click="logout">退出登陆</el-menu-item>
+        <el-menu-item @click="random">随机</el-menu-item>
       </el-submenu>
     </el-menu>
   </div>
 </template>
 
 <script>
+import { logout } from '@/api/user'
+import { Message } from 'element-ui'
 export default {
-  name: 'navigation',
+  name: 'Navigation',
   components: {},
   data () {
     return {
       author: 'fadedfat3',
       title: '编程技术博客',
       description: '学习技术，分享经验，提升能力，快乐生活',
-      activeIndex: '/',
-      login: false,
-      user: {
-        name: 'admin',
-        id: 1
-      }
+      activeIndex: '/'
+      // user: this.$store.getters.user
     }
   },
   computed: {
     userPath: function () {
-      return '/user/' + this.user.id
+      return '/user/info'
     },
     userPassword: function () {
-      return '/user/changePassword' + this.user.id
+      return '/user/changePassword'
+    },
+    userInfo () {
+      return this.$store.getters['user/user']
+    },
+    login () {
+      return !!this.$store.getters['user/token']
     }
+  },
+  created () {
+    /*
+    if (!this.login) {
+      request.get('/user/info').then(res => {
+        this.user = res.data
+        this.login = true
+      })
+    }
+    */
+  },
+  watch: {
+
+  },
+  methods: {
+    logout () {
+      logout()
+        .then(res => {
+          this.$store.dispatch('user/clearToken')
+          Message.success(res.message)
+        })
+    }
+
   }
 }
 </script>

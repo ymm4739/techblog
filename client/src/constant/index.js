@@ -1,5 +1,6 @@
-const HEADER_SESSION_TOKEN = 'x-auth-token'
-
+import token from './token'
+import api from './api'
 export default {
-  HEADER_SESSION_TOKEN
+  token,
+  api
 }

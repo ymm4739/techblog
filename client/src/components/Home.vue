@@ -1,8 +1,9 @@
 <template>
-  <div>111111</div>
+  <div>11111</div>
 </template>
 
 <script>
+import request from '@/utils/request'
 export default {
   name: 'Home',
   components: {},
@@ -13,6 +14,11 @@ export default {
       description: '学习技术，分享经验，提升能力，快乐生活',
       activeIndex: '/'
     }
+  },
+  created () {
+    request.get('/user/list').then(res => {
+      console.log(res.data)
+    })
   }
 }
 </script>

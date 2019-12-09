@@ -35,11 +35,10 @@
   </div>
 </template>
 <script>
-import qs from 'qs'
-import request from '@/utils/request'
+import { login } from '@/api/user'
 import { mapGetters } from 'vuex'
 export default {
-  name: 'login',
+  name: 'Login',
   data () {
     return {
       form: {
@@ -75,13 +74,11 @@ export default {
         'password': this.form.password,
         'isRememberMe': this.form.isRememberMe
       }
-      request
-        .post('/login', qs.stringify(data))
+      login(data)
         .then(res => {
-          console.log(res)
           let data = res.data
-          this.$store.dispatch('setUserInfo', data)
-          let redirect = this.$route.query.redirect
+          this.$store.dispatch('user/setUserInfo', data)
+          let redirect = this.$route.query.redirect // $route 获取路由信息
           if (redirect === location.hostname) {
             this.$router.go(-1)
           } else {

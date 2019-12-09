@@ -2,14 +2,13 @@
   <div>
     <h2>Username: {{user.username}}</h2>
     <h2>Email: {{user.email}}</h2>
-    <h2>Password: {{user.password}}</h2>
-    <h2>Token: {{user.token}}</h2>
+
   </div>
 </template>
 <script>
-import request from '@/utils/request'
+import { getInfo } from '@/api/user'
 export default {
-  name: 'userInfo',
+  name: 'UserInfo',
   data () {
     return {
       'user': ''
@@ -20,13 +19,13 @@ export default {
   },
   methods: {
     fetchData () {
-      if (this.$store.getters.token === '') {
-        request.get('/user/info').then(res => {
+      if (this.$store.getters['user/token'] === '') {
+        getInfo().then(res => {
           this.user = res.data
-          this.$store.dispatch('setUserInfo', this.user)
+          this.$store.dispatch('user/setUserInfo', this.user)
         })
       } else {
-        this.user = this.$store.getters.user
+        this.user = this.$store.getters['user/user']
       }
     }
   }

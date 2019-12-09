@@ -5,7 +5,7 @@
   </div>
 </template>
 <script>
-import Navigation from './components/Navigation'
+import Navigation from './components/navigation'
 export default {
   name: 'Layout',
   components: {
