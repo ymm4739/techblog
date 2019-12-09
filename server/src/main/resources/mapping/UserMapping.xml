@@ -5,6 +5,14 @@
         <id property="id" column="id"/>
         <result property="email" column="email"/>
         <result property="username" column="username"/>
+        <result property="password" column="password"/>
+        <result property="isRememberMe" column="is_remember_me" />
+        <result property="token" column="token"/>
+        <collection property="roleList" ofType="com.zhumingbei.techblog.bean.RoleBean">
+            <id property="id" column="r_id" />
+            <result property="name" column="name" />
+            <result property="level" column="level" />
+        </collection>
     </resultMap>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.zhumingbei.techblog.bean.UserBean">
@@ -22,12 +30,28 @@
         <if test="email != null">email = #{email},</if>
         <if test="password != null">password = #{password},</if>
         <if test="token != null">token = #{token},</if>
-        <if test="isRememberMe != null">isRememberMe = #{isRememberMe},</if>
+        <if test="isRememberMe != null">is_remember_me = #{isRememberMe},</if>
         </trim>
         where id = #{id}
     </update>
 
     <select id="selectByToken" resultType="com.zhumingbei.techblog.bean.UserBean">
         select * from user where token = #{token}
+    </select>
+
+    <select id="selectByEmail" resultMap="UserMap">
+        select user.id, username, email, password, is_remember_me, token, role.id as r_id, role.name, role.level
+        from user
+        inner join user_role on user.id = user_role.user_id
+        inner join role on role.id = user_role.role_id
+        where email = #{email}
+    </select>
+
+    <insert id="insertUserRole" >
+        insert into user_role (user_id, role_id) value (#{userID}, #{roleID})
+    </insert>
+
+    <select id="selectAll" resultType="com.zhumingbei.techblog.bean.UserBean">
+        select * from user
     </select>
 </mapper>

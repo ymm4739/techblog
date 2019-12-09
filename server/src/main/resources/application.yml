@@ -14,10 +14,11 @@ spring:
     host: localhost
     port: 6379
 
-  session:
-    store-type: redis
-    redis:
-      flush-mode: on_save
+#  session:
+#    store-type: redis
+#    redis:
+#      flush-mode: im
+#    timeout: 15m
   mail:
     host: smtp.163.com
     port: 465
@@ -64,8 +65,7 @@ url:
     get:
       - "/api/auth/login"
     post:
-      - "/auth/login"
-      - "/auth/registry"
+      - "/registry"
     pattern:
       - "/test/*"
 
@@ -86,7 +86,7 @@ logging:
     org:
       springframework:
         web: INFO
-        security: INFO
+        security: DEBUG
     root: WARN
 
 

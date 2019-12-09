@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.context.annotation.Bean;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -18,7 +19,9 @@ public class UserBean implements Serializable {
     private String email;
     private String token;
     private Integer isRememberMe;
-    public UserBean(String username, String email, String password){
+    private List<RoleBean> roleList;
+
+    public UserBean(String username, String email, String password) {
         this.username = username;
         this.password = password;
         this.email = email;

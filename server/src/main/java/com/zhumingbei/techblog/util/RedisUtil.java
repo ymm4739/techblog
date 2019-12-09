@@ -11,13 +11,13 @@ public class RedisUtil {
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
-    public boolean expire(String key, long time){
+    public boolean expire(String key, long time) {
         try {
-            if (time > 0){
+            if (time > 0) {
                 return redisTemplate.expire(key, time, TimeUnit.SECONDS);
             }
             return false;
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }

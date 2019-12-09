@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org//dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhumingbei.techblog.mapper.RoleMapper">
+    <resultMap id="RoleMap" type="com.zhumingbei.techblog.bean.RoleBean">
+        <id property="id" column="id" />
+        <result property="name" column="name" />
+        <result property="level" column="level" />
+        <collection property="permissionList" ofType="com.zhumingbei.techblog.bean.PermissionBean">
+            <id property="id" column="p_id" />
+            <result property="url" column="url" />
+            <result property="roleID" column="role_id" />
+            <result property="level" column="p_level" />
+        </collection>
+    </resultMap>
+
+    <select id="selectByRoleName" resultMap="RoleMap">
+        select role.id, role.level, role.name, permission.id as p_id, url, permission.level as p_level
+        from role
+        join permission on permission.level &lt; role.level or (permission.level = role.level and permission.role_id = role.id)
+        where role.name = #{roleName}
+    </select>
+
+    <insert id="insert" parameterType="com.zhumingbei.techblog.bean.RoleBean" useGeneratedKeys="true" keyProperty="id">
+        insert into role (name, level) value (#{name}, #{level})
+    </insert>
+</mapper>
