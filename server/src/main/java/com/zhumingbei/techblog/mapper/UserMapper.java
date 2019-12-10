@@ -9,15 +9,19 @@ import java.util.List;
 public interface UserMapper {
     int insert(UserBean user);
 
-    UserBean checkUser(String email, String password);
+    UserBean checkByEmailAndPassword(String email, String password);
+
+    UserBean checkByUsernameAndPassword(String username, String password);
 
     void update(UserBean user);
 
     UserBean selectByToken(String token);
 
-    UserBean selectByEmail(String email);
+    UserBean selectByUsernameOrEmail(String s);
 
     int insertUserRole(int userID, int roleID);
 
     List<UserBean> selectAll();
+
+
 }

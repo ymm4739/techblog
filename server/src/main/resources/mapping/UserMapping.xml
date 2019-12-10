@@ -19,8 +19,12 @@
         insert into user(username, email, password) value(#{username}, #{email}, #{password});
     </insert>
 
-    <select id="checkUser" resultType="com.zhumingbei.techblog.bean.UserBean">
+    <select id="checkByEmailAndPassword" resultType="com.zhumingbei.techblog.bean.UserBean">
         select * from user where  email = #{email} and password = #{password};
+    </select>
+
+    <select id="checkByUsernameAndPassword" resultType="com.zhumingbei.techblog.bean.UserBean">
+        select * from user where username = #{username} and password = #{password}
     </select>
 
     <update id="update" parameterType="com.zhumingbei.techblog.bean.UserBean">
@@ -39,12 +43,12 @@
         select * from user where token = #{token}
     </select>
 
-    <select id="selectByEmail" resultMap="UserMap">
+    <select id="selectByUsernameOrEmail" resultMap="UserMap">
         select user.id, username, email, password, is_remember_me, token, role.id as r_id, role.name, role.level
         from user
         inner join user_role on user.id = user_role.user_id
         inner join role on role.id = user_role.role_id
-        where email = #{email}
+        where email = #{s} or username = #{s}
     </select>
 
     <insert id="insertUserRole" >
@@ -54,4 +58,6 @@
     <select id="selectAll" resultType="com.zhumingbei.techblog.bean.UserBean">
         select * from user
     </select>
+
+
 </mapper>

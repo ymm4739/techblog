@@ -14,11 +14,11 @@ spring:
     host: localhost
     port: 6379
 
-#  session:
-#    store-type: redis
-#    redis:
-#      flush-mode: im
-#    timeout: 15m
+  session:
+    store-type: redis
+    redis:
+      flush-mode: on_save
+    timeout: 30m
   mail:
     host: smtp.163.com
     port: 465
@@ -63,12 +63,10 @@ upload:
 url:
   ignore:
     get:
-      - "/api/auth/login"
     post:
       - "/registry"
     pattern:
-      - "/test/*"
-
+      - "/error"
 ##jwt
 jwt:
   config:
@@ -82,11 +80,12 @@ logging:
   level:
     com:
       zhumingbei:
-        techblog: INFO
+        techblog: debug
     org:
       springframework:
-        web: INFO
+        web: debug
         security: DEBUG
+        session: debug
     root: WARN
 
 

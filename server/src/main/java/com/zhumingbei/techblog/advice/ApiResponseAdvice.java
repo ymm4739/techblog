@@ -1,6 +1,7 @@
 package com.zhumingbei.techblog.advice;
 
 import com.zhumingbei.techblog.common.ApiResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -8,7 +9,7 @@ import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
-
+@Slf4j
 @ControllerAdvice
 public class ApiResponseAdvice implements ResponseBodyAdvice {
     @Override
@@ -18,6 +19,7 @@ public class ApiResponseAdvice implements ResponseBodyAdvice {
 
     @Override
     public Object beforeBodyWrite(Object o, MethodParameter methodParameter, MediaType mediaType, Class aClass, ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse) {
+        log.debug("className: {}, responseBody:{}", o.getClass().getName(), o);
         return o instanceof ApiResponse ? o : ApiResponse.ofSuccess(o);
     }
 }

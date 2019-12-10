@@ -1,29 +1,23 @@
 package com.zhumingbei.techblog.controller;
 
-import com.zhumingbei.techblog.bean.RoleBean;
 import com.zhumingbei.techblog.bean.UserBean;
 import com.zhumingbei.techblog.common.ApiResponse;
 import com.zhumingbei.techblog.common.CustomUserPrincipal;
 import com.zhumingbei.techblog.constant.SessionConstant;
-import com.zhumingbei.techblog.mapper.RoleMapper;
 import com.zhumingbei.techblog.service.RoleService;
 import com.zhumingbei.techblog.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -35,6 +29,8 @@ public class UserController {
     public RoleService roleService;
     @Autowired
     private AuthenticationManager authenticationManager;
+
+    private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
     @PostMapping("/registry")
     public ApiResponse registry(String username, String email, String password) {
@@ -51,9 +47,13 @@ public class UserController {
         if (user != null) {
             return ApiResponse.of(20002, "邮箱已注册");
         }
+        user = userService.findByUsername(username);
+        if (user != null) {
+            return ApiResponse.of(20002, "用户名已被注册");
+        }
         user = new UserBean();
         user.setUsername(username);
-        user.setPassword(new BCryptPasswordEncoder().encode(password));
+        user.setPassword(bCryptPasswordEncoder.encode(password));
         user.setEmail(email);
 
         userService.insert(user);
@@ -64,11 +64,14 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ApiResponse login(String email, String password, Boolean isRememberMe, HttpServletRequest request) {
-        UserBean user = userService.findByEmail(email);
+    public ApiResponse login( String loginName, String password, Boolean isRememberMe, HttpServletRequest request) {
+        UserBean user = userService.findByUsernameOrEmail(loginName);
+        if (user == null) {
+            return ApiResponse.of(20001, "用户名错误");
+        }
         if (user != null) {
             String cryptPassword = user.getPassword();
-            if (!new BCryptPasswordEncoder().matches(password, cryptPassword)) {
+            if (!bCryptPasswordEncoder.matches(password, cryptPassword)) {
                 return ApiResponse.of(20001, "密码错误");
             }
             HttpSession session = request.getSession();
@@ -82,14 +85,13 @@ public class UserController {
             if (isRememberMe != true) user.setIsRememberMe(0);
             else user.setIsRememberMe(1);
             userService.update(user);
-            session.setAttribute(SessionConstant.USER_INFO, user);
-            session.setMaxInactiveInterval(SessionConstant.DEFAULT_SESSION_SECOND);
             if (isRememberMe) {
                 session.setMaxInactiveInterval(SessionConstant.MAX_SESSION_SECOND);
             }
-            log.info("user-sessionID: " + session.getId());
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user.getEmail(), password);
-            Authentication authentication = authenticationManager.authenticate(authenticationToken);
+            log.debug("user-sessionID: " + session.getId());
+            CustomUserPrincipal userPrincipal = CustomUserPrincipal.create(user);
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userPrincipal, null, userPrincipal.getAuthorities());
+
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -103,7 +105,7 @@ public class UserController {
     @GetMapping("/user/info")
     public UserBean getInfo(HttpServletRequest request) {
         HttpSession session = request.getSession();
-        UserBean user = (UserBean) session.getAttribute(SessionConstant.USER_INFO);
+        UserBean user = userService.findByToken(session.getId());
         return user;
     }
 
@@ -124,19 +126,31 @@ public class UserController {
         return userBeanList;
     }
 
-    @GetMapping("/user/random")
-    public UserBean changePassword() {
-        log.info("password");
-        UserBean userBean = userService.getList().get(0);
-        return userBean;
+    @PostMapping("/user/password/change")
+    public ApiResponse changePassword(String username, String oldPassword, String newPassword ) {
+        UserBean userBean = userService.checkByUsernameAndPassword(username, bCryptPasswordEncoder.encode(oldPassword));
+        if (userBean == null) {
+            return ApiResponse.of(20002, "原密码错误");
+        }
+        userBean.setPassword(bCryptPasswordEncoder.encode(newPassword));
+        userService.update(userBean);
+        return ApiResponse.ofSuccess("密码更改成功");
     }
 
-    @GetMapping("/refreshAuthentication")
-    public ApiResponse refresh() {
-        return ApiResponse.ofSuccess("已刷新");
+    @GetMapping("/user/password/reset")
+    public ApiResponse resetPassword() {
+
+        return ApiResponse.ofSuccess("重置密码邮件已发送请查收");
     }
 
+    @GetMapping("/user/email/activate")
+    public ApiResponse activateEmail(String token) {
+        return ApiResponse.ofSuccess("邮箱激活邮件已发送，请及时查收邮件激活");
+    }
 
+    private void actiateEmail(String email) {
+
+    }
     private Boolean verify(String s) {
         if (s == null) {
             return false;

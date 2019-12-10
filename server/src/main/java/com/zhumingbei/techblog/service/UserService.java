@@ -8,7 +8,7 @@ public interface UserService {
 
     int insert(UserBean user);
 
-    UserBean findByEmail(String email);
+    UserBean findByUsernameOrEmail(String s);
 
     void update(UserBean user);
 
@@ -16,7 +16,13 @@ public interface UserService {
 
     UserBean checkByEmailAndPassword(String email, String password);
 
+    UserBean checkByUsernameAndPassword(String username, String password);
+
     int insertUserRole(int userID, int roleID);
 
     List<UserBean> getList();
+
+    UserBean findByUsername(String username);
+
+    UserBean findByEmail(String email);
 }

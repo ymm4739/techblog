@@ -27,8 +27,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserBean findByEmail(String email) {
-        UserBean user = userMapper.selectByEmail(email);
+    public UserBean findByUsernameOrEmail(String s) {
+        UserBean user = userMapper.selectByUsernameOrEmail(s);
         if (user == null) {
             return null;
         }
@@ -53,7 +53,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserBean checkByEmailAndPassword(String email, String password) {
-        return userMapper.checkUser(email, password);
+        return userMapper.checkByEmailAndPassword(email, password);
+    }
+
+    @Override
+    public UserBean checkByUsernameAndPassword(String username, String password) {
+        return userMapper.checkByUsernameAndPassword(username, password);
     }
 
     @Override
@@ -64,5 +69,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserBean> getList() {
         return userMapper.selectAll();
+    }
+
+    @Override
+    public UserBean findByUsername(String username) {
+        return findByUsernameOrEmail(username);
+    }
+
+    @Override
+    public UserBean findByEmail(String email) {
+        return findByUsernameOrEmail(email);
     }
 }

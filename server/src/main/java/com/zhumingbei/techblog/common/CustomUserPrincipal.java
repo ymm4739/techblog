@@ -19,23 +19,22 @@ import java.util.*;
 public class CustomUserPrincipal implements UserDetails, Serializable {
     private static final long serialVersionUID = 1L;
     private String username;
-    private String rawUsername;
 
     private String password;
     private String email;
     private Collection<? extends SimpleGrantedAuthority> authorities;
-    private Set<String> urls;
+    private Set<String> roles;
 
-    public static CustomUserPrincipal create(UserBean user, String username) {
+    public static CustomUserPrincipal create(UserBean user) {
         Set<SimpleGrantedAuthority> authorities = new HashSet<>();
-        Set<String> urls = new HashSet<>();
+        Set<String> roleSet = new HashSet<>();
         for (RoleBean role : user.getRoleList()) {
             for (PermissionBean permission : role.getPermissionList()) {
                 authorities.add(new SimpleGrantedAuthority(permission.getUrl()));
-                urls.add(permission.getUrl());
+                roleSet.add(role.getName());
             }
         }
-        return new CustomUserPrincipal(username, user.getUsername(), user.getPassword(), user.getEmail(), authorities, urls);
+        return new CustomUserPrincipal( user.getUsername(), user.getPassword(), user.getEmail(), authorities, roleSet);
     }
 
     @Override

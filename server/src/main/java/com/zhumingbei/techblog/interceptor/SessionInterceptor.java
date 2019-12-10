@@ -32,11 +32,6 @@ public class SessionInterceptor implements HandlerInterceptor {
             ResponseUtil.renderJson(response, 50000, "Token无效，请重新登陆");
             return false;
         }
-        UserBean user = (UserBean) session.getAttribute(SessionConstant.USER_INFO);
-        if (user == null) {
-            ResponseUtil.renderJson(response, 20003, "根据token找不到用户");
-            return false;
-        }
         return true;
     }
 

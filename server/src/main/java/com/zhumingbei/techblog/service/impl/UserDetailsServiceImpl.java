@@ -18,10 +18,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        UserBean user = userService.findByEmail(s);
+        UserBean user = userService.findByUsernameOrEmail(s);
         if (user == null) {
             throw new UsernameNotFoundException("该用户未注册");
         }
-        return CustomUserPrincipal.create(user, user.getEmail());
+        return CustomUserPrincipal.create(user);
     }
 }

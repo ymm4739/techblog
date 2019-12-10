@@ -28,7 +28,13 @@ public class ApiResponse {
         return of(code, message, null);
     }
 
+    public static ApiResponse ofSuccess(String message, Object data) {
+        return of(20000, message, data);
+    }
+    public static ApiResponse ofSuccess(String message) {
+        return ofSuccess(message, null);
+    }
     public static ApiResponse ofSuccess(Object data) {
-        return of(20000, "Success", data);
+        return ofSuccess("操作成功", data);
     }
 }

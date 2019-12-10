@@ -40,28 +40,7 @@ public class ControllerLogAspect {
 
     @Around("PointCut()")
     public Object Around(ProceedingJoinPoint point) throws Throwable {
-        /*
-        RequestAttributes ra = RequestContextHolder.getRequestAttributes();
-        ServletRequestAttributes sra = (ServletRequestAttributes) ra;
-        HttpServletRequest request = sra.getRequest();
-        HttpSession session = request.getSession();
-        String token = request.getHeader(SessionConstant.HEADER_SESSION_TOKEN);
-        if (token != null ) {
-            if (!token.equals(session.getId())){
-                return ApiResponse.of(50000, "Token失效");
-            }else {
-                UserBean user = (UserBean) session.getAttribute(SessionConstant.USER_INFO);
-                if (user == null) {
-                    return ApiResponse.of(50000, "Token非法");
-                }
 
-                UserDetails userDetails = CustomUserPrincipal.create(user, user.getEmail());
-                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-            }
-        }
-        */
         HashMap<String, Object> map = new HashMap<>();
         String className = point.getTarget().getClass().getName();
         map.put("className", className);
@@ -80,7 +59,7 @@ public class ControllerLogAspect {
         map.put("result", result);
         map.put("executionTime", end - start);
         map.put("date", format.format(new Date()));
-        log.info("ControllerLogAspect:" + map);
+        log.debug("ControllerLogAspect:" + map);
         return result;
     }
 
