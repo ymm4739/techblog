@@ -3,7 +3,6 @@
 </template>
 
 <script>
-import request from '@/utils/request'
 export default {
   name: 'Home',
   components: {},
@@ -16,9 +15,7 @@ export default {
     }
   },
   created () {
-    request.get('/user/list').then(res => {
-      console.log(res.data)
-    })
+
   }
 }
 </script>

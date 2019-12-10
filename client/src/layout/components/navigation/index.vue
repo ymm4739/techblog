@@ -23,11 +23,10 @@
                     class="nav-login">登陆</el-menu-item>
       <el-submenu v-if="login"
                   class="nav-user">
-        <template slot="title">{{ userInfo.username }}</template>
+        <template slot="title">{{ user.username }}</template>
         <el-menu-item :index="userPath">个人资料</el-menu-item>
         <el-menu-item :index="userPassword">修改密码</el-menu-item>
         <el-menu-item @click="logout">退出登陆</el-menu-item>
-        <el-menu-item @click="random">随机</el-menu-item>
       </el-submenu>
     </el-menu>
   </div>
@@ -44,33 +43,20 @@ export default {
       author: 'fadedfat3',
       title: '编程技术博客',
       description: '学习技术，分享经验，提升能力，快乐生活',
-      activeIndex: '/'
-      // user: this.$store.getters.user
+      activeIndex: '/',
+      user: this.$store.getters.user
     }
   },
   computed: {
     userPath: function () {
-      return '/user/info'
+      return '/user/profile'
     },
     userPassword: function () {
       return '/user/changePassword'
     },
-    userInfo () {
-      return this.$store.getters['user/user']
-    },
     login () {
-      return !!this.$store.getters['user/token']
+      return !!this.$store.getters.token
     }
-  },
-  created () {
-    /*
-    if (!this.login) {
-      request.get('/user/info').then(res => {
-        this.user = res.data
-        this.login = true
-      })
-    }
-    */
   },
   watch: {
 
@@ -79,7 +65,7 @@ export default {
     logout () {
       logout()
         .then(res => {
-          this.$store.dispatch('user/clearToken')
+          this.$store.dispatch('user/clear')
           Message.success(res.message)
         })
     }

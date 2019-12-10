@@ -3,7 +3,7 @@ import Router from 'vue-router'
 import Home from '@/components/Home'
 import Login from '@/components/login'
 import Registry from '@/components/registry'
-import UserInfo from '@/layout/components/navigation/userInfo'
+import Profile from '@/views/profile'
 import Layout from '@/layout'
 Vue.use(Router)
 
@@ -30,9 +30,9 @@ const router = new Router({
       name: 'index',
       component: Layout,
       children: [{
-        path: 'user/info',
-        name: 'userInfo',
-        component: UserInfo
+        path: 'user/profile',
+        name: 'profile',
+        component: Profile
       },
       {
         path: 'home',

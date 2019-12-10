@@ -19,7 +19,7 @@ export function registry (data) {
 
 export function getInfo () {
   return request({
-    url: api.getInfo,
+    url: api.userInfo,
     method: 'get'
   })
 }

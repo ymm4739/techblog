@@ -2,20 +2,8 @@ const state = {
   token: '',
   username: '',
   email: '',
-  isRememberMe: '',
+  isRememberMe: false,
   user: ''
-}
-const getters = {
-  token: state => {
-    return state.token
-  },
-  user: state => {
-    return {
-      username: state.username,
-      email: state.email,
-      isRememberMe: state.isRememberMe
-    }
-  }
 }
 
 const mutations = {
@@ -23,10 +11,9 @@ const mutations = {
     state.token = token
   },
   setUserInfo (state, user) {
-    state.email = user.email
-    state.username = user.username
-    state.token = user.token
-    state.isRememberMe = user.isRememberMe
+    state.email = user.email || ''
+    state.username = user.username || ''
+    state.isRememberMe = user.isRememberMe || false
   }
 }
 const actions = {
@@ -48,7 +35,6 @@ const actions = {
 export default {
   namespaced: true,
   state,
-  getters,
   mutations,
   actions
 }

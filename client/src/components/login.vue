@@ -5,10 +5,10 @@
              label-width="60px"
              :rules="rules"
              status-icon>
-      <el-form-item label="邮箱"
-                    prop="email">
-        <el-input v-model="form.email"
-                  placeholder="请输入电子邮箱"
+      <el-form-item label="登陆名"
+                    prop="loginName">
+        <el-input v-model="form.loginName"
+                  placeholder="请输入电子邮箱或者用户名"
                   clearable></el-input>
       </el-form-item>
       <el-form-item label="密码"
@@ -42,16 +42,15 @@ export default {
   data () {
     return {
       form: {
-        email: '',
+        loginName: '',
         password: '',
         isRememberMe: false
       },
       rules: {
-        email: [
+        loginName: [
           {
             require: true,
-            type: 'email',
-            message: '请输入正确格式邮箱地址',
+            message: '请输入用户名或者邮箱地址',
             trigger: 'blur'
           }
         ],
@@ -70,14 +69,15 @@ export default {
   methods: {
     submit: function () {
       let data = {
-        'email': this.form.email,
+        'loginName': this.form.loginName,
         'password': this.form.password,
         'isRememberMe': this.form.isRememberMe
       }
       login(data)
         .then(res => {
-          let data = res.data
-          this.$store.dispatch('user/setUserInfo', data)
+          let user = res.data
+          this.$store.dispatch('user/setToken', user.token)
+          this.$store.dispatch('user/setUserInfo', user)
           let redirect = this.$route.query.redirect // $route 获取路由信息
           if (redirect === location.hostname) {
             this.$router.go(-1)

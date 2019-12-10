@@ -25,6 +25,10 @@
       <el-form-item>
         <el-button type="primary"
                    @click="submit">注册</el-button>
+        <el-button type="primary"
+                   @click="login">
+          登陆
+        </el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -72,19 +76,9 @@ export default {
           this.$router.push({ name: 'login' })
         }
         )
-      /*
-      request.post('/registry', qs.stringify(data))
-        .then(res => {
-          this.$router.push({ name: 'login' })
-        })
-      */
-      /*
-       this.$axios.post('/registry', qs.stringify(data)).then(res => {
-         console.log('global axios', res.data)
-       }).catch(error => {
-         console.log(error)
-       })
-       */
+    },
+    login () {
+      this.$router.push({ name: 'login' })
     }
   }
 }
