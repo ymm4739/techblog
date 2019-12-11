@@ -3,9 +3,13 @@ package com.zhumingbei.techblog.controller;
 import com.zhumingbei.techblog.bean.UserBean;
 import com.zhumingbei.techblog.common.ApiResponse;
 import com.zhumingbei.techblog.common.CustomUserPrincipal;
+import com.zhumingbei.techblog.constant.BlogSiteConstant;
 import com.zhumingbei.techblog.constant.SessionConstant;
+import com.zhumingbei.techblog.service.MailService;
 import com.zhumingbei.techblog.service.RoleService;
 import com.zhumingbei.techblog.service.UserService;
+import com.zhumingbei.techblog.util.JWTUtil;
+import com.zhumingbei.techblog.util.ResponseUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,6 +20,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
@@ -31,6 +36,12 @@ public class UserController {
     private AuthenticationManager authenticationManager;
 
     private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+
+    @Autowired
+    private JWTUtil jwtUtil;
+
+    @Autowired
+    private MailService mailService;
 
     @PostMapping("/registry")
     public ApiResponse registry(String username, String email, String password) {
@@ -88,7 +99,6 @@ public class UserController {
             if (isRememberMe) {
                 session.setMaxInactiveInterval(SessionConstant.MAX_SESSION_SECOND);
             }
-            log.debug("user-sessionID: " + session.getId());
             CustomUserPrincipal userPrincipal = CustomUserPrincipal.create(user);
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userPrincipal, null, userPrincipal.getAuthorities());
 
@@ -138,18 +148,56 @@ public class UserController {
     }
 
     @GetMapping("/user/password/reset")
-    public ApiResponse resetPassword() {
-
-        return ApiResponse.ofSuccess("重置密码邮件已发送请查收");
+    public ApiResponse resetPassword(String email) {
+        UserBean user = userService.findByEmail(email);
+        if (user == null) {
+            return ApiResponse.of(20003, "邮箱未注册");
+        }
+        int password = random(100000, 999999);
+        user.setPassword(bCryptPasswordEncoder.encode("" + password));
+        userService.update(user);
+        String subject = "重置密码";
+        String content = "密码随机重置为" + password;
+        return sendEmail(email, subject, content, "重置密码邮件已发送请查收");
     }
 
     @GetMapping("/user/email/activate")
     public ApiResponse activateEmail(String token) {
-        return ApiResponse.ofSuccess("邮箱激活邮件已发送，请及时查收邮件激活");
+        String email = jwtUtil.getIDFromJWT(token);
+        if (email == null) {
+            return ApiResponse.of(20003, "邮箱激活失败，请重新激活");
+        }
+        UserBean user = userService.findByEmail(email);
+        if (user == null) {
+            return ApiResponse.of(20003, "邮箱未注册，请注册之后再激活");
+        }
+        if (user.getIsValidEmail() == 1) {
+            return ApiResponse.of(20003, "邮箱已被激活");
+        }
+        user.setIsValidEmail(1);
+        userService.update(user);
+        return ApiResponse.ofSuccess("邮箱激活成功");
     }
 
-    private void actiateEmail(String email) {
+    @PostMapping("/user/sendActivatedEmail")
+    public ApiResponse sendActivatedEmail(String email) {
+        String jwt = jwtUtil.create(email);
+        String subject = "邮箱激活";
+        String content = "请点击下面的链接激活你的邮箱，" + BlogSiteConstant.DOMAIN + "/user/email/activate?token=" + jwt;
+        return sendEmail(email, subject, content, "邮箱激活邮件已发送邮箱");
+    }
+    private ApiResponse sendEmail(String email, String subject, String content, String successfulMessage) {
+        try {
+            mailService.sendSimpleMail(email, subject, content, null);
+        }catch (MessagingException e){
+            log.error("发送激活邮件失败，{}", e.getMessage());
+            return ApiResponse.of(50001, "系统发送邮件失败，请稍后重试");
 
+        }
+        return ApiResponse.ofSuccess(successfulMessage);
+    }
+    private int random(int min, int max) {
+        return (int) (Math.random() * (max - min) + min);
     }
     private Boolean verify(String s) {
         if (s == null) {

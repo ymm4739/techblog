@@ -6,7 +6,8 @@
         <result property="email" column="email"/>
         <result property="username" column="username"/>
         <result property="password" column="password"/>
-        <result property="isRememberMe" column="is_remember_me" />
+        <result property="isRememberMe" column="is_remember_me"/>
+        <result property="isValidEmail" column="is_valid_email"/>
         <result property="token" column="token"/>
         <collection property="roleList" ofType="com.zhumingbei.techblog.bean.RoleBean">
             <id property="id" column="r_id" />
@@ -35,6 +36,7 @@
         <if test="password != null">password = #{password},</if>
         <if test="token != null">token = #{token},</if>
         <if test="isRememberMe != null">is_remember_me = #{isRememberMe},</if>
+        <if test="isValidEmail != null">is_valid_email = #{isValidEmail},</if>
         </trim>
         where id = #{id}
     </update>
@@ -44,7 +46,7 @@
     </select>
 
     <select id="selectByUsernameOrEmail" resultMap="UserMap">
-        select user.id, username, email, password, is_remember_me, token, role.id as r_id, role.name, role.level
+        select user.id, username, email, password, is_remember_me, is_valid_email, token, role.id as r_id, role.name, role.level
         from user
         inner join user_role on user.id = user_role.user_id
         inner join role on role.id = user_role.role_id

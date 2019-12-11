@@ -63,6 +63,7 @@ upload:
 url:
   ignore:
     get:
+      - "/user/email/activate"
     post:
       - "/registry"
     pattern:

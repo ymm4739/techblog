@@ -19,6 +19,7 @@ public class UserBean implements Serializable {
     private String email;
     private String token;
     private Integer isRememberMe;
+    private Integer isValidEmail;
     private List<RoleBean> roleList;
 
     public UserBean(String username, String email, String password) {

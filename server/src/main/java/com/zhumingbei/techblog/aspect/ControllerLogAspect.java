@@ -52,7 +52,9 @@ public class ControllerLogAspect {
         Object[] args = point.getArgs();
         ArrayList<String> params = new ArrayList<>();
         for (Object arg : args) {
-            params.add(arg.toString());
+            if (arg != null) {
+                params.add(arg.toString());
+            }
         }
         map.put("methodName", methodName);
         map.put("params", params);
