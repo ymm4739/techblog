@@ -9,6 +9,9 @@
       <el-form-item label="邮箱">{{user.email}}
         <el-input v-if="modify"
                   :placeholder="email"></el-input>
+        <el-button v-if="!activated"
+                   type="primary"
+                   @click="activate">激活邮箱</el-button>
       </el-form-item>
       <el-form-item>
         <el-button type="primary"
@@ -18,35 +21,38 @@
   </div>
 </template>
 <script>
-import { getInfo } from '@/api/user'
 export default {
   name: 'Profile',
   data () {
     return {
       user: this.$store.getters.user,
-      modify: false
+      modify: false,
+      activated: this.$store.state.user.isValidEmail
     }
   },
   created () {
     if (this.username === '') {
-      getInfo().then(res => {
-        this.user = res.data
-        this.$store.dispatch('/user/setUserInfo', this.user)
-      })
+      this.$store.dispatch('user/getInfo')
     }
   },
   computed: {
     username () {
-      return this.user.username
+      return this.$store.state.user.username
     },
     email () {
-      return this.user.email
+      return this.$store.state.user.email
     }
 
   },
   methods: {
     update () {
       this.modify = true
+    },
+    activate () {
+      let data = {
+        email: this.email
+      }
+      this.$store.dispatch('user/sendActivatedEmail', data)
     }
   }
 }

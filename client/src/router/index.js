@@ -5,6 +5,7 @@ import Login from '@/components/login'
 import Registry from '@/components/registry'
 import Profile from '@/views/profile'
 import Layout from '@/layout'
+import ActivateEmail from '@/components/email'
 Vue.use(Router)
 
 const router = new Router({
@@ -24,6 +25,11 @@ const router = new Router({
       path: '/registry',
       name: 'registry',
       component: Registry
+    },
+    {
+      path: '/user/email/activate',
+      name: 'activateEmail',
+      component: ActivateEmail
     },
     {
       path: '/',

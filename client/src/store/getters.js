@@ -3,7 +3,7 @@ const getters = {
     return {
       username: state.user.username,
       email: state.user.email,
-      isRememberMe: state.user.isRememberMe
+      isValidEmail: state.user.isValidEmail
     }
   },
   token: state => state.user.token

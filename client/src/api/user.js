@@ -30,3 +30,18 @@ export function logout () {
     method: 'post'
   })
 }
+
+export function sendActivatedEmail (data) {
+  return request({
+    url: api.sendActivatedEmail,
+    method: 'post',
+    data: qs.stringify(data)
+  })
+}
+
+export function activateEmail (data) {
+  return request({
+    url: '/user/email/activate?' + qs.stringify(data),
+    method: 'get'
+  })
+}

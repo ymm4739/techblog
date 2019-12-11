@@ -33,8 +33,6 @@
 </template>
 
 <script>
-import { logout } from '@/api/user'
-import { Message } from 'element-ui'
 export default {
   name: 'Navigation',
   components: {},
@@ -63,11 +61,7 @@ export default {
   },
   methods: {
     logout () {
-      logout()
-        .then(res => {
-          this.$store.dispatch('user/clear')
-          Message.success(res.message)
-        })
+      this.$store.dispatch('user/logout')
     }
 
   }

@@ -35,7 +35,6 @@
   </div>
 </template>
 <script>
-import { login } from '@/api/user'
 import { mapGetters } from 'vuex'
 export default {
   name: 'Login',
@@ -73,18 +72,14 @@ export default {
         'password': this.form.password,
         'isRememberMe': this.form.isRememberMe
       }
-      login(data)
-        .then(res => {
-          let user = res.data
-          this.$store.dispatch('user/setToken', user.token)
-          this.$store.dispatch('user/setUserInfo', user)
-          let redirect = this.$route.query.redirect // $route 获取路由信息
-          if (redirect === location.hostname) {
-            this.$router.go(-1)
-          } else {
-            this.$router.push({ name: 'home' })
-          }
-        })
+      this.$store.dispatch('user/login', data).then(res => {
+        let redirect = this.$route.query.redirect // $route 获取路由信息
+        if (redirect === location.hostname) {
+          this.$router.go(-1)
+        } else {
+          this.$router.push({ name: 'home' })
+        }
+      })
     },
     resetpassword: function () {
       console.log('重置密码')
