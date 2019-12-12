@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public class SessionConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new SessionInterceptor()).excludePathPatterns("/registry", "/login", "/error", "/user/email/activate");
+        registry.addInterceptor(new SessionInterceptor()).excludePathPatterns("/registry", "/logout","/login", "/error", "/user/email/activate");
     }
 
     @Bean
