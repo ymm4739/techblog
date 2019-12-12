@@ -75,6 +75,11 @@ export default {
       show: this.visible
     }
   },
+  watch: {
+    visible () {
+      this.show = this.visible
+    }
+  },
   methods: {
     submit: function () {
       let data = {

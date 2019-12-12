@@ -34,12 +34,10 @@
       </el-submenu>
     </el-menu>
 
-    <Login :visible="loginVisible"
-           v-if="loginVisible"
+    <Login :show.sync="loginVisible"
            @close-login-dialog="closeLoginDialog"
            @show-registry-dialog="showRegistryDialog"></Login>
     <Registry :visible="registryVisible"
-              v-if="registryVisible"
               @close-login-dialog="closeLoginDialog"
               @show-login-dialog="showLoginDialog"
               @close-registry-dialog="closeRegistryDialog"></Registry>
