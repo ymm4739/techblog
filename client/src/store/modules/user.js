@@ -1,10 +1,10 @@
 import { sendActivatedEmail, login, getInfo, logout, activateEmail } from '@/api/user'
-import { Message } from 'element-ui'
 const state = {
   token: '',
   username: '',
   email: '',
-  isValidEmail: false
+  isValidEmail: false,
+  timeout: false
 }
 
 const mutations = {
@@ -18,14 +18,16 @@ const mutations = {
   },
   setValidEmail (state, isValidEmail) {
     state.isValidEmail = !!isValidEmail
+  },
+  setTimeout (state, value) {
+    state.timeout = value
   }
 }
 const actions = {
   sendActivatedEmail ({ commit }, email) {
     return new Promise((resolve, reject) => {
       sendActivatedEmail(email).then(res => {
-        Message.success(res.message)
-        resolve()
+        resolve(res)
       }).catch(error => {
         reject(error)
       })
@@ -44,6 +46,8 @@ const actions = {
   login ({ commit }, data) {
     return new Promise((resolve, reject) => {
       login(data).then(res => {
+        console.log('data')
+        console.log(res.data)
         commit('setToken', res.data.token)
         commit('setUserInfo', res.data)
         resolve(res.data)
@@ -61,13 +65,25 @@ const actions = {
     })
   },
   logout ({ commit }) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       logout().then(res => {
         commit('setToken', '')
         commit('setUserInfo', '')
-        Message.success(res.message)
-        resolve()
+        resolve(res)
       })
+    })
+  },
+  clear ({ commit }) {
+    return new Promise((resolve) => {
+      commit('setToken', '')
+      commit('setUserInfo', '')
+      resolve()
+    })
+  },
+  relogin ({ commit }) {
+    return new Promise(() => {
+      commit('setToken', '')
+      commit('setTimeout', true)
     })
   }
 }

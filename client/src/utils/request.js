@@ -1,7 +1,6 @@
-import { Message, MessageBox } from 'element-ui'
+import { Message } from 'element-ui'
 import axios from 'axios'
 import store from '@/store'
-import router from '@/router'
 import constant from '@/constant'
 axios.defaults.baseURL = '/api'
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
@@ -60,15 +59,9 @@ service.interceptors.response.use(
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
       if (res.code === 50000 || res.code === 50012 || res.code === 50014) {
         // to re-login
-        MessageBox.confirm('用户认证令牌失效，需要重新登陆', '重新登陆', {
-          confirmButtonText: '登陆',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          store.dispatch('user/clear').then(() => {
-            router.push({ path: '/login', query: { redirect: location.hostname } })
-          })
-        })
+        // store.dispatch('user/relogin')
+        store.dispatch('user/clear')
+        store.dispatch('user/logout')
       }
       return Promise.reject(new Error(res.message || 'Error'))
     } else {

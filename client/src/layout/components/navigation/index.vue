@@ -2,68 +2,119 @@
   <div>
     <h3 class="nav-title">{{title}}</h3>
     <h4 class="nav-description">{{description}}</h4>
-    <el-menu :default-active="activeIndex"
+    <el-menu :default-active="$route.path"
              mode="horizontal"
              background-color="black"
              text-color="white"
-             active-text-color="yellow"
-             router>
+             router
+             active-text-color="yellow">
       <el-menu-item index="/home">首页</el-menu-item>
       <el-menu-item index="/post">文章</el-menu-item>
       <el-menu-item index="/book">书籍</el-menu-item>
-      <el-submenu index="/tutors">
+      <el-submenu index="/tutorial">
         <template slot="title">教程</template>
         <el-menu-item index="/java">Java</el-menu-item>
         <el-menu-item index="/vue">Vue</el-menu-item>
         <el-menu-item index="/python">Python</el-menu-item>
       </el-submenu>
       <el-menu-item index="/talk">杂谈</el-menu-item>
-      <el-menu-item index="/login"
+      <el-menu-item index=""
                     v-if="!login"
-                    class="nav-login">登陆</el-menu-item>
+                    class="nav-login"
+                    @click="showLoginDialog">登陆</el-menu-item>
       <el-submenu v-if="login"
-                  class="nav-user">
-        <template slot="title">{{ user.username }}</template>
-        <el-menu-item :index="userPath">个人资料</el-menu-item>
-        <el-menu-item :index="userPassword">修改密码</el-menu-item>
-        <el-menu-item @click="logout">退出登陆</el-menu-item>
+                  class="nav-user"
+                  index="-1">
+        <template slot="title">
+          <el-avatar>{{ username }}</el-avatar>
+        </template>
+        <el-menu-item index="/user/profile">个人资料</el-menu-item>
+        <el-menu-item index=""
+                      @click="logout">退出登陆</el-menu-item>
       </el-submenu>
     </el-menu>
+
+    <Login :visible="loginVisible"
+           v-if="loginVisible"
+           @close-login-dialog="closeLoginDialog"
+           @show-registry-dialog="showRegistryDialog"></Login>
+    <Registry :visible="registryVisible"
+              v-if="registryVisible"
+              @close-login-dialog="closeLoginDialog"
+              @show-login-dialog="showLoginDialog"
+              @close-registry-dialog="closeRegistryDialog"></Registry>
   </div>
 </template>
 
 <script>
+import Login from '@/components/login'
+import Registry from '@/components/registry'
+import { MessageBox, Message } from 'element-ui'
 export default {
   name: 'Navigation',
-  components: {},
+  components: {
+    Login,
+    Registry
+  },
   data () {
     return {
       author: 'fadedfat3',
       title: '编程技术博客',
       description: '学习技术，分享经验，提升能力，快乐生活',
-      activeIndex: '/',
-      user: this.$store.getters.user
+      user: this.$store.getters.user,
+      loginVisible: false,
+      registryVisible: false
     }
   },
   computed: {
     userPath: function () {
-      return '/user/profile'
+      return { name: 'profile' }
     },
     userPassword: function () {
-      return '/user/changePassword'
+      return { path: '/user/changePassword' }
     },
     login () {
       return !!this.$store.getters.token
+    },
+    username () {
+      return this.$store.getters.user.username
+    },
+    timeout () {
+      return this.$store.getters.timeout
     }
   },
   watch: {
-
+    timeout (val) {
+      if (val === true) {
+        MessageBox.confirm('用户认证令牌失效，需要重新登陆', '重新登陆', {
+          confirmButtonText: '登陆',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.loginVisible = true
+        })
+      }
+    }
   },
   methods: {
     logout () {
-      this.$store.dispatch('user/logout')
+      this.$store.dispatch('user/logout').then(res => {
+        Message.success(res.message)
+      })
+      this.loginVisible = false
+    },
+    showLoginDialog () {
+      this.loginVisible = true
+    },
+    closeLoginDialog () {
+      this.loginVisible = false
+    },
+    closeRegistryDialog () {
+      this.registryVisible = false
+    },
+    showRegistryDialog () {
+      this.registryVisible = true
     }
-
   }
 }
 </script>

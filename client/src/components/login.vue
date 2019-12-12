@@ -1,10 +1,17 @@
 <template>
-  <div class="login">
+  <el-dialog title="登陆博客网站"
+             :visible.sync="show"
+             center
+             width="30%"
+             :modal="modal"
+             :before-close="handlerClose">
     <el-form :model="form"
+             class="login"
              label-position="left"
              label-width="60px"
              :rules="rules"
-             status-icon>
+             status-icon
+             size="mini">
       <el-form-item label="登陆名"
                     prop="loginName">
         <el-input v-model="form.loginName"
@@ -16,28 +23,28 @@
         <el-input v-model="form.password"
                   placeholder="请输入密码"
                   show-password></el-input>
+        <el-button type="text"
+                   @click="resetPassword">忘记密码</el-button>
       </el-form-item>
       <el-form-item>
         <el-checkbox v-model="form.isRememberMe"
                      style="float:left">记住我</el-checkbox>
       </el-form-item>
-      <el-form-item>
-        <el-button type="primary"
-                   @click="submit">登陆</el-button>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary"
-                   @click="$router.push({name: 'registry'})">注册</el-button>
-        <el-button type="primary"
-                   @click="resetpassword">忘记密码</el-button>
-      </el-form-item>
     </el-form>
-  </div>
+    <div slot="footer">
+      <el-button type="primary"
+                 @click="submit">登陆</el-button>
+      <el-button type="primary"
+                 @click="registry">注册</el-button>
+    </div>
+  </el-dialog>
 </template>
 <script>
-import { mapGetters } from 'vuex'
 export default {
   name: 'Login',
+  props: [
+    'visible'
+  ],
   data () {
     return {
       form: {
@@ -57,13 +64,13 @@ export default {
           { require: true, message: '请输入密码', trigger: 'blur' },
           { min: 6, message: '密码长度为6位及以上', trigger: 'blur' }
         ]
-      }
+      },
+      modal: false,
+      show: this.visible
     }
   },
   computed: {
-    ...mapGetters([
-      'token'
-    ])
+
   },
   methods: {
     submit: function () {
@@ -79,16 +86,28 @@ export default {
         } else {
           this.$router.push({ name: 'home' })
         }
+        this.closeDialog()
       })
     },
-    resetpassword: function () {
+    registry () {
+      this.$emit('show-registry-dialog')
+      this.closeDialog()
+    },
+    resetPassword: function () {
       console.log('重置密码')
+    },
+    handlerClose (done) {
+      this.closeDialog()
+      done()
+    },
+    closeDialog () {
+      this.$emit('close-login-dialog')
     }
   }
 }
 </script>
 <style scoped>
 .login {
-  margin: 300px;
+  margin: auto;
 }
 </style>

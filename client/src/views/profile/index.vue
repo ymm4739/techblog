@@ -21,6 +21,7 @@
   </div>
 </template>
 <script>
+import { Message } from 'element-ui'
 export default {
   name: 'Profile',
   data () {
@@ -52,7 +53,9 @@ export default {
       let data = {
         email: this.email
       }
-      this.$store.dispatch('user/sendActivatedEmail', data)
+      this.$store.dispatch('user/sendActivatedEmail', data).then(res => {
+        Message.success(res.message)
+      })
     }
   }
 }

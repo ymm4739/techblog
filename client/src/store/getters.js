@@ -6,7 +6,8 @@ const getters = {
       isValidEmail: state.user.isValidEmail
     }
   },
-  token: state => state.user.token
+  token: state => state.user.token,
+  timeout: state => state.user.timeout
 }
 
 export default getters
