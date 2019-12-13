@@ -5,6 +5,7 @@
                center
                width="30%"
                :modal="modal"
+               :close-on-click-modal="false"
                :before-close="handlerClose">
       <el-form :model="form"
                class="login"
@@ -44,6 +45,7 @@
 <script>
 export default {
   name: 'Login',
+  inject: ['reload'],
   props: [
     'show'
   ],
@@ -87,12 +89,9 @@ export default {
         'isRememberMe': this.form.isRememberMe
       }
       this.$store.dispatch('user/login', data).then(res => {
-        let redirect = this.$route.query.redirect // $route 获取路由信息
-        if (redirect === location.hostname) {
-          this.$router.go(-1)
-        } else {
-          this.$router.push({ name: 'home' })
-        }
+        // this.$router.push({ path: this.$route.fullPath })
+        // this.reload()
+        location.reload()
         this.closeDialog()
       })
     },
@@ -101,7 +100,7 @@ export default {
       this.closeDialog()
     },
     resetPassword: function () {
-      console.log('重置密码')
+
     },
     handlerClose (done) {
       this.closeDialog()

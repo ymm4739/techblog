@@ -45,3 +45,11 @@ export function activateEmail (data) {
     method: 'get'
   })
 }
+
+export function changePassword (data) {
+  return request({
+    url: '/user/password/change',
+    method: 'post',
+    data: qs.stringify(data)
+  })
+}

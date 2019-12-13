@@ -30,6 +30,8 @@
         </template>
         <el-menu-item index="/user/profile">个人资料</el-menu-item>
         <el-menu-item index=""
+                      @click="changePassword">修改密码</el-menu-item>
+        <el-menu-item index=""
                       @click="logout">退出登陆</el-menu-item>
       </el-submenu>
     </el-menu>
@@ -41,18 +43,21 @@
               @close-login-dialog="closeLoginDialog"
               @show-login-dialog="showLoginDialog"
               @close-registry-dialog="closeRegistryDialog"></Registry>
+    <change-password :visible.sync="changePasswordVisible"></change-password>
   </div>
 </template>
 
 <script>
 import Login from '@/components/login'
 import Registry from '@/components/registry'
+import ChangePassword from '@/components/ChangePassword'
 import { MessageBox, Message } from 'element-ui'
 export default {
   name: 'Navigation',
   components: {
     Login,
-    Registry
+    Registry,
+    ChangePassword
   },
   data () {
     return {
@@ -61,7 +66,8 @@ export default {
       description: '学习技术，分享经验，提升能力，快乐生活',
       user: this.$store.getters.user,
       loginVisible: false,
-      registryVisible: false
+      registryVisible: false,
+      changePasswordVisible: false
     }
   },
   computed: {
@@ -112,6 +118,9 @@ export default {
     },
     showRegistryDialog () {
       this.registryVisible = true
+    },
+    changePassword () {
+      this.changePasswordVisible = true
     }
   }
 }

@@ -56,12 +56,10 @@ service.interceptors.response.use(
         duration: 5 * 1000
       })
 
-      // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
-      if (res.code === 50000 || res.code === 50012 || res.code === 50014) {
+      // 50000: invalid token;
+      if (res.code === 50000) {
         // to re-login
-        // store.dispatch('user/relogin')
-        store.dispatch('user/clear')
-        store.dispatch('user/logout')
+        store.dispatch('user/relogin')
       }
       return Promise.reject(new Error(res.message || 'Error'))
     } else {

@@ -1,4 +1,4 @@
-import { sendActivatedEmail, login, getInfo, logout, activateEmail } from '@/api/user'
+import { sendActivatedEmail, login, getInfo, logout, activateEmail, changePassword } from '@/api/user'
 const state = {
   token: '',
   username: '',
@@ -21,6 +21,11 @@ const mutations = {
   },
   setTimeout (state, value) {
     state.timeout = value
+  },
+  clearUserInfo (state) {
+    state.email = ''
+    state.username = ''
+    state.isValidEmail = ''
   }
 }
 const actions = {
@@ -38,9 +43,7 @@ const actions = {
       activateEmail(data).then(res => {
         commit('setValidEmail', true)
         resolve(res)
-      }).catch(error => {
-        reject(error)
-      })
+      }).catch(() => { })
     })
   },
   login ({ commit }, data) {
@@ -50,25 +53,24 @@ const actions = {
         console.log(res.data)
         commit('setToken', res.data.token)
         commit('setUserInfo', res.data)
+        commit('setTimeout', false)
         resolve(res.data)
-      }).catch(error => {
-        reject(error)
-      })
+      }).catch((_) => { })
     })
   },
   getInfo ({ commit }) {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       getInfo().then(res => {
         commit('setUserInfo', res.data)
         resolve()
-      })
+      }).catch((_) => { })
     })
   },
   logout ({ commit }) {
     return new Promise((resolve) => {
       logout().then(res => {
         commit('setToken', '')
-        commit('setUserInfo', '')
+        commit('clearUserInfo')
         resolve(res)
       })
     })
@@ -76,14 +78,28 @@ const actions = {
   clear ({ commit }) {
     return new Promise((resolve) => {
       commit('setToken', '')
-      commit('setUserInfo', '')
+      commit('clearUserInfo')
       resolve()
     })
   },
   relogin ({ commit }) {
     return new Promise(() => {
       commit('setToken', '')
+      commit('clearUserInfo')
       commit('setTimeout', true)
+    })
+  },
+  changePassword ({ state }, data) {
+    const { oldPassword, newPassword } = data
+    return new Promise((resolve, reject) => {
+      let data = {
+        username: state.username,
+        oldPassword,
+        newPassword
+      }
+      changePassword(data).then(res => {
+        resolve(res)
+      }).catch(() => { })
     })
   }
 }
