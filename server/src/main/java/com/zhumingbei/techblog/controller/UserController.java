@@ -138,9 +138,14 @@ public class UserController {
 
     @PostMapping("/user/password/change")
     public ApiResponse changePassword(String username, String oldPassword, String newPassword ) {
-        UserBean userBean = userService.checkByUsernameAndPassword(username, bCryptPasswordEncoder.encode(oldPassword));
+        log.debug("username:{}, password:{}", username, oldPassword);
+        UserBean userBean = userService.findByUsername(username);
         if (userBean == null) {
-            return ApiResponse.of(20002, "原密码错误");
+            return ApiResponse.of(50001, "找不到用户");
+        }
+        String cryptPassword = userBean.getPassword();
+        if (!bCryptPasswordEncoder.matches(oldPassword, cryptPassword)) {
+            return ApiResponse.of(40000, "原密码错误");
         }
         userBean.setPassword(bCryptPasswordEncoder.encode(newPassword));
         userService.update(userBean);
