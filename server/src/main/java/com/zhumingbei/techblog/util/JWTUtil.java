@@ -13,10 +13,10 @@ import java.util.Date;
 @Component
 @Slf4j
 public class JWTUtil {
-    public String create(String email) {
+    public String create(String ID) {
         Date now = new Date();
         JwtBuilder builder = Jwts.builder()
-                .setId(email)
+                .setId(ID)
                 .setIssuedAt(now)
                 .signWith(SignatureAlgorithm.HS256, JWTConstant.KEY)
                 .setExpiration(new Date(now.getTime() + JWTConstant.TTL));

@@ -68,6 +68,8 @@ url:
       - "/registry"
     pattern:
       - "/error"
+      - "/user/password/getVerifyCode"
+      - "user/password/reset"
 ##jwt
 jwt:
   config:

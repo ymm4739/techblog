@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
 import java.util.List;
 
 @Slf4j
@@ -152,18 +153,20 @@ public class UserController {
         return ApiResponse.ofSuccess("密码更改成功");
     }
 
-    @GetMapping("/user/password/reset")
-    public ApiResponse resetPassword(String email) {
+    @PostMapping("/user/password/reset")
+    public ApiResponse resetPassword(String email, String password, String verifyCode, String rawCode) {
         UserBean user = userService.findByEmail(email);
         if (user == null) {
             return ApiResponse.of(20003, "邮箱未注册");
         }
-        int password = random(100000, 999999);
-        user.setPassword(bCryptPasswordEncoder.encode("" + password));
-        userService.update(user);
-        String subject = "重置密码";
-        String content = "密码随机重置为" + password;
-        return sendEmail(email, subject, content, "重置密码邮件已发送请查收");
+        String code = jwtUtil.getIDFromJWT(rawCode);
+        if (verifyCode.equals(code)) {
+            user.setPassword(bCryptPasswordEncoder.encode(password));
+            userService.update(user);
+            return ApiResponse.ofSuccess("重置密码成功");
+        }
+        return ApiResponse.of(40000, "验证码错误，请重新获取验证码");
+
     }
 
     @GetMapping("/user/email/activate")
@@ -190,6 +193,35 @@ public class UserController {
         String subject = "邮箱激活";
         String content = "请点击下面的链接激活你的邮箱，" + BlogSiteConstant.DOMAIN + "/user/email/activate?token=" + jwt;
         return sendEmail(email, subject, content, "邮箱激活邮件已发送邮箱");
+    }
+    @PostMapping("/user/password/getVerifyCode")
+    public ApiResponse sendVerifyCode(String email) {
+        UserBean user = userService.findByEmail(email);
+        if (user == null) {
+            return ApiResponse.of(20003, "邮箱未注册");
+        }
+
+        int code = random(100000, 999999);
+        String subject = "重置密码";
+        String content = "随机验证码为" + code + ", 30分钟内有效";
+        String jwt = jwtUtil.create("" + code);
+
+        sendEmail(email, subject, content, "验证码邮件已发送请查收");
+        HashMap<String, String> result = new HashMap<>();
+        result.put("code", jwt);
+        return ApiResponse.ofSuccess("验证码邮件已发送请查收", result);
+    }
+    @PostMapping("user/password/verify")
+    public ApiResponse verifyPassword(String email, String password) {
+        UserBean user = userService.findByEmail(email);
+        if (user == null) {
+            return ApiResponse.of(40000, "邮箱未注册");
+        }
+        String encodePassword = user.getPassword();
+        if (bCryptPasswordEncoder.matches(password, encodePassword)) {
+            return ApiResponse.ofSuccess("密码重置成功");
+        }
+        return ApiResponse.of(40000, "密码不正确");
     }
     private ApiResponse sendEmail(String email, String subject, String content, String successfulMessage) {
         try {
