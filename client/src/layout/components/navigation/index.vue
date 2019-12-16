@@ -36,14 +36,15 @@
       </el-submenu>
     </el-menu>
 
-    <Login :show.sync="loginVisible"
-           @close-login-dialog="closeLoginDialog"
-           @show-registry-dialog="showRegistryDialog"></Login>
-    <Registry :visible="registryVisible"
-              @close-login-dialog="closeLoginDialog"
-              @show-login-dialog="showLoginDialog"
-              @close-registry-dialog="closeRegistryDialog"></Registry>
-    <change-password :visible.sync="changePasswordVisible"></change-password>
+    <Login :visible.sync="loginVisible"
+           :registryVisible.sync="registryVisible"
+           :resetPasswordVisible.sync="resetPasswordVisible"></Login>
+    <Registry :visible.sync="registryVisible"
+              :loginVisible.sync="loginVisible"></Registry>
+    <change-password :visible.sync="changePasswordVisible"
+                     :loginVisible.sync="loginVisible"></change-password>
+    <reset-password :visible.sync="resetPasswordVisible"
+                    :loginVisible.sync="loginVisible"></reset-password>
   </div>
 </template>
 
@@ -51,13 +52,15 @@
 import Login from '@/components/login'
 import Registry from '@/components/registry'
 import ChangePassword from '@/components/ChangePassword'
+import ResetPassword from '@/components/ResetPassword'
 import { MessageBox, Message } from 'element-ui'
 export default {
   name: 'Navigation',
   components: {
     Login,
     Registry,
-    ChangePassword
+    ChangePassword,
+    ResetPassword
   },
   data () {
     return {
@@ -67,7 +70,8 @@ export default {
       user: this.$store.getters.user,
       loginVisible: false,
       registryVisible: false,
-      changePasswordVisible: false
+      changePasswordVisible: false,
+      resetPasswordVisible: false
     }
   },
   computed: {
@@ -107,20 +111,11 @@ export default {
       })
       this.loginVisible = false
     },
-    showLoginDialog () {
-      this.loginVisible = true
-    },
-    closeLoginDialog () {
-      this.loginVisible = false
-    },
-    closeRegistryDialog () {
-      this.registryVisible = false
-    },
-    showRegistryDialog () {
-      this.registryVisible = true
-    },
     changePassword () {
       this.changePasswordVisible = true
+    },
+    showLoginDialog () {
+      this.loginVisible = true
     }
   }
 }

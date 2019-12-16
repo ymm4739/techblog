@@ -1,12 +1,12 @@
 <template>
   <div>
     <el-dialog title="登陆博客网站"
-               :visible.sync="visible"
+               :visible.sync="show"
                center
                width="30%"
                :modal="modal"
                :close-on-click-modal="false"
-               :before-close="handlerClose">
+               @close="closeDialog">
       <el-form :model="form"
                class="login"
                label-position="left"
@@ -46,12 +46,18 @@
 export default {
   name: 'Login',
   inject: ['reload'],
-  props: [
-    'show'
-  ],
-  watch: {
-    show () {
-      this.visible = this.show
+  props: {
+    visible: {
+      type: Boolean,
+      default: false
+    },
+    registryVisible: {
+      type: Boolean,
+      default: false
+    },
+    resetPasswordVisible: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -75,11 +81,16 @@ export default {
         ]
       },
       modal: false,
-      visible: this.show
+      show: this.visible
     }
   },
   computed: {
 
+  },
+  watch: {
+    visible () {
+      this.show = this.visible
+    }
   },
   methods: {
     submit: function () {
@@ -96,18 +107,18 @@ export default {
       })
     },
     registry () {
-      this.$emit('show-registry-dialog')
+      this.$emit('update:registryVisible', true)
       this.closeDialog()
     },
     resetPassword: function () {
-
-    },
-    handlerClose (done) {
+      this.$emit('update:resetPasswordVisible', true)
       this.closeDialog()
-      done()
     },
     closeDialog () {
-      this.$emit('close-login-dialog')
+      this.form.loginName = ''
+      this.form.password = ''
+      this.form.isRememberMe = false
+      this.$emit('update:visible', false)
     }
   }
 }

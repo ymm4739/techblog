@@ -5,7 +5,7 @@
                title="用户注册"
                width="30%"
                :modal="modal"
-               :before-close="handlerClose">
+               @close="closeDialog">
       <el-form :model="form"
                label-position="left"
                label-width="60px"
@@ -44,9 +44,16 @@
 import { registry } from '@/api/user'
 export default {
   name: 'Registry',
-  props: [
-    'visible'
-  ],
+  props: {
+    visible: {
+      type: Boolean,
+      default: false
+    },
+    loginVisible: {
+      type: Boolean,
+      default: false
+    }
+  },
   data () {
     return {
       form: {
@@ -89,17 +96,19 @@ export default {
       }
       registry(data)
         .then(res => {
-          this.$emit('show-login-dialog')
-          this.$emit('close-registry-dialog')
+          this.closeDialog()
         }
         )
     },
     login () {
-      this.$emit('show-login-dialog')
-      this.$emit('close-registry-dialog')
+      this.closeDialog()
     },
-    handlerClose (done) {
-      this.$emit('close-registry-dialog')
+    closeDialog () {
+      this.form.email = ''
+      this.form.username = ''
+      this.form.password = ''
+      this.$emit('update:visible', false)
+      this.$emit('update:loginVisible', true)
     }
   }
 }

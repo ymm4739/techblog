@@ -46,6 +46,10 @@ export default {
     visible: {
       type: Boolean,
       default: false
+    },
+    loginVisible: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -93,6 +97,7 @@ export default {
       this.$store.dispatch('user/changePassword', this.form).then(res => {
         Message.success('更改密码成功')
         this.closeDialog()
+        this.$emit('update:loginVisible', true)
       }).catch(error => {
         Message({
           message: '更改密码失败,' + error,

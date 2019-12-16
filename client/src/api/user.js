@@ -53,3 +53,19 @@ export function changePassword (data) {
     data: qs.stringify(data)
   })
 }
+
+export function resetPasswordByEmail (data) {
+  return request({
+    url: '/user/password/reset',
+    method: 'post',
+    data: qs.stringify(data)
+  })
+}
+
+export function getVerifyCode (data) {
+  return request({
+    url: '/user/password/getVerifyCode?',
+    method: 'post',
+    data: qs.stringify(data)
+  })
+}
