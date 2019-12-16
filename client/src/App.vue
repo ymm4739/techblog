@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <router-view />
+    <router-view v-if="isRouterAlive" />
   </div>
 </template>
 
@@ -31,6 +31,7 @@ export default {
   methods: {
     reload () {
       this.isRouterAlive = false
+      // isRouterAlive变为false，DOM更新，然后后立即执行isRouterAlive为true,DOM再次更新，即变相实现刷新页面
       this.$nextTick(function () {
         this.isRouterAlive = true
       })

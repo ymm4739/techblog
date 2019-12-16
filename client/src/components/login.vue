@@ -102,8 +102,9 @@ export default {
       this.$store.dispatch('user/login', data).then(res => {
         // this.$router.push({ path: this.$route.fullPath })
         // this.reload()
-        location.reload()
+        // location.reload()
         this.closeDialog()
+        this.reload()
       })
     },
     registry () {
