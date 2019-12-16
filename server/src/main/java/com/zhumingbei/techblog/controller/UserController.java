@@ -211,18 +211,7 @@ public class UserController {
         result.put("code", jwt);
         return ApiResponse.ofSuccess("验证码邮件已发送请查收", result);
     }
-    @PostMapping("user/password/verify")
-    public ApiResponse verifyPassword(String email, String password) {
-        UserBean user = userService.findByEmail(email);
-        if (user == null) {
-            return ApiResponse.of(40000, "邮箱未注册");
-        }
-        String encodePassword = user.getPassword();
-        if (bCryptPasswordEncoder.matches(password, encodePassword)) {
-            return ApiResponse.ofSuccess("密码重置成功");
-        }
-        return ApiResponse.of(40000, "密码不正确");
-    }
+
     private ApiResponse sendEmail(String email, String subject, String content, String successfulMessage) {
         try {
             mailService.sendSimpleMail(email, subject, content, null);
