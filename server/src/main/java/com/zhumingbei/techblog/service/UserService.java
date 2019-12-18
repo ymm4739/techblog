@@ -25,4 +25,6 @@ public interface UserService {
     UserBean findByUsername(String username);
 
     UserBean findByEmail(String email);
+
+    UserBean findByID(int userID);
 }

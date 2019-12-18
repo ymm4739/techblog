@@ -3,11 +3,14 @@ package com.zhumingbei.techblog.common;
 import com.zhumingbei.techblog.bean.PermissionBean;
 import com.zhumingbei.techblog.bean.RoleBean;
 import com.zhumingbei.techblog.bean.UserBean;
+import com.zhumingbei.techblog.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
@@ -17,7 +20,9 @@ import java.util.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CustomUserPrincipal implements UserDetails, Serializable {
+
     private static final long serialVersionUID = 1L;
+    private Integer id;
     private String username;
 
     private String password;
@@ -34,7 +39,7 @@ public class CustomUserPrincipal implements UserDetails, Serializable {
                 roleSet.add(role.getName());
             }
         }
-        return new CustomUserPrincipal( user.getUsername(), user.getPassword(), user.getEmail(), authorities, roleSet);
+        return new CustomUserPrincipal(user.getId(), user.getUsername(), user.getPassword(), user.getEmail(), authorities, roleSet);
     }
 
     @Override
@@ -70,5 +75,10 @@ public class CustomUserPrincipal implements UserDetails, Serializable {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public static Integer  getUserID() {
+        CustomUserPrincipal principal =(CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return principal.getId();
     }
 }

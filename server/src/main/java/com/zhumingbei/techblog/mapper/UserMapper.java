@@ -23,5 +23,6 @@ public interface UserMapper {
 
     List<UserBean> selectAll();
 
+    UserBean selectByID(int userID);
 
 }

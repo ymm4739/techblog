@@ -61,5 +61,8 @@
         select * from user
     </select>
 
+    <select id="selectByID" resultType="com.zhumingbei.techblog.bean.UserBean">
+        select * from user where id = #{userID}
+    </select>
 
 </mapper>

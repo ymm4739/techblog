@@ -80,4 +80,9 @@ public class UserServiceImpl implements UserService {
     public UserBean findByEmail(String email) {
         return findByUsernameOrEmail(email);
     }
+
+    @Override
+    public UserBean findByID(int userID) {
+        return userMapper.selectByID(userID);
+    }
 }
