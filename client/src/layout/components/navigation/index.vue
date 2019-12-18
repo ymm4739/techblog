@@ -28,6 +28,7 @@
         <template slot="title">
           <el-avatar>{{ username }}</el-avatar>
         </template>
+        <el-menu-item index="/article/list">我的博客</el-menu-item>
         <el-menu-item index="/user/profile">个人资料</el-menu-item>
         <el-menu-item index=""
                       @click="changePassword">修改密码</el-menu-item>

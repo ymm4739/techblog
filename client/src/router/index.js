@@ -1,11 +1,13 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '@/components/Home'
-import Login from '@/components/login'
-import Registry from '@/components/registry'
+
 import Profile from '@/views/profile'
 import Layout from '@/layout'
 import ActivateEmail from '@/components/email'
+import ArticleShowView from '@/views/article/show'
+import ArticleEditView from '@/views/article/edit'
+import ArticleListView from '@/views/article/list'
 Vue.use(Router)
 // 解决重复点击导航路由报错
 const originalPush = Router.prototype.push
@@ -14,22 +16,6 @@ Router.prototype.push = function push (location) {
 }
 const router = new Router({
   routes: [
-    /*
-    {
-      path: '/',
-      name: 'Home',
-      component: Home
-    }, */
-    {
-      path: '/login',
-      name: 'login',
-      component: Login
-    },
-    {
-      path: '/registry',
-      name: 'registry',
-      component: Registry
-    },
     {
       path: '/user/email/activate',
       name: 'activateEmail',
@@ -48,6 +34,16 @@ const router = new Router({
         path: 'home',
         name: 'home',
         component: Home
+      }, {
+        path: 'article/show/:articleID',
+        component: ArticleShowView
+      }, {
+        path: 'article/edit',
+        component: ArticleEditView
+      },
+      {
+        path: 'article/list',
+        component: ArticleListView
       }
       ]
     }
