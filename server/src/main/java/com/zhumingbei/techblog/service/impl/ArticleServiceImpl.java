@@ -16,12 +16,17 @@ public class ArticleServiceImpl implements ArticleService {
         return articleMapper.selectAll();
     }
     @Override
-    public int create(ArticleBean article) {
-        return articleMapper.insert(article);
+    public void create(ArticleBean article) {
+        articleMapper.insert(article);
     }
 
     @Override
     public ArticleBean findByID(int articleID) {
         return articleMapper.selectByID(articleID);
+    }
+
+    @Override
+    public void update(ArticleBean article) {
+        articleMapper.update(article);
     }
 }

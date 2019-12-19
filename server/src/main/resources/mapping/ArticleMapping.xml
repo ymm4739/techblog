@@ -6,10 +6,10 @@
         <id column="id" property="id" />
         <result property="title" column="title" />
         <result property="content" column="content" />
+        <result property="html" column="html" />
         <result property="authorID" column="author_id" />
         <result property="collectedNums" column="collected_nums" />
         <result property="likedNums" column="liked_nums" />
-        <result property="recommendedNums" column="recommendedNums" />
         <result property="commentNums" column="comment_nums" />
         <result property="updatedTime" column="updated_time_format" />
         <result property="createdTime" column="created_time_format" />
@@ -21,7 +21,7 @@
         <result property="username" column="username"/>
     </resultMap>
     <select id="selectAll" resultMap="ArticleMap">
-        select a.id, a.title, a.content, a.liked_nums, a.recommended_nums, a.collected_nums, a.comment_nums, date_format(a.updated_time, '%Y-%m-%d %H:%i:%s') as updated_time_format, date_format(a.created_time, '%Y-%m-%d %H:%i:%s') as created_time_format, a.author_id, u.username
+        select a.id, a.title, a.content, a.html, a.liked_nums, a.collected_nums, a.comment_nums, date_format(a.updated_time, '%Y-%m-%d %H:%i:%s') as updated_time_format, date_format(a.created_time, '%Y-%m-%d %H:%i:%s') as created_time_format, a.author_id, u.username
         from article a
         inner join user u on u.id = a.author_id
         order by a.id desc
@@ -29,13 +29,26 @@
     </select>
 
     <insert id="insert" keyProperty="id" useGeneratedKeys="true" parameterType="articleBean">
-        insert into article (title, content, author_id) values(#{title}, #{content}, #{authorID})
+        insert into article (title, content, html, author_id) values(#{title}, #{content}, #{html}, #{authorID})
     </insert>
 
     <select id="selectByID" resultMap="ArticleMap">
-        select a.id, a.title, a.content, a.liked_nums, a.recommended_nums, a.collected_nums, a.comment_nums, date_format(a.updated_time, '%Y-%m-%d %H:%i:%s') as updated_time_format, date_format(a.created_time, '%Y-%m-%d %H:%i:%s') as created_time_format, a.author_id, u.username
+        select a.id, a.title, a.content, a.html, a.liked_nums, a.collected_nums, a.comment_nums, date_format(a.updated_time, '%Y-%m-%d %H:%i:%s') as updated_time_format, date_format(a.created_time, '%Y-%m-%d %H:%i:%s') as created_time_format, a.author_id, u.username
         from article a
         inner join user u on u.id = a.author_id
         where a.id = #{articleID}
     </select>
+
+    <update id="update" parameterType="ArticleBean">
+        update article
+        <trim prefix="set" suffixOverrides=",">
+            <if test="title != null">title = #{title},</if>
+            <if test="content != null">content =#{content},</if>
+            <if test="html !=null">html = #{html},</if>
+            <if test="likedNums != null">liked_nums = #{likedNums},</if>
+            <if test="commentNums != null">comment_nums = #{commentNums},</if>
+            <if test="collectedNums != null">collected_nums = #{collectedNums},</if>
+        </trim>
+        where id = #{id}
+    </update>
 </mapper>

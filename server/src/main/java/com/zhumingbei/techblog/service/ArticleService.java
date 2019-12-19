@@ -6,6 +6,7 @@ import java.util.List;
 
 public interface ArticleService {
     List<ArticleBean> getAll();
-    int create(ArticleBean article);
+    void create(ArticleBean article);
     ArticleBean findByID(int articleID);
+    void update(ArticleBean article);
 }

@@ -9,7 +9,9 @@ import java.util.List;
 public interface ArticleMapper {
     List<ArticleBean> selectAll();
 
-    int insert (ArticleBean article);
+    void insert (ArticleBean article);
 
     ArticleBean selectByID(int articleID);
+
+    void update(ArticleBean article);
 }

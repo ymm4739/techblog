@@ -8,11 +8,11 @@ public class ArticleBean {
     public Integer id;
     public String title;
     public String content;
+    public String html;
     public Integer authorID;
     public UserBean author;
     public Integer likedNums;
     public Integer collectedNums;
-    public Integer recommendedNums;
     public Integer commentNums;
     public String updatedTime;
     public String createdTime;
