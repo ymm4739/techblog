@@ -1,7 +1,7 @@
 <template>
   <div>
     <h3>{{article.title}}</h3>
-    <div>{{article.content}}</div>
+    <div v-html="article.html"></div>
     <el-divider></el-divider>
     <span class="info">Posted At {{article.createdTime}} By <el-tag>{{author.username}}</el-tag></span>
   </div>

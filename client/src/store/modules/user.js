@@ -49,8 +49,6 @@ const actions = {
   login ({ commit }, data) {
     return new Promise((resolve, reject) => {
       login(data).then(res => {
-        console.log('data')
-        console.log(res.data)
         commit('setToken', res.data.token)
         commit('setUserInfo', res.data)
         commit('setTimeout', false)

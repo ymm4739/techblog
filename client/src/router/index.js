@@ -38,12 +38,16 @@ const router = new Router({
         path: 'article/show/:articleID',
         component: ArticleShowView
       }, {
-        path: 'article/edit',
+        path: 'article/edit/:id',
         component: ArticleEditView
       },
       {
         path: 'article/list',
         component: ArticleListView
+      },
+      {
+        path: 'article/create',
+        component: ArticleEditView
       }
       ]
     }

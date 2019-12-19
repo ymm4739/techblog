@@ -1,21 +1,29 @@
 <template>
   <div>
-    <div><span>你创造的所有文章</span>
+    <div><span class="desc_left">文章列表</span>
       <el-button class="create_button"
                  @click="create">新建</el-button>
     </div>
     <el-table :data="articles"
-              v-if="articles.length">
+              v-if="articles.length"
+              size="mini">
       <el-table-column prop="title"
                        label="标题"></el-table-column>
       <el-table-column prop="updatedTime"
                        label="时间"></el-table-column>
-      <el-table-column prop="liked_nums"
+      <el-table-column prop="likedNums"
                        label="点赞数"></el-table-column>
+      <el-table-column prop="commentNums"
+                       label="评论数"></el-table-column>
+      <el-table-column prop="collectedNums"
+                       label="收藏数"></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button @click="handlerView(scope.row)">查看</el-button>
-          <el-button>删除</el-button>
+          <el-button size="mini"
+                     @click="handlerView(scope.row)">查看</el-button>
+          <el-button size="mini"
+                     @click="handlerUpdate(scope.row)">编辑</el-button>
+          <el-button size="mini">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -34,8 +42,6 @@ export default {
   created () {
     list().then(res => {
       this.articles = res.data
-      console.log('articles:')
-      console.log(this.articles)
     })
   },
   methods: {
@@ -43,7 +49,10 @@ export default {
       this.$router.push({ path: '/article/show/' + row.id })
     },
     create () {
-      this.$router.push({ path: '/article/edit' })
+      this.$router.push({ path: '/article/create' })
+    },
+    handlerUpdate (row) {
+      this.$router.push({ path: '/article/edit/' + row.id })
     }
   }
 }
@@ -51,5 +60,8 @@ export default {
 <style scoped>
 .create_button {
   float: right;
+}
+.desc_left {
+  float: left;
 }
 </style>

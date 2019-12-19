@@ -7,11 +7,11 @@
                     prop="title">
         <el-input v-model="form.title"></el-input>
       </el-form-item>
-      <el-form-item label="内容"
-                    prop="content">
-        <el-input type="textarea"
-                  v-model="form.content"></el-input>
-      </el-form-item>
+
+      <mavon-editor v-model="form.content"
+                    ref="md"
+                    @change="change"></mavon-editor>
+
       <el-form-item>
         <el-button type="primary"
                    @click="submit">保存</el-button>
@@ -21,16 +21,23 @@
   </div>
 </template>
 <script>
-import { create } from '@/api/article'
+import { create, update, show } from '@/api/article'
 import { Message } from 'element-ui'
+import { mavonEditor } from 'mavon-editor'
+import 'mavon-editor/dist/css/index.css'
+
 export default {
   name: 'ArticleEditView',
+  components: {
+    mavonEditor
+  },
   data () {
     return {
       form: {
         title: '',
         content: ''
       },
+      html: '',
       rules: {
         title: [{
           required: true,
@@ -45,16 +52,41 @@ export default {
       }
     }
   },
+  computed: {
+    isUpdated () {
+      return !!this.$route.params.id
+    }
+  },
+  created () {
+    if (this.isUpdated) {
+      let id = this.$route.params.id
+      show(id).then(res => {
+        this.form = res.data
+      })
+    }
+  },
   methods: {
     submit () {
       let data = {
         title: this.form.title,
-        content: this.form.content
+        content: this.form.content,
+        html: this.html
       }
-      create(data).then(res => {
-        Message.success(res.message)
-        this.$router.push({ path: '/article/list' })
-      }).catch(() => { })
+      if (this.isUpdated) {
+        let id = this.$route.params.id
+        update({ id, data }).then(res => {
+          Message.success(res.message)
+          this.$router.push({ path: '/article/list' })
+        }).catch(() => { })
+      } else {
+        create(data).then(res => {
+          Message.success(res.message)
+          this.$router.push({ path: '/article/list' })
+        }).catch(() => { })
+      }
+    },
+    change (value, render) {
+      this.html = render
     }
   }
 }
