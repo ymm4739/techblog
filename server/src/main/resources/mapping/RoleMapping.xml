@@ -13,13 +13,15 @@
         </collection>
     </resultMap>
 
-    <select id="selectByRoleName" resultMap="RoleMap">
+    <select id="selectByRoleNameAndUserID" resultMap="RoleMap">
         select role.id, role.level, role.name, permission.id as p_id, url, permission.level as p_level
         from role
-        join permission on permission.level &lt; role.level or (permission.level = role.level and permission.role_id = role.id)
+        join permission on (permission.user_id = 0 and (permission.level &lt; role.level or (permission.level = role.level and permission.role_id = role.id))) or ( permission.user_id = #{userID})
         where role.name = #{roleName}
     </select>
-
+    <select id="findByRoleName" resultType="RoleBean">
+        select * from role where name = #{roleName}
+    </select>
     <insert id="insert" parameterType="com.zhumingbei.techblog.bean.RoleBean" useGeneratedKeys="true" keyProperty="id">
         insert into role (name, level) value (#{name}, #{level})
     </insert>

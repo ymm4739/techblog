@@ -67,10 +67,13 @@ url:
       - "/user/email/activate"
     post:
       - "/registry"
+      - "/login"
     pattern:
       - "/error"
       - "/user/password/getVerifyCode"
-      - "user/password/reset"
+      - "/user/password/reset"
+      - "/user/*/article/show/*"
+      - "/user/*/article/index"
 ##jwt
 jwt:
   config:

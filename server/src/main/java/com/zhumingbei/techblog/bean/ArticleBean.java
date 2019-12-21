@@ -9,6 +9,7 @@ public class ArticleBean {
     public String title;
     public String content;
     public String html;
+    public String summary;
     public Integer authorID;
     public UserBean author;
     public Integer likedNums;

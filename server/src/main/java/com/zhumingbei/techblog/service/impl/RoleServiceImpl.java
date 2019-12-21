@@ -13,6 +13,6 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public RoleBean findByRoleName(String roleName) {
-        return roleMapper.selectByRoleName(roleName);
+        return roleMapper.findByRoleName(roleName);
     }
 }

@@ -59,9 +59,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
         WebSecurity ignore = web.ignoring().and();
 
-        urlConfig.getGet().forEach(url -> ignore.ignoring().antMatchers(HttpMethod.GET, url));
-        urlConfig.getPost().forEach(url -> ignore.ignoring().antMatchers(HttpMethod.POST, url));
-        urlConfig.getPattern().forEach(url -> ignore.ignoring().antMatchers(url));
+        //urlConfig.getGet().forEach(url -> ignore.ignoring().antMatchers(HttpMethod.GET, url));
+        //urlConfig.getPost().forEach(url -> ignore.ignoring().antMatchers(HttpMethod.POST, url));
+        //urlConfig.getPattern().forEach(url -> ignore.ignoring().antMatchers(url));
     }
 
 

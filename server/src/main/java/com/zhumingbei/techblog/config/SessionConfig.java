@@ -19,7 +19,7 @@ public class SessionConfig implements WebMvcConfigurer {
     private NonePermissionUrlConfig urlConfig;
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new SessionInterceptor()).excludePathPatterns("/registry", "/logout","/login", "/error", "/user/email/activate", "/user/password/getVerifyCode", "/user/password/reset", "/article/show/*");
+        //registry.addInterceptor(new SessionInterceptor()).excludePathPatterns("/registry", "/logout","/login", "/error", "/user/email/activate", "/user/password/getVerifyCode", "/user/password/reset", "/article/show/*");
     }
 
     @Bean

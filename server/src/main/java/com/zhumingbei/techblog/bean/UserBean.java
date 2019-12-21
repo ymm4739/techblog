@@ -28,4 +28,8 @@ public class UserBean implements Serializable {
         this.email = email;
     }
 
+    public static UserBean guest() {
+        return new UserBean( "guest", null, null);
+    }
+
 }

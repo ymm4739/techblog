@@ -30,23 +30,21 @@ import java.util.Set;
 public class RbacAuthorityConfig {
     @Autowired
     private UserService userService;
+    @Autowired
+    private NonePermissionUrlConfig urlConfig;
     //对登陆用户的权限管理，不需要登陆的权限直接放行
     public boolean hasPermission(HttpServletRequest request, Authentication authentication) {
         Object principal = authentication.getPrincipal();
-        if (principal instanceof CustomUserPrincipal) {
+        if (checkRequest(request)) {
+            return true;
+        }else if (principal instanceof CustomUserPrincipal) {
             return verify(request, (CustomUserPrincipal) principal);
         }
-        /*else {
-            if (!hasUsedToken(request)) { //无效token直接通过，由session拦截器处理
-                return true;
-            }
-        }
-
-         */
-
-        log.debug("anonymous user, need to check whether the token is valid");
-
-        return true;
+        log.debug("anonymous user cannot visit the url without permission");
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(CustomUserPrincipal.createGuest(), null)
+        );
+        return false;
 
 
     }
@@ -82,5 +80,19 @@ public class RbacAuthorityConfig {
             }
             return false;
         }
+    }
+
+    private boolean checkRequest(HttpServletRequest request) {
+        HashSet<String> set = new HashSet<>();
+        set.addAll(urlConfig.getGet());
+        set.addAll(urlConfig.getPost());
+        set.addAll(urlConfig.getPattern());
+        for (String url : set) {
+            AntPathRequestMatcher matcher = new AntPathRequestMatcher(url);
+            if (matcher.matches(request)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

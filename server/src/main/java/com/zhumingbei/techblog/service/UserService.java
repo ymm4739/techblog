@@ -1,5 +1,6 @@
 package com.zhumingbei.techblog.service;
 
+import com.zhumingbei.techblog.bean.PermissionBean;
 import com.zhumingbei.techblog.bean.UserBean;
 
 import java.util.List;
@@ -27,4 +28,6 @@ public interface UserService {
     UserBean findByEmail(String email);
 
     UserBean findByID(int userID);
+
+    void setPermission(List<PermissionBean> permissionBeanList);
 }

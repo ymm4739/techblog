@@ -29,4 +29,9 @@ public class ArticleServiceImpl implements ArticleService {
     public void update(ArticleBean article) {
         articleMapper.update(article);
     }
+
+    @Override
+    public List<ArticleBean> getListInOneUser(int userID) {
+        return articleMapper.selectAllInOneUser(userID);
+    }
 }

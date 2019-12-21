@@ -19,7 +19,6 @@ public class ApiResponseAdvice implements ResponseBodyAdvice {
 
     @Override
     public Object beforeBodyWrite(Object o, MethodParameter methodParameter, MediaType mediaType, Class aClass, ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse) {
-        log.debug("className: {}, responseBody:{}", o.getClass().getName(), o);
         return o instanceof ApiResponse ? o : ApiResponse.ofSuccess(o);
     }
 }

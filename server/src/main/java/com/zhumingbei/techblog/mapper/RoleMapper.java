@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface RoleMapper {
-    RoleBean selectByRoleName(String roleName);
-
+    RoleBean selectByRoleNameAndUserID(String roleName, int userID);
+    RoleBean findByRoleName(String roleName);
     int insert(RoleBean role);
 }

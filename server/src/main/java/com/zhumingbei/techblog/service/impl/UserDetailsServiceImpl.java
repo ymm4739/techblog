@@ -15,13 +15,14 @@ import java.nio.file.attribute.UserPrincipal;
 public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
     private UserService userService;
-
+    @Autowired
+    private CustomUserPrincipal principal;
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         UserBean user = userService.findByUsernameOrEmail(s);
         if (user == null) {
             throw new UsernameNotFoundException("该用户未注册");
         }
-        return CustomUserPrincipal.create(user);
+        return principal.create(user);
     }
 }

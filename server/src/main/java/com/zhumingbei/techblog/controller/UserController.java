@@ -1,5 +1,6 @@
 package com.zhumingbei.techblog.controller;
 
+import com.zhumingbei.techblog.bean.PermissionBean;
 import com.zhumingbei.techblog.bean.UserBean;
 import com.zhumingbei.techblog.common.ApiResponse;
 import com.zhumingbei.techblog.common.CustomUserPrincipal;
@@ -23,8 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @Slf4j
 @RestController
@@ -35,6 +35,8 @@ public class UserController {
     public RoleService roleService;
     @Autowired
     private AuthenticationManager authenticationManager;
+    @Autowired
+    private CustomUserPrincipal principal;
 
     private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
@@ -72,7 +74,25 @@ public class UserController {
         int userID = user.getId();
         int roleID = roleService.findByRoleName("user").getId();
         userService.insertUserRole(userID, roleID);
+        userService.setPermission(initOwnedPermissions(userID, roleID));
         return ApiResponse.of(20000, "注册成功");
+    }
+
+    private List<PermissionBean> initOwnedPermissions(int userID, int roleID) {
+        ArrayList permissions = new ArrayList();
+        Set<String> urls = new HashSet<>();
+        urls.add("/article/create");
+        urls.add("/article/edit/*");
+        urls.add("/article/delete/*");
+        urls.add("/article/list");
+        StringBuilder builder = new StringBuilder();
+        for (String url: urls){
+            builder.append("/user/" + userID);
+            builder.append(url);
+            permissions.add(new PermissionBean(userID, roleID, builder.toString()));
+            builder.delete(0, builder.length());
+        }
+        return permissions;
     }
 
     @PostMapping("/login")
@@ -100,13 +120,13 @@ public class UserController {
             if (isRememberMe) {
                 session.setMaxInactiveInterval(SessionConstant.MAX_SESSION_SECOND);
             }
-            CustomUserPrincipal userPrincipal = CustomUserPrincipal.create(user);
+            CustomUserPrincipal userPrincipal = principal.create(user);
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userPrincipal, null, userPrincipal.getAuthorities());
 
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-
+            log.debug("principal: {}", userPrincipal);
             return ApiResponse.of(20000, "登陆成功", user);
         }
 

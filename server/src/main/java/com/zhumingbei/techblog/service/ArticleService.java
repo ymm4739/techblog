@@ -9,4 +9,5 @@ public interface ArticleService {
     void create(ArticleBean article);
     ArticleBean findByID(int articleID);
     void update(ArticleBean article);
+    List<ArticleBean> getListInOneUser(int userID);
 }
