@@ -1,10 +1,12 @@
 import { sendActivatedEmail, login, getInfo, logout, activateEmail, changePassword } from '@/api/user'
 const state = {
+  id: '',
   token: '',
   username: '',
   email: '',
   isValidEmail: false,
-  timeout: false
+  timeout: false,
+  isNeededLogin: false
 }
 
 const mutations = {
@@ -12,6 +14,7 @@ const mutations = {
     state.token = token
   },
   setUserInfo (state, user) {
+    state.id = user.id || ''
     state.email = user.email || ''
     state.username = user.username || ''
     state.isValidEmail = !!user.isValidEmail
@@ -22,7 +25,11 @@ const mutations = {
   setTimeout (state, value) {
     state.timeout = value
   },
+  setNeededLogin (state, value) {
+    state.isNeededLogin = value
+  },
   clearUserInfo (state) {
+    state.id = ''
     state.email = ''
     state.username = ''
     state.isValidEmail = ''
@@ -52,6 +59,7 @@ const actions = {
         commit('setToken', res.data.token)
         commit('setUserInfo', res.data)
         commit('setTimeout', false)
+        commit('setNeededLogin', false)
         resolve(res.data)
       }).catch((_) => { })
     })
@@ -80,11 +88,15 @@ const actions = {
       resolve()
     })
   },
-  relogin ({ commit }) {
+  relogin ({ commit }, timeout) {
     return new Promise(() => {
       commit('setToken', '')
       commit('clearUserInfo')
-      commit('setTimeout', true)
+      if (timeout) {
+        commit('setTimeout', true)
+      } else {
+        commit('setNeededLogin', true)
+      }
     })
   },
   changePassword ({ state }, data) {

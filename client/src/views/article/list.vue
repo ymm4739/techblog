@@ -1,23 +1,32 @@
 <template>
-  <div>
-    <div><span class="desc_left">文章列表</span>
+  <div class='article_list'>
+    <div>
+      <span class="desc_left">文章列表</span>
       <el-button class="create_button"
                  @click="create">新建</el-button>
     </div>
     <el-table :data="articles"
               v-if="articles.length"
+              stripe
+              highlight-current-row
               size="mini">
       <el-table-column prop="title"
-                       label="标题"></el-table-column>
+                       label="标题"
+                       min-width="400px"></el-table-column>
       <el-table-column prop="updatedTime"
-                       label="时间"></el-table-column>
+                       label="时间"
+                       width="200px"></el-table-column>
       <el-table-column prop="likedNums"
-                       label="点赞数"></el-table-column>
+                       label="点赞数"
+                       width="100px"></el-table-column>
       <el-table-column prop="commentNums"
-                       label="评论数"></el-table-column>
+                       label="评论数"
+                       width="100px"></el-table-column>
       <el-table-column prop="collectedNums"
-                       label="收藏数"></el-table-column>
-      <el-table-column label="操作">
+                       label="收藏数"
+                       width="100px"></el-table-column>
+      <el-table-column label="操作"
+                       width="250px">
         <template slot-scope="scope">
           <el-button size="mini"
                      @click="handlerView(scope.row)">查看</el-button>
@@ -36,23 +45,25 @@ export default {
   name: 'ArticleListView',
   data () {
     return {
-      articles: []
+      articles: [],
+      urlPrefix: '/user/' + this.$route.params.userID + '/article/',
+      userID: this.$route.params.userID
     }
   },
   created () {
-    list().then(res => {
+    list(this.userID).then(res => {
       this.articles = res.data
     })
   },
   methods: {
     handlerView (row) {
-      this.$router.push({ path: '/article/show/' + row.id })
+      this.$router.push({ path: this.urlPrefix + 'show/' + row.id })
     },
     create () {
-      this.$router.push({ path: '/article/create' })
+      this.$router.push({ path: this.urlPrefix + 'create' })
     },
     handlerUpdate (row) {
-      this.$router.push({ path: '/article/edit/' + row.id })
+      this.$router.push({ path: this.urlPrefix + 'edit/' + row.id })
     }
   }
 }
@@ -63,5 +74,9 @@ export default {
 }
 .desc_left {
   float: left;
+}
+.article_list {
+  margin-left: 20px;
+  margin-top: 20px;
 }
 </style>

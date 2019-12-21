@@ -8,6 +8,8 @@ import ActivateEmail from '@/components/email'
 import ArticleShowView from '@/views/article/show'
 import ArticleEditView from '@/views/article/edit'
 import ArticleListView from '@/views/article/list'
+import ArticleIndexView from '@/views/article'
+import AdminLayout from '@/views/admin'
 Vue.use(Router)
 // 解决重复点击导航路由报错
 const originalPush = Router.prototype.push
@@ -25,31 +27,42 @@ const router = new Router({
       path: '/',
       name: 'index',
       component: Layout,
-      children: [{
-        path: 'user/profile',
-        name: 'profile',
-        component: Profile
-      },
-      {
-        path: 'home',
-        name: 'home',
-        component: Home
-      }, {
-        path: 'article/show/:articleID',
-        component: ArticleShowView
-      }, {
-        path: 'article/edit/:id',
-        component: ArticleEditView
-      },
-      {
-        path: 'article/list',
-        component: ArticleListView
-      },
-      {
-        path: 'article/create',
-        component: ArticleEditView
-      }
-      ]
+      children: [
+        {
+          path: 'user/profile',
+          name: 'profile',
+          component: Profile
+        },
+        {
+          path: 'user',
+          component: AdminLayout,
+          children: [
+            {
+              path: ':userID/article/show/:articleID',
+              component: ArticleShowView
+            }, {
+              path: ':userID/article/edit/:articleID',
+              component: ArticleEditView
+            },
+            {
+              path: ':userID/article/list',
+              component: ArticleListView
+            },
+            {
+              path: ':userID/article/create',
+              component: ArticleEditView
+            },
+            {
+              path: ':userID/article/index',
+              component: ArticleIndexView
+            }
+          ]
+        },
+        {
+          path: 'home',
+          name: 'home',
+          component: Home
+        }]
     }
 
   ]

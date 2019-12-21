@@ -28,8 +28,8 @@
         <template slot="title">
           <el-avatar>{{ username }}</el-avatar>
         </template>
-        <el-menu-item index="/article/list">我的博客</el-menu-item>
-        <el-menu-item index="/user/profile">个人资料</el-menu-item>
+        <el-menu-item :index="articleIndex">我的博客</el-menu-item>
+        <el-menu-item :index="userProfile">个人资料</el-menu-item>
         <el-menu-item index=""
                       @click="changePassword">修改密码</el-menu-item>
         <el-menu-item index=""
@@ -46,6 +46,7 @@
                      :loginVisible.sync="loginVisible"></change-password>
     <reset-password :visible.sync="resetPasswordVisible"
                     :loginVisible.sync="loginVisible"></reset-password>
+
   </div>
 </template>
 
@@ -54,6 +55,7 @@ import Login from '@/components/login'
 import Registry from '@/components/registry'
 import ChangePassword from '@/components/ChangePassword'
 import ResetPassword from '@/components/ResetPassword'
+import BlogNavMenu from '@/components/BlogNavMenu'
 import { MessageBox, Message } from 'element-ui'
 export default {
   name: 'Navigation',
@@ -61,7 +63,8 @@ export default {
     Login,
     Registry,
     ChangePassword,
-    ResetPassword
+    ResetPassword,
+    BlogNavMenu
   },
   data () {
     return {
@@ -76,11 +79,14 @@ export default {
     }
   },
   computed: {
-    userPath: function () {
-      return { name: 'profile' }
+    userProfile: function () {
+      return '/user/profile'
     },
     userPassword: function () {
-      return { path: '/user/changePassword' }
+      return '/user/changePassword'
+    },
+    articleIndex () {
+      return '/user/' + this.user.id + '/article/index'
     },
     login () {
       return !!this.$store.getters.token
@@ -90,6 +96,9 @@ export default {
     },
     timeout () {
       return this.$store.getters.timeout
+    },
+    isNeededLogin () {
+      return this.$store.getters.isNeededLogin
     }
   },
   watch: {
@@ -102,6 +111,11 @@ export default {
         }).then(() => {
           this.loginVisible = true
         })
+      }
+    },
+    isNeededLogin (val) {
+      if (val === true) {
+        this.loginVisible = true
       }
     }
   },

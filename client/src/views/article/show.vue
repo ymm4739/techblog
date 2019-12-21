@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="main">
     <h3>{{article.title}}</h3>
     <div v-html="article.html"></div>
     <el-divider></el-divider>
@@ -17,8 +17,9 @@ export default {
     }
   },
   created () {
-    let params = this.$route.params.articleID
-    show(params).then(res => {
+    let id = this.$route.params.articleID
+    let userID = this.$route.params.userID
+    show(userID, id).then(res => {
       this.article = res.data
       this.author = this.article.author
     }).catch(() => { })
@@ -28,5 +29,9 @@ export default {
 <style scoped>
 .info {
   float: right;
+}
+.main {
+  margin-left: 20px;
+  margin-top: 30px;
 }
 </style>

@@ -59,7 +59,11 @@ service.interceptors.response.use(
       // 50000: invalid token;
       if (res.code === 50000) {
         // to re-login
-        store.dispatch('user/relogin')
+        store.dispatch('user/relogin', true)
+      }
+      // 40100: user does not login
+      if (res.code === 40100) {
+        store.dispatch('user/relogin', false)
       }
       return Promise.reject(new Error(res.message || 'Error'))
     } else {
