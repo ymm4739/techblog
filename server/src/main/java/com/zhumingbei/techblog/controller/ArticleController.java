@@ -31,38 +31,39 @@ public class ArticleController {
 
     @GetMapping("/user/{userID}/article/list")
     public List<ArticleBean> getArticlesByUserID(@PathVariable("userID") int userID) {
-        return articleService.getListInOneUser(userID);
+        return articleService.getArticlesInOneUser(userID);
     }
 
     @GetMapping("/user/{userID}/article/index")
     public List<ArticleBean> articleListOfUser(@PathVariable("userID") int userID) {
-        return getArticlesByUserID(userID);
+        return articleService.getPublishedArticlesInOneUser(userID);
     }
 
     @PostMapping("/user/{userID}/article/create")
-    public ApiResponse create(@PathVariable("userID") int userID, String title, String content, String html, String summary) {
-        log.debug("html: {}", html);
+    public ApiResponse create(@PathVariable("userID") int userID, String title, String content, String html, String summary, boolean isPublished) {
         ArticleBean article = new ArticleBean();
         article.setTitle(title);
         article.setContent(content);
         article.setAuthorID(userID);
         article.setHtml(html);
+        article.setIsPublished(isPublished ? 1 : 0);
         if (summary.isEmpty()) {
             summary = generateSummary(html);
         }
         article.setSummary(summary);
         articleService.create(article);
-        return ApiResponse.ofSuccess("文章新建成功");
+        return isPublished ? ApiResponse.ofSuccess("文章已发布") : ApiResponse.ofSuccess("文章已保存为草稿");
     }
-    @PostMapping("/user/{userID}/article/edit/{id}")
-    public ApiResponse edit(@PathVariable("userID") int userID, @PathVariable("id") int id, String title, String content, String html, String summary) {
-        ArticleBean article = articleService.findByID(id);
+    @PostMapping("/user/{userID}/article/save/{articleID}")
+    public ApiResponse save(@PathVariable("userID") int userID, @PathVariable("articleID") int articleID, String title, String content, String html, String summary, boolean isPublished) {
+        ArticleBean article = articleService.findByID(userID, articleID);
         if (article == null) {
             return ApiResponse.of(40000, "文章不存在");
         }
         article.setTitle(title);
         article.setContent(content);
         article.setHtml(html);
+        article.setIsPublished(isPublished ? 1 : 0);
         if (summary.isEmpty()) {
             summary = generateSummary(html);
         }
@@ -70,9 +71,42 @@ public class ArticleController {
         articleService.update(article);
         return ApiResponse.ofSuccess("文章编辑成功");
     }
+
+    @GetMapping("/user/{userID}/article/edit/{articleID}")
+    public ArticleBean edit(@PathVariable("userID") int userID, @PathVariable("articleID") int articleID) {
+        return articleService.findByID(userID, articleID);
+    }
     @GetMapping("/user/{userID}/article/show/{articleID}")
     public ArticleBean show(@PathVariable("userID") int userID, @PathVariable("articleID") int articleID) {
-        return articleService.findByID(articleID);
+        return articleService.findPublishedByID(userID, articleID);
+    }
+
+    @PostMapping("/user/{userID}/article/like/{articleID}")
+    public ApiResponse like(@PathVariable("userID") int userID, @PathVariable("articleID") int articleID) {
+        ArticleBean articleBean = articleService.findPublishedByID(userID, articleID);
+        if (articleBean == null) {
+            return ApiResponse.of(40400, "文章不存在");
+        }
+        articleBean.setLikedNums(articleBean.getLikedNums() + 1);
+        articleService.update(articleBean);
+        return ApiResponse.ofSuccess("点赞文章操作成功");
+    }
+
+    @PostMapping("/user/{userID}/article/delete/{articleID}")
+    public ApiResponse delete(@PathVariable("userID") int userID, @PathVariable("articleID") int articleID) {
+        ArticleBean articleBean = articleService.findByID(userID, articleID);
+        if (articleBean == null) {
+            return ApiResponse.of(40400, "文章不存在");
+        }
+        articleBean.setIsDeleted(1);
+        articleService.update(articleBean);
+        return ApiResponse.ofSuccess("删除文章成功");
+    }
+
+    //也可以通过list筛选获取，暂时不被调用，调用之前需要增加权限
+    @PostMapping("/user/{userID}/article/draft")
+    public List<ArticleBean> draftBox(@PathVariable("userID") int userID) {
+        return articleService.getDraftInOneUser(userID);
     }
 
 

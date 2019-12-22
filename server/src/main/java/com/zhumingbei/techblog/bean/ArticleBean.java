@@ -4,17 +4,19 @@ import lombok.Data;
 
 @Data
 public class ArticleBean {
-    public static final Long serialVersionID = 1L;
-    public Integer id;
-    public String title;
-    public String content;
-    public String html;
-    public String summary;
-    public Integer authorID;
-    public UserBean author;
-    public Integer likedNums;
-    public Integer collectedNums;
-    public Integer commentNums;
-    public String updatedTime;
-    public String createdTime;
+    private static final Long serialVersionID = 1L;
+    private Integer id;
+    private String title;
+    private String content;
+    private String html;
+    private String summary;
+    private Integer authorID;
+    private UserBean author;
+    private Integer likedNums;
+    private Integer collectedNums;
+    private Integer commentNums;
+    private Integer isPublished;
+    private Integer isDeleted;
+    private String updatedTime;
+    private String createdTime;
 }

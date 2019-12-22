@@ -11,9 +11,15 @@ public interface ArticleMapper {
 
     void insert (ArticleBean article);
 
-    ArticleBean selectByID(int articleID);
+    ArticleBean selectByID(int userID, int articleID);
 
     void update(ArticleBean article);
 
     List<ArticleBean> selectAllInOneUser(int userID);
+
+    List<ArticleBean> selectPublishedInOneUser(int userID);
+
+    ArticleBean selectPublishedByID(int userID, int articleID);
+
+    List<ArticleBean> selectDraftInOneUser(int userID);
 }

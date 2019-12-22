@@ -85,6 +85,7 @@ public class UserController {
         urls.add("/article/edit/*");
         urls.add("/article/delete/*");
         urls.add("/article/list");
+        urls.add("/article/save/*");
         StringBuilder builder = new StringBuilder();
         for (String url: urls){
             builder.append("/user/" + userID);

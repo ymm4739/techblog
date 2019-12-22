@@ -12,6 +12,8 @@
         <result property="collectedNums" column="collected_nums" />
         <result property="likedNums" column="liked_nums" />
         <result property="commentNums" column="comment_nums" />
+        <result property="isDeleted" column="is_deleted" />
+        <result property="isPublished" column="is_published" />
         <result property="updatedTime" column="updated_time_format" />
         <result property="createdTime" column="created_time_format" />
         <association property="author" column="author_id"  resultMap="AuthorMap" />
@@ -22,27 +24,47 @@
         <result property="username" column="username"/>
     </resultMap>
     <select id="selectAll" resultMap="ArticleMap">
-        select a.id, a.title, a.content, a.html, a.summary, a.liked_nums, a.collected_nums, a.comment_nums, date_format(a.updated_time, '%Y-%m-%d %H:%i:%s') as updated_time_format, date_format(a.created_time, '%Y-%m-%d %H:%i:%s') as created_time_format, a.author_id, u.username
+        select a.id, a.title, a.content, a.html, a.summary, a.liked_nums, a.collected_nums, a.comment_nums, a.is_published, a.is_deleted, date_format(a.updated_time, '%Y-%m-%d %H:%i:%s') as updated_time_format, date_format(a.created_time, '%Y-%m-%d %H:%i:%s') as created_time_format, a.author_id, u.username
         from article a
         inner join user u on u.id = a.author_id
+        where is_deleted = 0
         order by a.id desc
         limit 20
     </select>
 
     <insert id="insert" keyProperty="id" useGeneratedKeys="true" parameterType="articleBean">
-        insert into article (title, content, html, summary, author_id) values(#{title}, #{content}, #{html}, #{summary}, #{authorID})
+        insert into article (title, content, html, summary, author_id, is_published) values(#{title}, #{content}, #{html}, #{summary}, #{authorID}, #{isPublished})
     </insert>
 
     <select id="selectByID" resultMap="ArticleMap">
-        select a.id, a.title, a.content, a.html, a.summary, a.liked_nums, a.collected_nums, a.comment_nums, date_format(a.updated_time, '%Y-%m-%d %H:%i:%s') as updated_time_format, date_format(a.created_time, '%Y-%m-%d %H:%i:%s') as created_time_format, a.author_id, u.username
+        select a.id, a.title, a.content, a.html, a.summary, a.liked_nums, a.collected_nums, a.comment_nums, a.is_published, a.is_deleted, date_format(a.updated_time, '%Y-%m-%d %H:%i:%s') as updated_time_format, date_format(a.created_time, '%Y-%m-%d %H:%i:%s') as created_time_format, a.author_id, u.username
         from article a
         inner join user u on u.id = a.author_id
-        where a.id = #{articleID}
+        where a.id = #{articleID} and a.author_id = #{userID} and a.is_deleted = 0;
+    </select>
+    <select id="selectPublishedByID" resultMap="ArticleMap">
+        select a.id, a.title, a.content, a.html, a.summary, a.liked_nums, a.collected_nums, a.comment_nums, a.is_published, a.is_deleted, date_format(a.updated_time, '%Y-%m-%d %H:%i:%s') as updated_time_format, date_format(a.created_time, '%Y-%m-%d %H:%i:%s') as created_time_format, a.author_id, u.username
+        from article a
+        inner join user u on u.id = a.author_id
+        where a.id = #{articleID} and a.author_id = #{userID} and a.is_deleted = 0 and a.is_published = 1;
     </select>
     <select id="selectAllInOneUser" resultMap="ArticleMap">
-        select a.id, a.title, a.content, a.html, a.summary, a.liked_nums, a.collected_nums, a.comment_nums, date_format(a.updated_time, '%Y-%m-%d %H:%i:%s') as updated_time_format, date_format(a.created_time, '%Y-%m-%d %H:%i:%s') as created_time_format, a.author_id
+        select a.id, a.title, a.content, a.html, a.summary, a.liked_nums, a.collected_nums, a.comment_nums, a.is_published, a.is_deleted, date_format(a.updated_time, '%Y-%m-%d %H:%i:%s') as updated_time_format, date_format(a.created_time, '%Y-%m-%d %H:%i:%s') as created_time_format, a.author_id
         from article a
-        where a.author_id = #{userID}
+        inner join user u on u.id = a.author_id
+        where a.author_id = #{userID} and a.is_deleted = 0
+    </select>
+    <select id="selectPublishedInOneUser" resultMap="ArticleMap">
+        select a.id, a.title, a.content, a.html, a.summary, a.liked_nums, a.collected_nums, a.comment_nums, a.is_published, a.is_deleted, date_format(a.updated_time, '%Y-%m-%d %H:%i:%s') as updated_time_format, date_format(a.created_time, '%Y-%m-%d %H:%i:%s') as created_time_format, a.author_id
+        from article a
+        inner join user u on u.id = a.author_id
+        where a.author_id = #{userID} and a.is_deleted = 0 and is_published = 1;
+    </select>
+    <select id="selectDraftInOneUser" resultMap="ArticleMap">
+        select a.id, a.title, a.content, a.html, a.summary, a.liked_nums, a.collected_nums, a.comment_nums, a.is_published, a.is_deleted, date_format(a.updated_time, '%Y-%m-%d %H:%i:%s') as updated_time_format, date_format(a.created_time, '%Y-%m-%d %H:%i:%s') as created_time_format, a.author_id
+        from article a
+        inner join user u on u.id = a.author_id
+        where a.author_id = #{userID} and a.is_deleted = 0 and is_published = 0;
     </select>
     <update id="update" parameterType="ArticleBean">
         update article
@@ -54,6 +76,8 @@
             <if test="likedNums != null">liked_nums = #{likedNums},</if>
             <if test="commentNums != null">comment_nums = #{commentNums},</if>
             <if test="collectedNums != null">collected_nums = #{collectedNums},</if>
+            <if test="isPublished != null">is_published = #{isPublished},</if>
+            <if test="isDeleted != null">is_deleted = #{isDeleted},</if>
         </trim>
         where id = #{id}
     </update>

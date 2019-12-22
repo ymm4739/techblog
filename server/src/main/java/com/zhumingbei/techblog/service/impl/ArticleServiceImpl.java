@@ -21,8 +21,8 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public ArticleBean findByID(int articleID) {
-        return articleMapper.selectByID(articleID);
+    public ArticleBean findByID(int userID, int articleID) {
+        return articleMapper.selectByID(userID, articleID);
     }
 
     @Override
@@ -31,7 +31,22 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public List<ArticleBean> getListInOneUser(int userID) {
+    public List<ArticleBean> getArticlesInOneUser(int userID) {
         return articleMapper.selectAllInOneUser(userID);
+    }
+
+    @Override
+    public List<ArticleBean> getPublishedArticlesInOneUser(int userID) {
+        return articleMapper.selectPublishedInOneUser(userID);
+    }
+
+    @Override
+    public ArticleBean findPublishedByID(int userID, int articleID) {
+        return articleMapper.selectPublishedByID(userID, articleID);
+    }
+
+    @Override
+    public List<ArticleBean> getDraftInOneUser(int userID) {
+        return articleMapper.selectDraftInOneUser(userID);
     }
 }
