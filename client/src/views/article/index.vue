@@ -1,5 +1,6 @@
 <template>
   <div>
+    <h2 v-if="!articles.length">暂无博客</h2>
     <ul>
       <article-index-item v-for="article in articles"
                           :article="article"

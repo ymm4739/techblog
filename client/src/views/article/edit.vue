@@ -18,14 +18,17 @@
 
       <el-form-item>
         <el-button type="primary"
-                   @click="submit">保存</el-button>
+                   @click="submit">发布</el-button>
+        <el-button type="primary"
+                   @click="save"
+                   v-if="!form.isPublished">保存草稿</el-button>
         <el-button @click="cancle">取消</el-button>
       </el-form-item>
     </el-form>
   </div>
 </template>
 <script>
-import { create, update, show } from '@/api/article'
+import { create, update, edit } from '@/api/article'
 import { Message } from 'element-ui'
 import { mavonEditor } from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
@@ -40,7 +43,8 @@ export default {
       form: {
         title: '',
         content: '',
-        abstract: ''
+        summary: '',
+        isPublished: 0
       },
       html: '',
       rules: {
@@ -68,7 +72,7 @@ export default {
     if (this.isUpdated) {
       let id = this.$route.params.articleID
       let userID = this.$route.params.userID
-      show(userID, id).then(res => {
+      edit(userID, id).then(res => {
         this.form = res.data
       })
     }
@@ -77,12 +81,13 @@ export default {
     cancle () {
       this.$router.push({ path: this.urlPrefix + 'list' })
     },
-    submit () {
+    save (isPublished = 0) {
       let data = {
         title: this.form.title,
         content: this.form.content,
         summary: this.form.summary,
-        html: this.html
+        html: this.html,
+        isPublished
       }
       if (this.isUpdated) {
         let id = this.$route.params.articleID
@@ -96,6 +101,9 @@ export default {
           this.$router.push({ path: this.urlPrefix + 'list' })
         }).catch(() => { })
       }
+    },
+    submit () {
+      this.save(1)
     },
     change (value, render) {
       this.html = render

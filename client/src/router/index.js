@@ -41,6 +41,9 @@ const router = new Router({
               path: ':userID/article/show/:articleID',
               component: ArticleShowView
             }, {
+              path: ':userID/article/draft/:articleID',
+              component: ArticleShowView
+            }, {
               path: ':userID/article/edit/:articleID',
               component: ArticleEditView
             },

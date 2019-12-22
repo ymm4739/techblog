@@ -1,13 +1,16 @@
 <template>
   <div class="main">
-    <h3>{{article.title}}</h3>
-    <div v-html="article.html"></div>
-    <el-divider></el-divider>
-    <span class="info">Posted At {{article.createdTime}} By <el-tag>{{author.username}}</el-tag></span>
+    <h2 v-if="!article">暂无已发布的文章</h2>
+    <div v-if="article">
+      <h3>{{article.title}}</h3>
+      <div v-html="article.html"></div>
+      <el-divider></el-divider>
+      <span class="info">Posted At {{article.createdTime}} By <el-tag>{{author.username}}</el-tag></span>
+    </div>
   </div>
 </template>
 <script>
-import { show } from '@/api/article'
+import { show, edit } from '@/api/article'
 export default {
   name: 'ArticleShowView',
   data () {
@@ -19,10 +22,24 @@ export default {
   created () {
     let id = this.$route.params.articleID
     let userID = this.$route.params.userID
-    show(userID, id).then(res => {
-      this.article = res.data
-      this.author = this.article.author
-    }).catch(() => { })
+    let path = this.$route.path
+    let methodName = path.split('/')[2]
+    if (methodName === 'show') {
+      show(userID, id).then(res => {
+        if (res.data) {
+          this.article = res.data
+          this.author = this.article.author
+        }
+      }).catch(() => { })
+    } else {
+      let articleID = id
+      edit(userID, articleID).then(res => {
+        if (res.data) {
+          this.article = res.data
+          this.author = this.article.author
+        }
+      })
+    }
   }
 }
 </script>

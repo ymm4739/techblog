@@ -36,8 +36,21 @@ export function update (params, userID) {
   let urlPrefix = '/user/' + userID
 
   return request({
-    url: urlPrefix + '/article/edit/' + id,
+    url: urlPrefix + '/article/save/' + id,
     method: 'post',
     data: qs.stringify(data)
+  })
+}
+
+export function _delete (userID, articleID) {
+  return request({
+    url: '/user/' + userID + '/article/delete/' + articleID,
+    method: 'post'
+  })
+}
+
+export function edit (userID, articleID) {
+  return request({
+    url: '/user/' + userID + '/article/edit/' + articleID
   })
 }
