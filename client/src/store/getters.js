@@ -4,7 +4,8 @@ const getters = {
       id: state.user.id,
       username: state.user.username,
       email: state.user.email,
-      isValidEmail: state.user.isValidEmail
+      isValidEmail: state.user.isValidEmail,
+      avatar: state.user.avatar
     }
   },
   token: state => state.user.token,

@@ -9,12 +9,22 @@
       </el-form-item>
       <el-form-item label="摘要"
                     prop="summary">
+        <el-upload ref="upload"
+                   :http-request="customUpload"
+                   :multiple="false"
+                   :on-success="uploadSuccess"
+                   :file-list="filelist"
+                   action="http://localhost:8080/api/upload/image">
+          <el-button slot="trigger"
+                     size="mini">上传图片</el-button>
+        </el-upload>
         <el-input type="textarea"
                   v-model="form.summary"></el-input>
       </el-form-item>
       <mavon-editor v-model="form.content"
                     ref="md"
-                    @change="change"></mavon-editor>
+                    @change="change"
+                    @imgAdd="$imgAdd"></mavon-editor>
 
       <el-form-item>
         <el-button type="primary"
@@ -25,18 +35,21 @@
         <el-button @click="cancle">取消</el-button>
       </el-form-item>
     </el-form>
+    <upload-file-dialog :visible.sync="uploadVisible" />
   </div>
 </template>
 <script>
 import { create, update, edit } from '@/api/article'
+import { uploadImage } from '@/api/upload'
 import { Message } from 'element-ui'
 import { mavonEditor } from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
-
+import UploadFileDialog from '@/components/UploadFileDialog'
 export default {
   name: 'ArticleEditView',
   components: {
-    mavonEditor
+    mavonEditor,
+    UploadFileDialog
   },
   data () {
     return {
@@ -60,7 +73,9 @@ export default {
         }]
       },
       urlPrefix: '/user/' + this.$route.params.userID + '/article/',
-      userID: this.$route.params.userID
+      userID: this.$route.params.userID,
+      uploadVisible: false,
+      filelist: []
     }
   },
   computed: {
@@ -107,6 +122,24 @@ export default {
     },
     change (value, render) {
       this.html = render
+    },
+    customUpload (file) {
+      uploadImage(file).then(res => {
+
+      })
+    },
+    uploadSuccess (response, file, filelist) {
+      console.log(response)
+      console.log(file)
+      console.log(filelist)
+    },
+    $imgAdd (pos, $file) {
+      let data = {
+        file: $file
+      }
+      uploadImage(data).then(res => {
+        this.$refs.md.$img2Url(pos, res.data)
+      })
     }
   }
 }

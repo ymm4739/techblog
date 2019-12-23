@@ -69,3 +69,17 @@ export function getVerifyCode (data) {
     data: qs.stringify(data)
   })
 }
+
+export function changeAvatar (data) {
+  let { file } = data
+  let formData = new FormData()
+  formData.append('file', file)
+  return request({
+    url: '/user/avatar/change',
+    method: 'post',
+    data: formData,
+    headers: {
+      'Content-type': 'multipart/form-data'
+    }
+  })
+}

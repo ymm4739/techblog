@@ -3,7 +3,7 @@ import axios from 'axios'
 import store from '@/store'
 import constant from '@/constant'
 axios.defaults.baseURL = '/api'
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
+
 // create an axios instance
 const service = axios.create({
   // baseURL: '/api', // url = base url + request url
@@ -11,7 +11,7 @@ const service = axios.create({
   // send cookies when cross-domain requests
   timeout: 60000 // request timeout
 })
-
+service.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 // request interceptor
 service.interceptors.request.use(
   config => {

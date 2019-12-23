@@ -1,9 +1,10 @@
-import { sendActivatedEmail, login, getInfo, logout, activateEmail, changePassword } from '@/api/user'
+import { sendActivatedEmail, login, getInfo, logout, activateEmail, changePassword, changeAvatar } from '@/api/user'
 const state = {
   id: '',
   token: '',
   username: '',
   email: '',
+  avatar: '',
   isValidEmail: false,
   timeout: false,
   isNeededLogin: false
@@ -18,6 +19,7 @@ const mutations = {
     state.email = user.email || ''
     state.username = user.username || ''
     state.isValidEmail = !!user.isValidEmail
+    state.avatar = user.avatar || ''
   },
   setValidEmail (state, isValidEmail) {
     state.isValidEmail = !!isValidEmail
@@ -28,11 +30,15 @@ const mutations = {
   setNeededLogin (state, value) {
     state.isNeededLogin = value
   },
+  setAvatar (state, avatar) {
+    state.avatar = avatar
+  },
   clearUserInfo (state) {
     state.id = ''
     state.email = ''
     state.username = ''
     state.isValidEmail = ''
+    state.avatar = ''
   }
 }
 const actions = {
@@ -108,6 +114,14 @@ const actions = {
         newPassword
       }
       changePassword(data).then(res => {
+        resolve(res)
+      }).catch(() => { })
+    })
+  },
+  changeAvatar ({ commit }, data) {
+    return new Promise((resolve) => {
+      changeAvatar(data).then(res => {
+        commit('setAvatar', res.data)
         resolve(res)
       }).catch(() => { })
     })

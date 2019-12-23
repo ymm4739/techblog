@@ -26,7 +26,8 @@
                   class="nav-user"
                   index="-1">
         <template slot="title">
-          <el-avatar>{{ username }}</el-avatar>
+          <el-avatar :src="avatar"
+                     @error="true">{{ username }}</el-avatar>
         </template>
         <el-menu-item :index="articleIndex">我的博客</el-menu-item>
         <el-menu-item :index="userProfile">个人资料</el-menu-item>
@@ -99,6 +100,9 @@ export default {
     },
     isNeededLogin () {
       return this.$store.getters.isNeededLogin
+    },
+    avatar () {
+      return this.user.avatar
     }
   },
   watch: {

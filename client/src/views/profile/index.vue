@@ -1,5 +1,15 @@
 <template>
   <div class="profile">
+    <el-upload class="avatar-uploader"
+               action="http://localhost:8080/api/user/change/avatar"
+               :http-request="customUpload"
+               :show-file-list="false">
+      <img v-if="avatar"
+           :src="avatar"
+           class="avatar">
+      <i v-else
+         class="el-icon-plus avatar-uploader-icon"></i>
+    </el-upload>
     <el-form>
       <el-form-item label="用户名">{{user.username}}
         <el-input v-if="modify"
@@ -42,6 +52,9 @@ export default {
     },
     email () {
       return this.$store.state.user.email
+    },
+    avatar () {
+      return this.$store.state.user.avatar
     }
 
   },
@@ -56,6 +69,12 @@ export default {
       this.$store.dispatch('user/sendActivatedEmail', data).then(res => {
         Message.success(res.message)
       })
+    },
+    customUpload (file) {
+      console.log(file)
+      this.$store.dispatch('user/changeAvatar', file).then(res => {
+
+      })
     }
   }
 }
@@ -63,5 +82,29 @@ export default {
 <style scoped>
 .profile {
   top: 10%;
+}
+
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
 }
 </style>
