@@ -22,9 +22,10 @@
     <resultMap id="AuthorMap" type="com.zhumingbei.techblog.bean.UserBean">
         <id property="id" column="author_id" />
         <result property="username" column="username"/>
+        <result property="avatar" column="avatar" />
     </resultMap>
     <select id="selectAll" resultMap="ArticleMap">
-        select a.id, a.title, a.content, a.html, a.summary, a.liked_nums, a.collected_nums, a.comment_nums, a.is_published, a.is_deleted, date_format(a.updated_time, '%Y-%m-%d %H:%i:%s') as updated_time_format, date_format(a.created_time, '%Y-%m-%d %H:%i:%s') as created_time_format, a.author_id, u.username
+        select a.id, a.title, a.content, a.html, a.summary, a.liked_nums, a.collected_nums, a.comment_nums, a.is_published, a.is_deleted, date_format(a.updated_time, '%Y-%m-%d %H:%i:%s') as updated_time_format, date_format(a.created_time, '%Y-%m-%d %H:%i:%s') as created_time_format, a.author_id, u.username, u.avatar
         from article a
         inner join user u on u.id = a.author_id
         where is_deleted = 0
@@ -37,13 +38,13 @@
     </insert>
 
     <select id="selectByID" resultMap="ArticleMap">
-        select a.id, a.title, a.content, a.html, a.summary, a.liked_nums, a.collected_nums, a.comment_nums, a.is_published, a.is_deleted, date_format(a.updated_time, '%Y-%m-%d %H:%i:%s') as updated_time_format, date_format(a.created_time, '%Y-%m-%d %H:%i:%s') as created_time_format, a.author_id, u.username
+        select a.id, a.title, a.content, a.html, a.summary, a.liked_nums, a.collected_nums, a.comment_nums, a.is_published, a.is_deleted, date_format(a.updated_time, '%Y-%m-%d %H:%i:%s') as updated_time_format, date_format(a.created_time, '%Y-%m-%d %H:%i:%s') as created_time_format, a.author_id, u.username, u.avatar
         from article a
         inner join user u on u.id = a.author_id
         where a.id = #{articleID} and a.author_id = #{userID} and a.is_deleted = 0;
     </select>
     <select id="selectPublishedByID" resultMap="ArticleMap">
-        select a.id, a.title, a.content, a.html, a.summary, a.liked_nums, a.collected_nums, a.comment_nums, a.is_published, a.is_deleted, date_format(a.updated_time, '%Y-%m-%d %H:%i:%s') as updated_time_format, date_format(a.created_time, '%Y-%m-%d %H:%i:%s') as created_time_format, a.author_id, u.username
+        select a.id, a.title, a.content, a.html, a.summary, a.liked_nums, a.collected_nums, a.comment_nums, a.is_published, a.is_deleted, date_format(a.updated_time, '%Y-%m-%d %H:%i:%s') as updated_time_format, date_format(a.created_time, '%Y-%m-%d %H:%i:%s') as created_time_format, a.author_id, u.username, u.avatar
         from article a
         inner join user u on u.id = a.author_id
         where a.id = #{articleID} and a.author_id = #{userID} and a.is_deleted = 0 and a.is_published = 1;

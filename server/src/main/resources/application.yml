@@ -34,6 +34,10 @@ spring:
       mail.smtp.ssl.enable: true
       mail.display.sendmail: noreply@techblog.com
       mail.display.sendname: noreply
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 100MB
   task:
     scheduling:
       pool:
@@ -56,11 +60,17 @@ management:
     health:
       show-details: always
 
+file:
+  static-access-path: /static/images/**
 
 ###文件上传
 upload:
-  path: uploads
-
+  url-prefix: http://localhost:8888/static
+  static-access-path: /static/**
+  root: /Users/fadedfat3/Pictures/techblog/upload/  #必须/结尾，表明为目录
+  file: file
+  avatar: avatar
+  image: image
 url:
   ignore:
     get:
@@ -70,6 +80,7 @@ url:
       - "/login"
     pattern:
       - "/error"
+      - "/static/**"
       - "/user/password/getVerifyCode"
       - "/user/password/reset"
       - "/user/*/article/show/*"

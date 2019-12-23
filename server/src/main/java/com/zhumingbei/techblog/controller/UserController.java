@@ -11,6 +11,7 @@ import com.zhumingbei.techblog.service.RoleService;
 import com.zhumingbei.techblog.service.UserService;
 import com.zhumingbei.techblog.util.JWTUtil;
 import com.zhumingbei.techblog.util.ResponseUtil;
+import com.zhumingbei.techblog.util.UploadedFileManagerUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,6 +21,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
@@ -37,6 +39,8 @@ public class UserController {
     private AuthenticationManager authenticationManager;
     @Autowired
     private CustomUserPrincipal principal;
+    @Autowired
+    private UploadedFileManagerUtil fileManagerUtil;
 
     private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
@@ -153,14 +157,12 @@ public class UserController {
 
     @GetMapping("/user/list")
     public List<UserBean> list() {
-        log.info("user list");
         List<UserBean> userBeanList = userService.getList();
         return userBeanList;
     }
 
     @PostMapping("/user/password/change")
     public ApiResponse changePassword(String username, String oldPassword, String newPassword ) {
-        log.debug("username:{}, password:{}", username, oldPassword);
         UserBean userBean = userService.findByUsername(username);
         if (userBean == null) {
             return ApiResponse.of(50001, "找不到用户");
@@ -231,6 +233,21 @@ public class UserController {
         HashMap<String, String> result = new HashMap<>();
         result.put("code", jwt);
         return ApiResponse.ofSuccess("验证码邮件已发送请查收", result);
+    }
+
+    @PostMapping("/user/avatar/change")
+    public ApiResponse changeAvatar(MultipartFile file) {
+        int userID = CustomUserPrincipal.getUserID();
+        String result = fileManagerUtil.uploadAvatar(file, userID);
+        if (result == null) {
+            return ApiResponse.of(50004, "头像上传失败");
+        }else if (result.isEmpty()){
+            return ApiResponse.of(40000, "头像文件内容为空");
+        }
+        UserBean userBean = userService.findByID(userID);
+        userBean.setAvatar(result);
+        userService.update(userBean);
+        return ApiResponse.ofSuccess("头像更换成功", result);
     }
 
     private ApiResponse sendEmail(String email, String subject, String content, String successfulMessage) {
