@@ -3,7 +3,7 @@ package com.zhumingbei.techblog.controller;
 import com.zhumingbei.techblog.common.ApiResponse;
 import com.zhumingbei.techblog.common.CustomUserPrincipal;
 import com.zhumingbei.techblog.config.UploadConfig;
-import com.zhumingbei.techblog.util.UploadedFileManagerUtil;
+import com.zhumingbei.techblog.service.FileUploadService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,16 +18,12 @@ import java.io.IOException;
 @RestController
 public class UploadController {
     @Autowired
-    private UploadConfig uploadConfig;
+    private FileUploadService fileUploadService;
 
-    @Autowired
-    private UploadedFileManagerUtil fileManagerUtil;
-
-    @PostMapping("/upload/avatar/add")
+    @PostMapping("/upload/avatar")
     public ApiResponse avatarUpload(MultipartFile file) {
         int userID = CustomUserPrincipal.getUserID();
-        String parentFilepath = uploadConfig.getAvatar() + File.pathSeparator + userID;
-        String result = fileManagerUtil.upload(file, parentFilepath);
+        String result = fileUploadService.uploadAvatar(file, userID);
         if (result == null) {
             return ApiResponse.of(50004, "上传失败");
         }else if (result.isEmpty()){
@@ -39,12 +35,9 @@ public class UploadController {
 
     @PostMapping("/upload/image")
     public ApiResponse imageUpload(MultipartFile file) {
-        if (file == null) {
-            return ApiResponse.of(40000, "上传失败，文件未找到");
-        }
+
         int userID = CustomUserPrincipal.getUserID();
-        String parentFilepath = uploadConfig.getImage() + "/" + userID;
-        String result = fileManagerUtil.uploadImage(file, userID);
+        String result = fileUploadService.uploadImage(file, userID);
         if (result == null) {
             return ApiResponse.of(50004, "上传失败");
         }else if (result.isEmpty()){

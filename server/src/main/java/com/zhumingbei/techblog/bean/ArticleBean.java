@@ -10,6 +10,7 @@ public class ArticleBean {
     private String content;
     private String html;
     private String summary;
+    private String summaryImage;
     private Integer authorID;
     private UserBean author;
     private Integer likedNums;

@@ -40,7 +40,7 @@ public class ArticleController {
     }
 
     @PostMapping("/user/{userID}/article/create")
-    public ApiResponse create(@PathVariable("userID") int userID, String title, String content, String html, String summary, boolean isPublished) {
+    public ApiResponse create(@PathVariable("userID") int userID, String title, String content, String html, String summary, String summaryImage, boolean isPublished) {
         ArticleBean article = new ArticleBean();
         article.setTitle(title);
         article.setContent(content);
@@ -51,11 +51,12 @@ public class ArticleController {
             summary = generateSummary(html);
         }
         article.setSummary(summary);
+        article.setSummaryImage(summaryImage);
         articleService.create(article);
         return isPublished ? ApiResponse.ofSuccess("文章已发布") : ApiResponse.ofSuccess("文章已保存为草稿");
     }
     @PostMapping("/user/{userID}/article/save/{articleID}")
-    public ApiResponse save(@PathVariable("userID") int userID, @PathVariable("articleID") int articleID, String title, String content, String html, String summary, boolean isPublished) {
+    public ApiResponse save(@PathVariable("userID") int userID, @PathVariable("articleID") int articleID, String title, String content, String html, String summary, String summaryImage, boolean isPublished) {
         ArticleBean article = articleService.findByID(userID, articleID);
         if (article == null) {
             return ApiResponse.of(40000, "文章不存在");
@@ -68,6 +69,7 @@ public class ArticleController {
             summary = generateSummary(html);
         }
         article.setSummary(summary);
+        article.setSummaryImage(summaryImage);
         articleService.update(article);
         return ApiResponse.ofSuccess("文章编辑成功");
     }

@@ -1,34 +1,42 @@
-package com.zhumingbei.techblog.util;
+package com.zhumingbei.techblog.service.impl;
 
 import com.zhumingbei.techblog.config.UploadConfig;
+import com.zhumingbei.techblog.service.FileUploadService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-@Component
+
+@Service
 @Slf4j
-public class UploadedFileManagerUtil {
+public class FileUploadServiceImpl implements FileUploadService {
     @Autowired
     private UploadConfig uploadConfig;
 
-    private String defaultAvatar = "";
-    public String url(){
-        return defaultAvatar;
+
+    @Override
+    public String uploadAvatar(MultipartFile file, int userID) {
+        String parentFilepath = generateUserAvatarDir(userID);
+        return upload(file, parentFilepath);
     }
 
-    public String upload(MultipartFile file, String parentFilepath) {
+    @Override
+    public String uploadImage(MultipartFile file, int userID) {
+        String filepath = generateImageDir(userID);
+        return upload(file, filepath);
+    }
+
+
+    private String upload(MultipartFile file, String parentFilepath) {
         if (file.isEmpty()) {
             return "";
         }
         String root = uploadConfig.getRoot();
         String accessParentFilepath = parentFilepath.substring(root.length());
-        File dir = new File(parentFilepath);
-        if (!dir.exists()) {
-            dir.mkdirs();
-        }
+
         String filename = file.getOriginalFilename();
         String newFilename = filename;
         String filepath = parentFilepath + "/" + file.getOriginalFilename();
@@ -44,15 +52,6 @@ public class UploadedFileManagerUtil {
         return url;
     }
 
-    public String uploadAvatar(MultipartFile file, int userID) {
-        String parentFilepath = generateUserAvatarDir(userID);
-        return upload(file, parentFilepath);
-    }
-
-    public String uploadImage(MultipartFile file, int userID) {
-        String filepath = generateImageDir(userID);
-        return upload(file, filepath);
-    }
 
     private String generateUserAvatarDir(int userID) {
         String dir = uploadConfig.getAvatarRootPath() + "/" + userID;

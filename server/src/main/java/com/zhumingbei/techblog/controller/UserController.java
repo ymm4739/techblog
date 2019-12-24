@@ -6,15 +6,13 @@ import com.zhumingbei.techblog.common.ApiResponse;
 import com.zhumingbei.techblog.common.CustomUserPrincipal;
 import com.zhumingbei.techblog.constant.BlogSiteConstant;
 import com.zhumingbei.techblog.constant.SessionConstant;
+import com.zhumingbei.techblog.service.FileUploadService;
 import com.zhumingbei.techblog.service.MailService;
 import com.zhumingbei.techblog.service.RoleService;
 import com.zhumingbei.techblog.service.UserService;
 import com.zhumingbei.techblog.util.JWTUtil;
-import com.zhumingbei.techblog.util.ResponseUtil;
-import com.zhumingbei.techblog.util.UploadedFileManagerUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -35,12 +33,11 @@ public class UserController {
     public UserService userService;
     @Autowired
     public RoleService roleService;
-    @Autowired
-    private AuthenticationManager authenticationManager;
+
     @Autowired
     private CustomUserPrincipal principal;
     @Autowired
-    private UploadedFileManagerUtil fileManagerUtil;
+    private FileUploadService fileUploadService;
 
     private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
@@ -238,7 +235,7 @@ public class UserController {
     @PostMapping("/user/avatar/change")
     public ApiResponse changeAvatar(MultipartFile file) {
         int userID = CustomUserPrincipal.getUserID();
-        String result = fileManagerUtil.uploadAvatar(file, userID);
+        String result = fileUploadService.uploadAvatar(file, userID);
         if (result == null) {
             return ApiResponse.of(50004, "头像上传失败");
         }else if (result.isEmpty()){

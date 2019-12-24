@@ -8,6 +8,7 @@
         <result property="content" column="content" />
         <result property="html" column="html" />
         <result property="summary" column="summary" />
+        <result property="summaryImage" column="summary_image" />
         <result property="authorID" column="author_id" />
         <result property="collectedNums" column="collected_nums" />
         <result property="likedNums" column="liked_nums" />
@@ -25,7 +26,7 @@
         <result property="avatar" column="avatar" />
     </resultMap>
     <select id="selectAll" resultMap="ArticleMap">
-        select a.id, a.title, a.content, a.html, a.summary, a.liked_nums, a.collected_nums, a.comment_nums, a.is_published, a.is_deleted, date_format(a.updated_time, '%Y-%m-%d %H:%i:%s') as updated_time_format, date_format(a.created_time, '%Y-%m-%d %H:%i:%s') as created_time_format, a.author_id, u.username, u.avatar
+        select a.id, a.title, a.content, a.html, a.summary, a.summary_image, a.liked_nums, a.collected_nums, a.comment_nums, a.is_published, a.is_deleted, date_format(a.updated_time, '%Y-%m-%d %H:%i:%s') as updated_time_format, date_format(a.created_time, '%Y-%m-%d %H:%i:%s') as created_time_format, a.author_id, u.username, u.avatar
         from article a
         inner join user u on u.id = a.author_id
         where is_deleted = 0
@@ -34,35 +35,35 @@
     </select>
 
     <insert id="insert" keyProperty="id" useGeneratedKeys="true" parameterType="articleBean">
-        insert into article (title, content, html, summary, author_id, is_published) values(#{title}, #{content}, #{html}, #{summary}, #{authorID}, #{isPublished})
+        insert into article (title, content, html, summary, summary_image, author_id, is_published) values(#{title}, #{content}, #{html}, #{summary}, #{summaryImage}, #{authorID}, #{isPublished})
     </insert>
 
     <select id="selectByID" resultMap="ArticleMap">
-        select a.id, a.title, a.content, a.html, a.summary, a.liked_nums, a.collected_nums, a.comment_nums, a.is_published, a.is_deleted, date_format(a.updated_time, '%Y-%m-%d %H:%i:%s') as updated_time_format, date_format(a.created_time, '%Y-%m-%d %H:%i:%s') as created_time_format, a.author_id, u.username, u.avatar
+        select a.id, a.title, a.content, a.html, a.summary, a.summary_image, a.liked_nums, a.collected_nums, a.comment_nums, a.is_published, a.is_deleted, date_format(a.updated_time, '%Y-%m-%d %H:%i:%s') as updated_time_format, date_format(a.created_time, '%Y-%m-%d %H:%i:%s') as created_time_format, a.author_id, u.username, u.avatar
         from article a
         inner join user u on u.id = a.author_id
         where a.id = #{articleID} and a.author_id = #{userID} and a.is_deleted = 0;
     </select>
     <select id="selectPublishedByID" resultMap="ArticleMap">
-        select a.id, a.title, a.content, a.html, a.summary, a.liked_nums, a.collected_nums, a.comment_nums, a.is_published, a.is_deleted, date_format(a.updated_time, '%Y-%m-%d %H:%i:%s') as updated_time_format, date_format(a.created_time, '%Y-%m-%d %H:%i:%s') as created_time_format, a.author_id, u.username, u.avatar
+        select a.id, a.title, a.content, a.html, a.summary, a.summary_image, a.liked_nums, a.collected_nums, a.comment_nums, a.is_published, a.is_deleted, date_format(a.updated_time, '%Y-%m-%d %H:%i:%s') as updated_time_format, date_format(a.created_time, '%Y-%m-%d %H:%i:%s') as created_time_format, a.author_id, u.username, u.avatar
         from article a
         inner join user u on u.id = a.author_id
         where a.id = #{articleID} and a.author_id = #{userID} and a.is_deleted = 0 and a.is_published = 1;
     </select>
     <select id="selectAllInOneUser" resultMap="ArticleMap">
-        select a.id, a.title, a.content, a.html, a.summary, a.liked_nums, a.collected_nums, a.comment_nums, a.is_published, a.is_deleted, date_format(a.updated_time, '%Y-%m-%d %H:%i:%s') as updated_time_format, date_format(a.created_time, '%Y-%m-%d %H:%i:%s') as created_time_format, a.author_id
+        select a.id, a.title, a.content, a.html, a.summary, a.summary_image, a.liked_nums, a.collected_nums, a.comment_nums, a.is_published, a.is_deleted, date_format(a.updated_time, '%Y-%m-%d %H:%i:%s') as updated_time_format, date_format(a.created_time, '%Y-%m-%d %H:%i:%s') as created_time_format, a.author_id
         from article a
         inner join user u on u.id = a.author_id
         where a.author_id = #{userID} and a.is_deleted = 0
     </select>
     <select id="selectPublishedInOneUser" resultMap="ArticleMap">
-        select a.id, a.title, a.content, a.html, a.summary, a.liked_nums, a.collected_nums, a.comment_nums, a.is_published, a.is_deleted, date_format(a.updated_time, '%Y-%m-%d %H:%i:%s') as updated_time_format, date_format(a.created_time, '%Y-%m-%d %H:%i:%s') as created_time_format, a.author_id
+        select a.id, a.title, a.content, a.html, a.summary, a.summary_image, a.liked_nums, a.collected_nums, a.comment_nums, a.is_published, a.is_deleted, date_format(a.updated_time, '%Y-%m-%d %H:%i:%s') as updated_time_format, date_format(a.created_time, '%Y-%m-%d %H:%i:%s') as created_time_format, a.author_id
         from article a
         inner join user u on u.id = a.author_id
         where a.author_id = #{userID} and a.is_deleted = 0 and is_published = 1;
     </select>
     <select id="selectDraftInOneUser" resultMap="ArticleMap">
-        select a.id, a.title, a.content, a.html, a.summary, a.liked_nums, a.collected_nums, a.comment_nums, a.is_published, a.is_deleted, date_format(a.updated_time, '%Y-%m-%d %H:%i:%s') as updated_time_format, date_format(a.created_time, '%Y-%m-%d %H:%i:%s') as created_time_format, a.author_id
+        select a.id, a.title, a.content, a.html, a.summary, a.summary_image, a.liked_nums, a.collected_nums, a.comment_nums, a.is_published, a.is_deleted, date_format(a.updated_time, '%Y-%m-%d %H:%i:%s') as updated_time_format, date_format(a.created_time, '%Y-%m-%d %H:%i:%s') as created_time_format, a.author_id
         from article a
         inner join user u on u.id = a.author_id
         where a.author_id = #{userID} and a.is_deleted = 0 and is_published = 0;
@@ -74,6 +75,7 @@
             <if test="content != null">content =#{content},</if>
             <if test="html !=null">html = #{html},</if>
             <if test="summary !=null">summary = #{summary},</if>
+            <if test="summaryImage !=null">summary_image = #{summaryImage},</if>
             <if test="likedNums != null">liked_nums = #{likedNums},</if>
             <if test="commentNums != null">comment_nums = #{commentNums},</if>
             <if test="collectedNums != null">collected_nums = #{collectedNums},</if>
