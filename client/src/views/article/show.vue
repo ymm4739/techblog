@@ -4,8 +4,19 @@
     <div v-if="article">
       <h3>{{article.title}}</h3>
       <div v-html="article.html"></div>
+
       <el-divider></el-divider>
-      <span class="info">Posted At {{article.createdTime}} By <el-tag>{{author.username}}</el-tag></span>
+    </div>
+    <div class="info">{{article.createdTime}} <i class="el-icon-chat-dot-square">{{article.commentNums}}</i><i class="el-icon-collection-tag">{{article.collectedNums}}</i> </div>
+
+    <div>
+      <el-image :src="author.avatar"
+                style="width:100px;height:100px"
+                fit="cover"></el-image>
+      <el-link icon="el-icon-chat-dot-square"
+               :underline="false">评论</el-link>
+      <el-link icon="el-icon-collection-tag"
+               :underline="false">收藏</el-link>
     </div>
   </div>
 </template>

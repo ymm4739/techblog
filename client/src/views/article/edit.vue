@@ -14,10 +14,25 @@
                    :multiple="false"
                    :on-success="uploadSuccess"
                    :file-list="filelist"
+                   :show-file-list="false"
                    action="http://localhost:8080/api/upload/image">
           <el-button slot="trigger"
                      size="mini">上传图片</el-button>
+          <span>只能上传单张大小小于10M的图片</span>
+          <el-popover v-if="form.summaryImage"
+                      placement="right"
+                      trigger="click"
+                      width="450px">
+            <el-image :src="form.summaryImage"
+                      style="width:400px;height:400px"
+                      fit="contain">
+            </el-image>
+            <el-button slot="reference"
+                       type="success"
+                       size="mini">查看图片</el-button>
+          </el-popover>
         </el-upload>
+
         <el-input type="textarea"
                   v-model="form.summary"></el-input>
       </el-form-item>
@@ -57,6 +72,7 @@ export default {
         title: '',
         content: '',
         summary: '',
+        summaryImage: '',
         isPublished: 0
       },
       html: '',
@@ -101,6 +117,7 @@ export default {
         title: this.form.title,
         content: this.form.content,
         summary: this.form.summary,
+        summaryImage: this.form.summaryImage,
         html: this.html,
         isPublished
       }
@@ -125,7 +142,7 @@ export default {
     },
     customUpload (file) {
       uploadImage(file).then(res => {
-
+        this.form.summaryImage = res.data
       })
     },
     uploadSuccess (response, file, filelist) {

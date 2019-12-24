@@ -3,8 +3,8 @@
     <el-menu router
              active-text-color="blue"
              :default-active="$route.path">
-      <el-menu-item :index="blogIndex">博客首页</el-menu-item>
-      <el-menu-item :index="articleCreate">新文章</el-menu-item>
+      <el-menu-item :index="blogIndex">博客</el-menu-item>
+      <el-menu-item :index="articleCreate">新建</el-menu-item>
       <el-submenu index="-1">
         <template slot="title">
           管理
@@ -12,7 +12,7 @@
         <el-menu-item :index="articleAdmin">文章</el-menu-item>
         <el-menu-item :index="catelogAdmin">分类</el-menu-item>
         <el-menu-item :index="commentAdmin">评论</el-menu-item>
-        <el-menu-item :index="fileAdmin">文件</el-menu-item>
+        <el-menu-item :index="collectionAdmin">收藏</el-menu-item>
       </el-submenu>
     </el-menu>
   </div>
@@ -39,8 +39,8 @@ export default {
     articleAdmin () {
       return '/user/' + this.userID + '/article/list'
     },
-    fileAdmin () {
-      return '/user/' + this.userID + '/file/list'
+    collectionAdmin () {
+      return '/user/' + this.userID + '/collection/list'
     },
     commentAdmin () {
       return '/user/' + this.userID + '/comment/list'
