@@ -37,4 +37,5 @@ public class ApiResponse {
     public static ApiResponse ofSuccess(Object data) {
         return ofSuccess("操作成功", data);
     }
+    public static ApiResponse ofSuccess() {return ofSuccess(null);}
 }

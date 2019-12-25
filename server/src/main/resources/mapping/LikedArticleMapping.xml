@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org//dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhumingbei.techblog.mapper.LikedArticleMapper">
+    <resultMap id="LikedArticleMap" type="LikedArticleBean">
+        <id property="id" column="id" />
+        <result property="userID" column="user_id" />
+        <result property="articleID" column="article_id" />
+        <result property="isLiked" column="is_liked" />
+    </resultMap>
+    <insert id="insert">
+        insert into liked_article(user_id, article_id, is_liked) values(#{userID}, #{articleID}, #{isLiked})
+    </insert>
+
+    <update id="update" >
+        update liked_article set is_liked = #{isLiked} where user_id = #{userID} and article_id = #{articleID}
+    </update>
+
+    <select id="select" resultMap="LikedArticleMap">
+        select * from liked_article where user_id = #{userID} and is_liked = #{isLiked}
+    </select>
+</mapper>

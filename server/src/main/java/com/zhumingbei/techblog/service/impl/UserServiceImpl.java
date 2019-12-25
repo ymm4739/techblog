@@ -3,6 +3,7 @@ package com.zhumingbei.techblog.service.impl;
 import com.zhumingbei.techblog.bean.PermissionBean;
 import com.zhumingbei.techblog.bean.RoleBean;
 import com.zhumingbei.techblog.bean.UserBean;
+import com.zhumingbei.techblog.mapper.LikedArticleMapper;
 import com.zhumingbei.techblog.mapper.PermissionMapper;
 import com.zhumingbei.techblog.mapper.RoleMapper;
 import com.zhumingbei.techblog.mapper.UserMapper;
@@ -23,6 +24,8 @@ public class UserServiceImpl implements UserService {
     public RoleMapper roleMapper;
     @Autowired
     public PermissionMapper permissionMapper;
+    @Autowired
+    private LikedArticleMapper likedArticleMapper;
     @Override
     public int insert(UserBean user) {
         return userMapper.insert(user);
@@ -87,6 +90,14 @@ public class UserServiceImpl implements UserService {
     public void setPermission(List<PermissionBean> permissionBeanList) {
         for (PermissionBean permission : permissionBeanList) {
             permissionMapper.insert(permission);
+        }
+    }
+
+    @Override
+    public void thumbsArticle(int userID, int articleID, boolean isLiked) {
+        int result = likedArticleMapper.update(userID, articleID, isLiked == true ? 1 : 0);
+        if (result == 0) {
+            likedArticleMapper.insert(userID, articleID, isLiked == true ? 1 : 0);
         }
     }
 }

@@ -1,15 +1,13 @@
 package com.zhumingbei.techblog.controller;
 
+import com.zhumingbei.techblog.bean.ArticleBean;
 import com.zhumingbei.techblog.bean.PermissionBean;
 import com.zhumingbei.techblog.bean.UserBean;
 import com.zhumingbei.techblog.common.ApiResponse;
 import com.zhumingbei.techblog.common.CustomUserPrincipal;
 import com.zhumingbei.techblog.constant.BlogSiteConstant;
 import com.zhumingbei.techblog.constant.SessionConstant;
-import com.zhumingbei.techblog.service.FileUploadService;
-import com.zhumingbei.techblog.service.MailService;
-import com.zhumingbei.techblog.service.RoleService;
-import com.zhumingbei.techblog.service.UserService;
+import com.zhumingbei.techblog.service.*;
 import com.zhumingbei.techblog.util.JWTUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +44,9 @@ public class UserController {
 
     @Autowired
     private MailService mailService;
+
+    @Autowired
+    private ArticleService articleService;
 
     @PostMapping("/registry")
     public ApiResponse registry(String username, String email, String password) {
@@ -247,6 +248,21 @@ public class UserController {
         return ApiResponse.ofSuccess("头像更换成功", result);
     }
 
+    @PostMapping("/user/thumbs/article")
+    public ApiResponse thumbs(int articleID, boolean addOne) {
+        int userID = CustomUserPrincipal.getUserID();
+        ArticleBean articleBean = articleService.findByArticleID(articleID);
+        if (articleBean == null) {
+            return ApiResponse.of(40000, "文章不存在");
+        }
+        int likedNums = articleBean.getLikedNums();
+        if (addOne == true) {
+            articleBean.setLikedNums(likedNums + 1);
+        }else articleBean.setLikedNums(likedNums - 1);
+        articleService.update(articleBean);
+        userService.thumbsArticle(userID, articleID, addOne);
+        return addOne == true ? ApiResponse.ofSuccess("点赞成功") : ApiResponse.ofSuccess("取消点赞成功");
+    }
     private ApiResponse sendEmail(String email, String subject, String content, String successfulMessage) {
         try {
             mailService.sendSimpleMail(email, subject, content, null);

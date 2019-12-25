@@ -30,4 +30,6 @@ public interface UserService {
     UserBean findByID(int userID);
 
     void setPermission(List<PermissionBean> permissionBeanList);
+
+    void thumbsArticle(int userID, int articleID, boolean isLiked);
 }

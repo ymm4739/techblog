@@ -1,6 +1,7 @@
 package com.zhumingbei.techblog.controller;
 
 import com.zhumingbei.techblog.bean.ArticleBean;
+import com.zhumingbei.techblog.bean.LikedArticleBean;
 import com.zhumingbei.techblog.bean.UserBean;
 import com.zhumingbei.techblog.common.ApiResponse;
 import com.zhumingbei.techblog.common.CustomUserPrincipal;
@@ -8,12 +9,10 @@ import com.zhumingbei.techblog.service.ArticleService;
 import com.zhumingbei.techblog.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 @Slf4j
 @RestController
@@ -23,6 +22,8 @@ public class ArticleController {
 
     @Autowired
     private UserService userService;
+
+
 
     @GetMapping("/article/list")
     public List<ArticleBean> getList() {
@@ -35,8 +36,13 @@ public class ArticleController {
     }
 
     @GetMapping("/user/{userID}/article/index")
-    public List<ArticleBean> articleListOfUser(@PathVariable("userID") int userID) {
-        return articleService.getPublishedArticlesInOneUser(userID);
+    public ApiResponse articleListOfUser(@PathVariable("userID") int authorID, @RequestParam(required = false) Integer readerID) {
+        List<ArticleBean> articleBeans = articleService.getPublishedArticlesInOneUser(authorID);
+        List<Integer> likedArticleID = getLikedArticlesID(readerID);
+        HashMap result = new HashMap();
+        result.put("articles", articleBeans);
+        result.put("likes", likedArticleID);
+        return ApiResponse.ofSuccess(result);
     }
 
     @PostMapping("/user/{userID}/article/create")
@@ -79,8 +85,14 @@ public class ArticleController {
         return articleService.findByID(userID, articleID);
     }
     @GetMapping("/user/{userID}/article/show/{articleID}")
-    public ArticleBean show(@PathVariable("userID") int userID, @PathVariable("articleID") int articleID) {
-        return articleService.findPublishedByID(userID, articleID);
+    public ApiResponse show(@PathVariable("userID") int userID, @PathVariable("articleID") int articleID, @RequestParam(required = false) Integer readerID) {
+        ArticleBean articleBean = articleService.findPublishedByID(userID, articleID);
+        List<Integer> likedArticlesID = getLikedArticlesID(readerID);
+
+        HashMap result = new HashMap();
+        result.put("article", articleBean);
+        result.put("likes", likedArticlesID);
+        return ApiResponse.ofSuccess(result);
     }
 
     @PostMapping("/user/{userID}/article/like/{articleID}")
@@ -122,5 +134,17 @@ public class ArticleController {
             summary = front;
         }
         return summary;
+    }
+
+    private List<Integer> getLikedArticlesID(Integer readerID) {
+        if (readerID == null) {
+            return new ArrayList<>();
+        }
+        List<LikedArticleBean> likedArticleBeans = articleService.findLikedArticlesByUserID(readerID);
+        List<Integer> likedArticleID = new ArrayList<>();
+        for (LikedArticleBean article : likedArticleBeans) {
+            likedArticleID.add(article.getArticleID());
+        }
+        return likedArticleID;
     }
 }

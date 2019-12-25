@@ -1,7 +1,9 @@
 package com.zhumingbei.techblog.service.impl;
 
 import com.zhumingbei.techblog.bean.ArticleBean;
+import com.zhumingbei.techblog.bean.LikedArticleBean;
 import com.zhumingbei.techblog.mapper.ArticleMapper;
+import com.zhumingbei.techblog.mapper.LikedArticleMapper;
 import com.zhumingbei.techblog.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +13,9 @@ import java.util.List;
 public class ArticleServiceImpl implements ArticleService {
     @Autowired
     private ArticleMapper articleMapper;
+
+    @Autowired
+    private LikedArticleMapper likedArticleMapper;
     @Override
     public List<ArticleBean> getAll() {
         return articleMapper.selectAll();
@@ -22,7 +27,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public ArticleBean findByID(int userID, int articleID) {
-        return articleMapper.selectByID(userID, articleID);
+        return articleMapper.selectByIds(userID, articleID);
     }
 
     @Override
@@ -48,5 +53,15 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public List<ArticleBean> getDraftInOneUser(int userID) {
         return articleMapper.selectDraftInOneUser(userID);
+    }
+
+    @Override
+    public ArticleBean findByArticleID(int articleID) {
+        return articleMapper.selectByID(articleID);
+    }
+
+    @Override
+    public List<LikedArticleBean> findLikedArticlesByUserID(int readerID) {
+        return likedArticleMapper.select(readerID, 1);
     }
 }

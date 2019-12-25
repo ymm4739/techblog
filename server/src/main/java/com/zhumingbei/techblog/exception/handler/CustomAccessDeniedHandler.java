@@ -20,7 +20,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
             ResponseUtil.renderJson(httpServletResponse, 40300, "权限不足，拒绝访问");
         }else {
             if (httpServletRequest.getHeader(SessionConstant.HEADER_SESSION_TOKEN) == null) {
-                ResponseUtil.renderJson(httpServletResponse, 40100, "登陆后才能访问");
+                ResponseUtil.renderJson(httpServletResponse, 40100, "需要登陆，请立即登陆");
             }else {
                 ResponseUtil.renderJson(httpServletResponse, 50000, "登陆令牌已失效，需要重新登陆");
             }
