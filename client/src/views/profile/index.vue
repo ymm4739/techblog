@@ -1,34 +1,36 @@
 <template>
-  <div class="profile">
-    <el-upload class="avatar-uploader"
-               action="http://localhost:8080/api/user/change/avatar"
-               :http-request="customUpload"
-               :show-file-list="false">
-      <img v-if="avatar"
-           :src="avatar"
-           class="avatar">
-      <i v-else
-         class="el-icon-plus avatar-uploader-icon"></i>
-    </el-upload>
-    <el-form>
-      <el-form-item label="用户名">{{user.username}}
-        <el-input v-if="modify"
-                  :placeholder="username">
-        </el-input>
-      </el-form-item>
-      <el-form-item label="邮箱">{{user.email}}
-        <el-input v-if="modify"
-                  :placeholder="email"></el-input>
-        <el-button v-if="!activated"
-                   type="primary"
-                   @click="activate">激活邮箱</el-button>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary"
-                   @click="update">修改</el-button>
-      </el-form-item>
-    </el-form>
-  </div>
+  <el-main>
+    <div class="profile">
+      <el-upload class="avatar-uploader"
+                 action="http://localhost:8080/api/user/change/avatar"
+                 :http-request="customUpload"
+                 :show-file-list="false">
+        <img v-if="avatar"
+             :src="avatar"
+             class="avatar">
+        <i v-else
+           class="el-icon-plus avatar-uploader-icon"></i>
+      </el-upload>
+      <el-form>
+        <el-form-item label="用户名">{{user.username}}
+          <el-input v-if="modify"
+                    :placeholder="username">
+          </el-input>
+        </el-form-item>
+        <el-form-item label="邮箱">{{user.email}}
+          <el-input v-if="modify"
+                    :placeholder="email"></el-input>
+          <el-button v-if="!activated"
+                     type="primary"
+                     @click="activate">激活邮箱</el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary"
+                     @click="update">修改</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+  </el-main>
 </template>
 <script>
 import { Message } from 'element-ui'

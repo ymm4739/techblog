@@ -21,17 +21,38 @@
       </el-col>
     </el-row>
 
-    <div class="desc_right"><span> {{article.updatedTime}}</span>
-      <el-link icon="el-icon-chat-dot-square"
-               :underline="false">{{article.commentNums}}</el-link>
-      <el-link icon="el-icon-collection-tag"
-               :underline="false">{{article.collectedNums}}</el-link>
+    <div class="desc_right">
+      <el-button type="text"
+                 @click="thumbs"
+                 style="color:black">
+        <font-awesome-icon v-if="!liked"
+                           :icon="['far', 'thumbs-up']" />
+        <font-awesome-icon v-if="liked"
+                           style="color:gold"
+                           :icon="['fas', 'thumbs-up']" />
+      </el-button>
+      <el-button type="text"
+                 @click="collect"
+                 style="color:black">
+        <font-awesome-icon :icon="['far', 'star']"
+                           v-if="!collected" />
+        <font-awesome-icon :icon="['fas', 'star']"
+                           v-if="collected"
+                           style="color:gold" />
+      </el-button>
+      <el-button type="text"
+                 style="color:black">
+        <font-awesome-icon :icon="['far', 'comment']" />
+      </el-button>
+
     </div>
-    <el-divider></el-divider>
+    <el-divider class="divider"></el-divider>
 
   </div>
 </template>
 <script>
+import { thumbs } from '@/api/user'
+import { Message } from 'element-ui'
 import VClamp from 'vue-clamp'
 export default {
   name: 'ArticleIndexItem',
@@ -43,23 +64,50 @@ export default {
       type: Object,
       default: null
     },
-    userID: {
+    authorID: {
       type: String,
       default: ''
+    },
+    likes: {
+      type: Array,
+      default: null
+    }
+  },
+  data () {
+    return {
+      liked: this.likes.includes(this.article.id),
+      collected: false
     }
   },
   methods: {
     view (id) {
-      this.$router.push({ path: '/user/' + this.userID + '/article/show/' + id })
+      this.$router.push({ path: '/user/' + this.authorID + '/article/show/' + id })
+    },
+    thumbs () {
+      let data = {
+        articleID: this.article.id,
+        liked: !this.liked
+      }
+      thumbs(data).then(res => {
+        this.liked = !this.liked
+        Message.success(res.message)
+      }).catch(() => { })
+    },
+    collect () {
+      this.collected = !this.collected
     }
   }
 }
 </script>
 <style scoped>
 .desc_right {
-  float: right;
+  position: relative;
+  margin: 0;
 }
 .title_link {
   margin-bottom: 10px;
+}
+.divider {
+  margin-top: 10px;
 }
 </style>

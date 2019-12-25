@@ -1,5 +1,7 @@
 <template>
-  <div>11111</div>
+  <el-main>
+    <div>11111</div>
+  </el-main>
 </template>
 
 <script>

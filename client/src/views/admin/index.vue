@@ -1,12 +1,13 @@
 <template>
-  <el-row>
-    <el-col :span="4">
+  <el-container>
+    <el-aside style="">
       <blog-nav-menu />
-    </el-col>
-    <el-col :span="20">
+    </el-aside>
+    <el-container>
       <router-view />
-    </el-col>
-  </el-row>
+
+    </el-container>
+  </el-container>
 </template>
 <script>
 import BlogNavMenu from '@/components/BlogNavMenu'

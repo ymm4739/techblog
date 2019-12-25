@@ -83,3 +83,16 @@ export function changeAvatar (data) {
     }
   })
 }
+
+export function thumbs (data) {
+  let { articleID, liked } = data
+  let params = {
+    articleID,
+    addOne: liked
+  }
+  return request({
+    url: '/user/thumbs/article',
+    method: 'post',
+    data: qs.stringify(params)
+  })
+}

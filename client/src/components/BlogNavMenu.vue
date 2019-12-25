@@ -1,29 +1,35 @@
 <template>
-  <div>
-    <el-menu router
-             active-text-color="blue"
-             :default-active="$route.path">
-      <el-menu-item :index="blogIndex">博客</el-menu-item>
-      <el-menu-item :index="articleCreate">新建</el-menu-item>
-      <el-submenu index="-1">
-        <template slot="title">
-          管理
-        </template>
-        <el-menu-item :index="articleAdmin">文章</el-menu-item>
-        <el-menu-item :index="catelogAdmin">分类</el-menu-item>
-        <el-menu-item :index="commentAdmin">评论</el-menu-item>
-        <el-menu-item :index="collectionAdmin">收藏</el-menu-item>
-      </el-submenu>
-    </el-menu>
-  </div>
-
+  <el-main>
+    <div>
+      <el-menu router
+               active-text-color="blue"
+               :default-active="$route.path">
+        <el-menu-item :index="blogIndex">博客</el-menu-item>
+        <el-menu-item :index="articleCreate">新建</el-menu-item>
+        <el-submenu index="-1"
+                    :popper-append-to-body="true"
+                    popper-class="submenu">
+          <template slot="title">
+            管理
+          </template>
+          <el-menu-item :index="articleAdmin">文章</el-menu-item>
+          <el-menu-item :index="catelogAdmin">分类</el-menu-item>
+          <el-menu-item :index="commentAdmin">评论</el-menu-item>
+          <el-menu-item :index="collectionAdmin">收藏</el-menu-item>
+        </el-submenu>
+      </el-menu>
+    </div>
+  </el-main>
 </template>
 <script>
 export default {
   name: 'BlogNavMenu',
   data () {
     return {
-      userID: this.$store.getters.user.id
+      userID: this.$store.getters.user.id,
+      submenu: {
+        width: '150px'
+      }
     }
   },
   computed: {

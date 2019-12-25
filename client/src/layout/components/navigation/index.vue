@@ -1,7 +1,5 @@
 <template>
   <div>
-    <h3 class="nav-title">{{title}}</h3>
-    <h4 class="nav-description">{{description}}</h4>
     <el-menu :default-active="$route.path"
              mode="horizontal"
              background-color="black"

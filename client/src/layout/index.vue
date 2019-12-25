@@ -1,8 +1,12 @@
 <template>
-  <div>
-    <Navigation />
-    <router-view />
-  </div>
+  <el-container class="container">
+    <el-header>
+      <Navigation />
+    </el-header>
+    <el-container>
+      <router-view />
+    </el-container>
+  </el-container>
 </template>
 <script>
 import Navigation from './components/navigation'
@@ -13,3 +17,8 @@ export default {
   }
 }
 </script>
+<style scoped>
+.container {
+  background-color: #f4f5f5;
+}
+</style>

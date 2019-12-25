@@ -1,9 +1,12 @@
 import request from '@/utils/request'
 import qs from 'qs'
-export function index (userID) {
-  let urlPrefix = '/user/' + userID
+export function index (authorID, readerID) {
+  let urlPrefix = '/user/' + authorID
+  let data = {
+    readerID: readerID
+  }
   return request({
-    url: urlPrefix + '/article/index'
+    url: urlPrefix + '/article/index?' + qs.stringify(data)
 
   })
 }
@@ -23,11 +26,11 @@ export function create (data, userID) {
   })
 }
 
-export function show (userID, id) {
+export function show (userID, articleID, readerID) {
   let urlPrefix = '/user/' + userID
 
   return request({
-    url: urlPrefix + '/article/show/' + id
+    url: urlPrefix + '/article/show/' + articleID + '?' + qs.stringify({ readerID })
   })
 }
 
