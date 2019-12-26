@@ -19,7 +19,7 @@ public interface ArticleMapper {
 
     List<ArticleBean> selectPublishedInOneUser(int userID);
 
-    ArticleBean selectPublishedByID(int userID, int articleID);
+    ArticleBean selectPublishedByID(int articleID);
 
     List<ArticleBean> selectDraftInOneUser(int userID);
 }

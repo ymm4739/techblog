@@ -26,8 +26,8 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public ArticleBean findByID(int userID, int articleID) {
-        return articleMapper.selectByIds(userID, articleID);
+    public ArticleBean findByID(int articleID) {
+        return articleMapper.selectByID(articleID);
     }
 
     @Override
@@ -46,8 +46,8 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public ArticleBean findPublishedByID(int userID, int articleID) {
-        return articleMapper.selectPublishedByID(userID, articleID);
+    public ArticleBean findPublishedByID(int articleID) {
+        return articleMapper.selectPublishedByID( articleID);
     }
 
     @Override

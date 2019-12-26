@@ -25,18 +25,18 @@ public class ArticleController {
 
 
 
-    @GetMapping("/article/list")
+    @GetMapping("/article")
     public List<ArticleBean> getList() {
         return articleService.getAll();
     }
 
-    @GetMapping("/user/{userID}/article/list")
-    public List<ArticleBean> getArticlesByUserID(@PathVariable("userID") int userID) {
-        return articleService.getArticlesInOneUser(userID);
+    @GetMapping("/article/list")
+    public List<ArticleBean> getAllArticlesByAuthor(int authorID) {
+        return articleService.getArticlesInOneUser(authorID);
     }
 
-    @GetMapping("/user/{userID}/article/index")
-    public ApiResponse articleListOfUser(@PathVariable("userID") int authorID, @RequestParam(required = false) Integer readerID) {
+    @GetMapping("/article/index/{authorID}")
+    public ApiResponse getPublishedArticlesByAuthor(@PathVariable("authorID") int authorID, @RequestParam(required = false) Integer readerID) {
         List<ArticleBean> articleBeans = articleService.getPublishedArticlesInOneUser(authorID);
         List<Integer> likedArticleID = getLikedArticlesID(readerID);
         HashMap result = new HashMap();
@@ -45,12 +45,12 @@ public class ArticleController {
         return ApiResponse.ofSuccess(result);
     }
 
-    @PostMapping("/user/{userID}/article/create")
-    public ApiResponse create(@PathVariable("userID") int userID, String title, String content, String html, String summary, String summaryImage, boolean isPublished) {
+    @PostMapping("/article/create")
+    public ApiResponse create(int authorID, String title, String content, String html, String summary, String summaryImage, boolean isPublished) {
         ArticleBean article = new ArticleBean();
         article.setTitle(title);
         article.setContent(content);
-        article.setAuthorID(userID);
+        article.setAuthorID(authorID);
         article.setHtml(html);
         article.setIsPublished(isPublished ? 1 : 0);
         if (summary.isEmpty()) {
@@ -61,9 +61,9 @@ public class ArticleController {
         articleService.create(article);
         return isPublished ? ApiResponse.ofSuccess("文章已发布") : ApiResponse.ofSuccess("文章已保存为草稿");
     }
-    @PostMapping("/user/{userID}/article/save/{articleID}")
-    public ApiResponse save(@PathVariable("userID") int userID, @PathVariable("articleID") int articleID, String title, String content, String html, String summary, String summaryImage, boolean isPublished) {
-        ArticleBean article = articleService.findByID(userID, articleID);
+    @PostMapping("/article/save/{articleID}")
+    public ApiResponse save( @PathVariable("articleID") int articleID, String title, String content, String html, String summary, String summaryImage, boolean isPublished) {
+        ArticleBean article = articleService.findByID(articleID);
         if (article == null) {
             return ApiResponse.of(40000, "文章不存在");
         }
@@ -80,13 +80,13 @@ public class ArticleController {
         return ApiResponse.ofSuccess("文章编辑成功");
     }
 
-    @GetMapping("/user/{userID}/article/edit/{articleID}")
-    public ArticleBean edit(@PathVariable("userID") int userID, @PathVariable("articleID") int articleID) {
-        return articleService.findByID(userID, articleID);
+    @GetMapping("/article/{articleID}")
+    public ArticleBean getContent(@PathVariable("articleID") int articleID) {
+        return articleService.findByID(articleID);
     }
-    @GetMapping("/user/{userID}/article/show/{articleID}")
-    public ApiResponse show(@PathVariable("userID") int userID, @PathVariable("articleID") int articleID, @RequestParam(required = false) Integer readerID) {
-        ArticleBean articleBean = articleService.findPublishedByID(userID, articleID);
+    @GetMapping("/article/show/{articleID}")
+    public ApiResponse show(@PathVariable("articleID") int articleID, @RequestParam(required = false) Integer readerID) {
+        ArticleBean articleBean = articleService.findPublishedByID(articleID);
         List<Integer> likedArticlesID = getLikedArticlesID(readerID);
 
         HashMap result = new HashMap();
@@ -95,20 +95,11 @@ public class ArticleController {
         return ApiResponse.ofSuccess(result);
     }
 
-    @PostMapping("/user/{userID}/article/like/{articleID}")
-    public ApiResponse like(@PathVariable("userID") int userID, @PathVariable("articleID") int articleID) {
-        ArticleBean articleBean = articleService.findPublishedByID(userID, articleID);
-        if (articleBean == null) {
-            return ApiResponse.of(40400, "文章不存在");
-        }
-        articleBean.setLikedNums(articleBean.getLikedNums() + 1);
-        articleService.update(articleBean);
-        return ApiResponse.ofSuccess("点赞文章操作成功");
-    }
 
-    @PostMapping("/user/{userID}/article/delete/{articleID}")
-    public ApiResponse delete(@PathVariable("userID") int userID, @PathVariable("articleID") int articleID) {
-        ArticleBean articleBean = articleService.findByID(userID, articleID);
+
+    @PostMapping("/article/delete/{articleID}")
+    public ApiResponse delete( @PathVariable("articleID") int articleID) {
+        ArticleBean articleBean = articleService.findByID(articleID);
         if (articleBean == null) {
             return ApiResponse.of(40400, "文章不存在");
         }

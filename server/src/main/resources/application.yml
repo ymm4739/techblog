@@ -83,8 +83,8 @@ url:
       - "/static/**"
       - "/user/password/getVerifyCode"
       - "/user/password/reset"
-      - "/user/*/article/show/*"
-      - "/user/*/article/index"
+      - "/article/show/*"
+      - "/article/index/*"
 ##jwt
 jwt:
   config:

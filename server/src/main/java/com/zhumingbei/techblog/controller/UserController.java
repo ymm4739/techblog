@@ -76,7 +76,7 @@ public class UserController {
         int userID = user.getId();
         int roleID = roleService.findByRoleName("user").getId();
         userService.insertUserRole(userID, roleID);
-        userService.setPermission(initOwnedPermissions(userID, roleID));
+        // userService.setPermission(initOwnedPermissions(userID, roleID));
         return ApiResponse.of(20000, "注册成功");
     }
 
@@ -251,7 +251,7 @@ public class UserController {
     @PostMapping("/user/thumbs/article")
     public ApiResponse thumbs(int articleID, boolean addOne) {
         int userID = CustomUserPrincipal.getUserID();
-        ArticleBean articleBean = articleService.findByArticleID(articleID);
+        ArticleBean articleBean = articleService.findPublishedByID(articleID);
         if (articleBean == null) {
             return ApiResponse.of(40000, "文章不存在");
         }
