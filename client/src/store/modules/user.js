@@ -5,6 +5,7 @@ const state = {
   username: '',
   email: '',
   avatar: '',
+  roles: [],
   isValidEmail: false,
   timeout: false,
   isNeededLogin: false
@@ -20,6 +21,11 @@ const mutations = {
     state.username = user.username || ''
     state.isValidEmail = !!user.isValidEmail
     state.avatar = user.avatar || ''
+    const roleList = user.roleList || []
+    roleList.forEach(role => {
+      const { name } = role
+      state.roles.push(name)
+    })
   },
   setValidEmail (state, isValidEmail) {
     state.isValidEmail = !!isValidEmail
@@ -39,6 +45,7 @@ const mutations = {
     state.username = ''
     state.isValidEmail = ''
     state.avatar = ''
+    state.roles = []
   }
 }
 const actions = {

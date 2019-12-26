@@ -10,6 +10,7 @@ import ArticleEditView from '@/views/article/edit'
 import ArticleListView from '@/views/article/list'
 import ArticleIndexView from '@/views/article'
 import AdminLayout from '@/views/admin'
+import store from '@/store'
 Vue.use(Router)
 // 解决重复点击导航路由报错
 const originalPush = Router.prototype.push
@@ -18,6 +19,14 @@ Router.prototype.push = function push (location) {
 }
 const router = new Router({
   routes: [
+    {
+      path: '/login',
+      component: () => import('@/views/login')
+    },
+    {
+      path: '/403',
+      component: () => import('@/views/403')
+    },
     {
       path: '/user/email/activate',
       name: 'activateEmail',
@@ -50,6 +59,9 @@ const router = new Router({
         {
           path: '/',
           component: AdminLayout,
+          meta: {
+            roles: ['user']
+          },
           children: [
             {
               path: 'article/edit/:articleID',
@@ -70,14 +82,46 @@ const router = new Router({
           name: 'home',
           component: Home
         }]
+    },
+    {
+      path: '/*',
+      component: () => import('@/views/404')
     }
-
   ]
 })
 
 router.beforeEach((to, from, next) => {
-  if (to.fullPath === '/login') {
-    next()
+  if (to.fullPath === '/') {
+    next({
+      path: '/home'
+    })
+  }
+  if (to.matched.some(recored => recored.meta.roles)) {
+    let requestRoles = []
+    to.matched.forEach(record => {
+      const { meta } = record
+      if (meta.roles) {
+        meta.roles.forEach(role => {
+          requestRoles.push(role)
+        })
+      }
+    })
+    if (!store.getters.userID) {
+      next({
+        path: '/login',
+        query: { redirect: to.fullPath }
+      })
+    } else if (requestRoles.every(role => {
+      let { roles } = store.getters.user
+      roles = JSON.parse(JSON.stringify(roles))
+      return roles.includes(role)
+    })) {
+      next()
+    } else {
+      next({
+        path: '/403'
+      })
+    }
   } else {
     next()
   }
