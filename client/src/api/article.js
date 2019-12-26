@@ -1,59 +1,55 @@
 import request from '@/utils/request'
 import qs from 'qs'
 export function index (authorID, readerID) {
-  let urlPrefix = '/user/' + authorID
   let data = {
     readerID: readerID
   }
   return request({
-    url: urlPrefix + '/article/index?' + qs.stringify(data)
+    url: '/article/index/' + authorID + '?' + qs.stringify(data)
 
   })
 }
-export function list (userID) {
-  let urlPrefix = '/user/' + userID
+export function list (authorID) {
+  let query = {
+    authorID: authorID
+  }
   return request({
-    url: urlPrefix + '/article/list'
+    url: '/article/list?' + qs.stringify(query)
   })
 }
-export function create (data, userID) {
-  let urlPrefix = '/user/' + userID
-
+export function create (data) {
   return request({
-    url: urlPrefix + '/article/create',
+    url: '/article/create',
     method: 'post',
     data: qs.stringify(data)
   })
 }
 
-export function show (userID, articleID, readerID) {
-  let urlPrefix = '/user/' + userID
-
+export function show (articleID, readerID) {
   return request({
-    url: urlPrefix + '/article/show/' + articleID + '?' + qs.stringify({ readerID })
+    url: '/article/show/' + articleID + '?' + qs.stringify({ readerID })
   })
 }
 
-export function update (params, userID) {
-  let { id, data } = params
-  let urlPrefix = '/user/' + userID
+export function update (params) {
+  let { articleID, data } = params
 
   return request({
-    url: urlPrefix + '/article/save/' + id,
+    url: '/article/save/' + articleID,
     method: 'post',
     data: qs.stringify(data)
   })
 }
 
-export function _delete (userID, articleID) {
+export function _delete (articleID) {
   return request({
-    url: '/user/' + userID + '/article/delete/' + articleID,
+    url: '/article/delete/' + articleID,
     method: 'post'
   })
 }
 
-export function edit (userID, articleID) {
+export function get (articleID) {
   return request({
-    url: '/user/' + userID + '/article/edit/' + articleID
+    url: '/article/' + articleID
   })
 }

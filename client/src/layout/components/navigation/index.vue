@@ -8,14 +8,8 @@
              active-text-color="yellow">
       <el-menu-item index="/home">首页</el-menu-item>
       <el-menu-item index="/post">文章</el-menu-item>
-      <el-menu-item index="/book">书籍</el-menu-item>
-      <el-submenu index="/tutorial">
-        <template slot="title">教程</template>
-        <el-menu-item index="/java">Java</el-menu-item>
-        <el-menu-item index="/vue">Vue</el-menu-item>
-        <el-menu-item index="/python">Python</el-menu-item>
-      </el-submenu>
-      <el-menu-item index="/talk">杂谈</el-menu-item>
+      <el-menu-item :index="adminHome"
+                    v-if="login">管理</el-menu-item>
       <el-menu-item index=""
                     v-if="!login"
                     class="nav-login"
@@ -54,16 +48,15 @@ import Login from '@/components/login'
 import Registry from '@/components/registry'
 import ChangePassword from '@/components/ChangePassword'
 import ResetPassword from '@/components/ResetPassword'
-import BlogNavMenu from '@/components/BlogNavMenu'
 import { MessageBox, Message } from 'element-ui'
+// import qs from 'qs'
 export default {
   name: 'Navigation',
   components: {
     Login,
     Registry,
     ChangePassword,
-    ResetPassword,
-    BlogNavMenu
+    ResetPassword
   },
   data () {
     return {
@@ -85,7 +78,7 @@ export default {
       return '/user/changePassword'
     },
     articleIndex () {
-      return '/user/' + this.user.id + '/article/index'
+      return '/article/index/' + this.user.id
     },
     login () {
       return !!this.$store.getters.token
@@ -101,6 +94,9 @@ export default {
     },
     avatar () {
       return this.user.avatar
+    },
+    adminHome () {
+      return '/article/list'
     }
   },
   watch: {

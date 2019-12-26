@@ -54,7 +54,7 @@
   </div>
 </template>
 <script>
-import { create, update, edit } from '@/api/article'
+import { create, update, get } from '@/api/article'
 import { uploadImage } from '@/api/upload'
 import { Message } from 'element-ui'
 import { mavonEditor } from 'mavon-editor'
@@ -101,16 +101,15 @@ export default {
   },
   created () {
     if (this.isUpdated) {
-      let id = this.$route.params.articleID
-      let userID = this.$route.params.userID
-      edit(userID, id).then(res => {
+      let articleID = this.$route.params.articleID
+      get(articleID).then(res => {
         this.form = res.data
       })
     }
   },
   methods: {
     cancle () {
-      this.$router.push({ path: this.urlPrefix + 'list' })
+      this.$router.push({ path: '/article/list' })
     },
     save (isPublished = 0) {
       let data = {
@@ -119,18 +118,19 @@ export default {
         summary: this.form.summary,
         summaryImage: this.form.summaryImage,
         html: this.html,
-        isPublished
+        isPublished,
+        authorID: this.$store.getters.userID
       }
       if (this.isUpdated) {
-        let id = this.$route.params.articleID
-        update({ id, data }, this.userID).then(res => {
+        let articleID = this.$route.params.articleID
+        update({ articleID, data }).then(res => {
           Message.success(res.message)
-          this.$router.push({ path: this.urlPrefix + 'list' })
+          this.$router.push({ path: '/article/list' })
         }).catch(() => { })
       } else {
-        create(data, this.userID).then(res => {
+        create(data).then(res => {
           Message.success(res.message)
-          this.$router.push({ path: this.urlPrefix + 'list' })
+          this.$router.push({ path: '/article/list' })
         }).catch(() => { })
       }
     },

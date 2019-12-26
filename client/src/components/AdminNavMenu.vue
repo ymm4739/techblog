@@ -4,26 +4,28 @@
       <el-menu router
                active-text-color="blue"
                :default-active="$route.path">
-        <el-menu-item :index="blogIndex">博客</el-menu-item>
-        <el-menu-item :index="articleCreate">新建</el-menu-item>
-        <el-submenu index="-1"
+        <el-submenu index="1"
                     :popper-append-to-body="true"
                     popper-class="submenu">
           <template slot="title">
-            管理
+            内容管理
           </template>
           <el-menu-item :index="articleAdmin">文章</el-menu-item>
           <el-menu-item :index="catelogAdmin">分类</el-menu-item>
           <el-menu-item :index="commentAdmin">评论</el-menu-item>
           <el-menu-item :index="collectionAdmin">收藏</el-menu-item>
         </el-submenu>
+        <el-submenu index="2"><template slot="title">消息管理</template>
+          <el-menu-item index="msg"></el-menu-item>
+        </el-submenu>
+
       </el-menu>
     </div>
   </el-main>
 </template>
 <script>
 export default {
-  name: 'BlogNavMenu',
+  name: 'AdminNavMenu',
   data () {
     return {
       userID: this.$store.getters.user.id,
@@ -33,23 +35,17 @@ export default {
     }
   },
   computed: {
-    blogIndex () {
-      return '/user/' + this.userID + '/article/index'
-    },
-    articleCreate () {
-      return '/user/' + this.userID + '/article/create'
-    },
     catelogAdmin () {
-      return '/user/' + this.userID + '/catelog/list'
+      return '/catelog/list'
     },
     articleAdmin () {
-      return '/user/' + this.userID + '/article/list'
+      return '/article/list'
     },
     collectionAdmin () {
-      return '/user/' + this.userID + '/collection/list'
+      return '/collection/list'
     },
     commentAdmin () {
-      return '/user/' + this.userID + '/comment/list'
+      return '/comment/list'
     }
   }
 }

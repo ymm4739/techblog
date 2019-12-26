@@ -29,7 +29,7 @@
                            :icon="['far', 'thumbs-up']" />
         <font-awesome-icon v-if="liked"
                            style="color:gold"
-                           :icon="['fas', 'thumbs-up']" />
+                           :icon="['fas', 'thumbs-up']" />{{article.likedNums}}
       </el-button>
       <el-button type="text"
                  @click="collect"
@@ -38,13 +38,13 @@
                            v-if="!collected" />
         <font-awesome-icon :icon="['fas', 'star']"
                            v-if="collected"
-                           style="color:gold" />
+                           style="color:gold" />{{article.collectedNums}}
       </el-button>
       <el-button type="text"
                  style="color:black">
-        <font-awesome-icon :icon="['far', 'comment']" />
+        <font-awesome-icon :icon="['far', 'comment']" />{{article.commentNums}}
       </el-button>
-
+      <span class="time">{{article.updatedTime}}</span>
     </div>
     <el-divider class="divider"></el-divider>
 
@@ -81,7 +81,7 @@ export default {
   },
   methods: {
     view (id) {
-      this.$router.push({ path: '/user/' + this.authorID + '/article/show/' + id })
+      this.$router.push({ path: '/article/show/' + id })
     },
     thumbs () {
       let data = {
@@ -90,6 +90,8 @@ export default {
       }
       thumbs(data).then(res => {
         this.liked = !this.liked
+        let num = this.liked ? 1 : -1
+        this.article.likedNums += num
         Message.success(res.message)
       }).catch(() => { })
     },
@@ -109,5 +111,10 @@ export default {
 }
 .divider {
   margin-top: 10px;
+}
+.time {
+  float: right;
+  text-align: center;
+  padding: 12px 0px;
 }
 </style>

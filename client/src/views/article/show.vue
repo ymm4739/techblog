@@ -59,7 +59,7 @@
   </el-main>
 </template>
 <script>
-import { show, edit } from '@/api/article'
+import { show, get } from '@/api/article'
 import { thumbs } from '@/api/user'
 import { Message } from 'element-ui'
 export default {
@@ -70,15 +70,14 @@ export default {
       author: '',
       liked: false,
       collected: false,
-      isShow: this.$route.path.split('/')[4] === 'show'
+      isShow: this.$route.path.split('/')[2] === 'show'
     }
   },
   created () {
     let articleID = this.$route.params.articleID
-    let userID = this.$route.params.userID
     let readerID = this.$store.getters.userID
     if (this.isShow) {
-      show(userID, articleID, readerID).then(res => {
+      show(articleID, readerID).then(res => {
         if (res.data) {
           this.article = res.data.article
           this.author = this.article.author
@@ -86,7 +85,7 @@ export default {
         }
       }).catch(() => { })
     } else {
-      edit(userID, articleID).then(res => {
+      get(articleID).then(res => {
         if (res.data) {
           this.article = res.data
           this.author = this.article.author
@@ -105,6 +104,8 @@ export default {
       }
       thumbs(data).then(res => {
         this.liked = !this.liked
+        let num = this.liked ? 1 : -1
+        this.article.likedNums += num
         Message.success(res.message)
       }).catch(() => { })
     },

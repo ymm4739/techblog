@@ -23,18 +23,14 @@ export default {
   data () {
     return {
       articles: [],
-      authorID: this.$route.params.userID,
+      authorID: this.$route.params.authorID,
       readerID: this.$store.getters.userID,
       likes: []
     }
   },
   created () {
-    let authorID = this.$route.params.userID
-    let readerID = this.$store.getters.userID
-    console.log(readerID)
-    index(authorID, readerID).then(res => {
+    index(this.authorID, this.readerID).then(res => {
       let data = res.data
-      console.log(data)
       if (data) {
         this.articles = data.articles
         this.likes = data.likes

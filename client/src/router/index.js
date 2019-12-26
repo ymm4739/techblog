@@ -25,7 +25,6 @@ const router = new Router({
     },
     {
       path: '/',
-      name: 'index',
       component: Layout,
       children: [
         {
@@ -34,30 +33,35 @@ const router = new Router({
           component: Profile
         },
         {
-          path: 'user',
+          path: ''
+        },
+        {
+          path: 'article/show/:articleID',
+          component: ArticleShowView
+        },
+        {
+          path: 'article/draft/:articleID',
+          component: ArticleShowView
+        },
+        {
+          path: 'article/index/:authorID',
+          component: ArticleIndexView
+        },
+        {
+          path: '/',
           component: AdminLayout,
           children: [
             {
-              path: ':userID/article/show/:articleID',
-              component: ArticleShowView
-            }, {
-              path: ':userID/article/draft/:articleID',
-              component: ArticleShowView
-            }, {
-              path: ':userID/article/edit/:articleID',
+              path: 'article/edit/:articleID',
               component: ArticleEditView
             },
             {
-              path: ':userID/article/list',
+              path: 'article/list',
               component: ArticleListView
             },
             {
-              path: ':userID/article/create',
+              path: 'article/create',
               component: ArticleEditView
-            },
-            {
-              path: ':userID/article/index',
-              component: ArticleIndexView
             }
           ]
         },

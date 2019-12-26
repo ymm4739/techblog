@@ -1,7 +1,7 @@
 <template>
   <el-container>
     <el-aside style="">
-      <blog-nav-menu />
+      <admin-nav-menu />
     </el-aside>
     <el-container>
       <router-view />
@@ -10,11 +10,11 @@
   </el-container>
 </template>
 <script>
-import BlogNavMenu from '@/components/BlogNavMenu'
+import AdminNavMenu from '@/components/AdminNavMenu'
 export default {
   name: 'AdminLayout',
   components: {
-    BlogNavMenu
+    AdminNavMenu
   }
 }
 </script>
