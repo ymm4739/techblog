@@ -74,6 +74,10 @@ const router = new Router({
             {
               path: 'article/create',
               component: ArticleEditView
+            },
+            {
+              path: 'article/thumbs/list',
+              component: () => import('@/views/admin/thumbsList')
             }
           ]
         },
@@ -113,6 +117,7 @@ router.beforeEach((to, from, next) => {
       })
     } else if (requestRoles.every(role => {
       let { roles } = store.getters.user
+      // 数组有Observer无法取值，需要转化
       roles = JSON.parse(JSON.stringify(roles))
       return roles.includes(role)
     })) {

@@ -1,24 +1,36 @@
 <template>
   <el-main>
-    <div class='article_list'>
+    <div class='article_list'
+         v-loading="loading"
+         element-loading-text="拼命加载中"
+         element-loading-spinner="el-icon-loading"
+         element-loading-background="white">
       <el-row>
         <span class="desc_left">文章列表</span>
         <el-button class="create_button"
                    @click="create">新建</el-button>
       </el-row>
       <el-row>
-        <el-col :span="3">
+        <el-col :span="4">
           <el-input v-model="search"
-                    placeholder="关键字搜索"></el-input>
+                    placeholder="关键字搜索"
+                    clearable
+                    @clear="handlerSearchClear">
+            <el-button slot="append"
+                       size="mini"
+                       @click="handlerSearch">
+              <font-awesome-icon :icon="['fas', 'search']" />
+            </el-button>
+          </el-input>
+
         </el-col>
       </el-row>
 
-      <el-table :data="articles.filter(data => !search || data.title.toLowerCase().includes(search.toLowerCase().trim()))"
+      <el-table :data="tableData"
                 v-if="articles.length"
-                stripe
-                highlight-current-row
                 size="mini"
-                :default-sort="{prop: 'updatedTime', order: 'descending'}">
+                @sort-change="customSort"
+                :row-class-name="tableStyle">
         <el-table-column prop="title"
                          label="标题"
                          min-width="250px">
@@ -30,12 +42,12 @@
 
         <el-table-column prop="updatedTime"
                          label="时间"
-                         :sortable="true"
+                         sortable="custom"
                          width="200px"></el-table-column>
         <el-table-column label="状态"
                          width="80px"
                          prop="isPublished"
-                         :sortable="true"
+                         sortable="custom"
                          :formatter="publishedFormatter"
                          :filters="[{text:'已发布', value: 1}, {text:'草稿', value: 0}]"
                          :filter-method="publishedFilter">
@@ -43,15 +55,15 @@
         </el-table-column>
         <el-table-column prop="likedNums"
                          label="点赞数"
-                         :sortable="true"
+                         sortable="custom"
                          width="100px"></el-table-column>
         <el-table-column prop="commentNums"
                          label="评论数"
-                         :sortable="true"
+                         sortable="custom"
                          width="100px"></el-table-column>
         <el-table-column prop="collectedNums"
                          label="收藏数"
-                         :sortable="true"
+                         sortable="custom"
                          width="100px"></el-table-column>
         <el-table-column label="操作"
                          width="250px">
@@ -66,6 +78,16 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-pagination :hide-on-single-page="false"
+                     layout="total, sizes, prev, pager, next, jumper"
+                     :page-size="pageSize"
+                     :page-sizes="pageSizes"
+                     :total="total"
+                     :current-page="currentPage"
+                     @size-change="handlerSizeChange"
+                     @current-change="handlerCurrentChange"
+                     class="pagination"></el-pagination>
+
       <div v-if="!articles.length">暂无数据</div>
     </div>
   </el-main>
@@ -80,18 +102,64 @@ export default {
       articles: [],
       urlPrefix: '/user/' + this.$route.params.userID + '/article/',
       userID: this.$store.getters.userID,
-      search: ''
+      search: '',
+      loading: true,
+      pageSizes: [5, 10, 20],
+      pageSize: 5,
+      currentPage: 1,
+      sort: 'updated_time',
+      order: 'desc',
+      total: 0
     }
   },
   created () {
-    list(this.userID).then(res => {
-      this.articles = res.data || []
-    })
+    this.fetchData()
+  },
+  computed: {
+    filterData () {
+      return this.articles.filter(data => !this.search || data.title.toLowerCase().includes(this.search.toLowerCase().trim()))
+    },
+    tableData () {
+      // let data = this.filterData
+      // return data.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize)
+      return this.articles
+    },
+    offset () {
+      return (this.currentPage - 1) * this.pageSize
+    }
   },
   inject: [
     'reload'
   ],
   methods: {
+    fetchData () {
+      this.loading = true
+      let data = {
+        authorID: this.userID,
+        offset: this.offset,
+        limit: this.pageSize,
+        sort: this.sort,
+        order: this.order,
+        search: this.search
+      }
+      list(data).then(res => {
+        this.total = res.data.total || 0
+        this.articles = res.data.data || []
+      })
+      this.loading = false
+    },
+    handlerSearch () {
+      this.currentPage = 1
+      this.fetchData()
+    },
+    handlerSizeChange (val) {
+      this.pageSize = val
+      this.handlerCurrentChange(1)
+    },
+    handlerCurrentChange (val) {
+      this.currentPage = val
+      this.fetchData()
+    },
     handlerView (row) {
       if (row.isPublished) {
         this.$router.push({ path: '/article/show/' + row.id })
@@ -118,17 +186,56 @@ export default {
     },
     publishedFilter (value, row) {
       return value === row.isPublished
+    },
+    customSort (obj) {
+      console.log(obj)
+      let { prop, order } = obj
+      console.log(prop)
+      console.log(order)
+      this.order = order === 'ascending' ? 'asc' : 'desc'
+      if (prop === 'updatedTime') {
+        this.sort = 'updated_time'
+      } else if (prop === 'isPublished') {
+        this.sort = 'is_published'
+      } else if (prop === 'likedNums') {
+        this.sort = 'liked_nums'
+      } else if (prop === 'commentNums') {
+        this.sort = 'comment_nums'
+      } else if (prop === 'collectNums') {
+        this.sort = 'collect_nums'
+      }
+      this.handlerCurrentChange(1)
+    },
+    tableStyle ({ row, rowIndex }) {
+      if (row.isPublished === 1) {
+        return 'published_row'
+      }
+      return ''
+    },
+    handlerSearchClear () {
+      this.search = ''
+      this.handlerCurrentChange(1)
     }
   }
 }
 </script>
-<style scoped>
+<style >
 .create_button {
   float: right;
 }
 .desc_left {
   float: left;
 }
-.article_list {
+
+.pagination {
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+.el-table .published_row {
+  font-weight: bolder;
+}
+.el-table .draft_row {
+  background: greenyellow;
 }
 </style>

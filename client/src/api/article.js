@@ -9,10 +9,8 @@ export function index (authorID, readerID) {
 
   })
 }
-export function list (authorID) {
-  let query = {
-    authorID: authorID
-  }
+export function list (data) {
+  let query = data
   return request({
     url: '/article/list?' + qs.stringify(query)
   })
@@ -51,5 +49,11 @@ export function _delete (articleID) {
 export function get (articleID) {
   return request({
     url: '/article/' + articleID
+  })
+}
+
+export function getThumbsList (data) {
+  return request({
+    url: '/article/thumbs/list?' + qs.stringify(data)
   })
 }
