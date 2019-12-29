@@ -7,6 +7,7 @@ import com.zhumingbei.techblog.mapper.LikedArticleMapper;
 import com.zhumingbei.techblog.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 @Service
@@ -36,8 +37,10 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public List<ArticleBean> getArticlesInOneUser(int userID) {
-        return articleMapper.selectAllInOneUser(userID);
+    public List<ArticleBean> getArticlesInOneUser(int authorID, int offset, int limit, String sort, String order,  String search) {
+
+        return articleMapper.selectAllInOneUser(authorID, offset, limit, sort, order, search);
+
     }
 
     @Override
@@ -56,12 +59,21 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public ArticleBean findByArticleID(int articleID) {
-        return articleMapper.selectByID(articleID);
+    public int count(int authorID, String search) {
+        return articleMapper.count(authorID, search);
     }
-
     @Override
     public List<LikedArticleBean> findLikedArticlesByUserID(int readerID) {
         return likedArticleMapper.select(readerID, 1);
+    }
+
+    @Override
+    public List<ArticleBean> getThumbsArticles(int userID, int offset, int limit, String search) {
+        return articleMapper.selectThumbsArticles(userID, offset, limit, search);
+    }
+
+    @Override
+    public int countThumbs(int userID, String search) {
+        return articleMapper.countThumbs(userID, search);
     }
 }

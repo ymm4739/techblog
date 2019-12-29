@@ -15,6 +15,7 @@
         <result property="commentNums" column="comment_nums" />
         <result property="isDeleted" column="is_deleted" />
         <result property="isPublished" column="is_published" />
+        <result property="thumbsTime" column="thumbs_time_format" />
         <result property="updatedTime" column="updated_time_format" />
         <result property="createdTime" column="created_time_format" />
         <association property="author" column="author_id"  resultMap="AuthorMap" />
@@ -56,11 +57,20 @@
         inner join user u on u.id = a.author_id
         where a.id = #{articleID} and a.is_deleted = 0 and a.is_published = 1;
     </select>
+    <select id="count" resultType="int">
+        select count(id)
+        from article a
+        where a.author_id = #{authorID} and a.is_deleted = 0
+        <if test="search != null"> and a.title like '%${search}%'</if>
+    </select>
     <select id="selectAllInOneUser" resultMap="ArticleMap">
         select a.id, a.title, a.content, a.html, a.summary, a.summary_image, a.liked_nums, a.collected_nums, a.comment_nums, a.is_published, a.is_deleted, date_format(a.updated_time, '%Y-%m-%d %H:%i:%s') as updated_time_format, date_format(a.created_time, '%Y-%m-%d %H:%i:%s') as created_time_format, a.author_id
         from article a
         inner join user u on u.id = a.author_id
-        where a.author_id = #{userID} and a.is_deleted = 0
+        where a.author_id = #{authorID} and a.is_deleted = 0
+        <if test="search !=null"> and a.title like '%${search}%'</if>
+        order by a.${sort} ${order}
+        limit #{offset}, #{limit}
     </select>
     <select id="selectPublishedInOneUser" resultMap="ArticleMap">
         select a.id, a.title, a.content, a.html, a.summary, a.summary_image, a.liked_nums, a.collected_nums, a.comment_nums, a.is_published, a.is_deleted, date_format(a.updated_time, '%Y-%m-%d %H:%i:%s') as updated_time_format, date_format(a.created_time, '%Y-%m-%d %H:%i:%s') as created_time_format, a.author_id
@@ -70,10 +80,36 @@
         order by a.updated_time desc;
     </select>
     <select id="selectDraftInOneUser" resultMap="ArticleMap">
-        select a.id, a.title, a.content, a.html, a.summary, a.summary_image, a.liked_nums, a.collected_nums, a.comment_nums, a.is_published, a.is_deleted, date_format(a.updated_time, '%Y-%m-%d %H:%i:%s') as updated_time_format, date_format(a.created_time, '%Y-%m-%d %H:%i:%s') as created_time_format, a.author_id
+        select a.id, a.title, a.content, a.html, a.summary, a.summary_image, a.liked_nums, a.collected_nums, a.comment_nums, a.is_published, a.is_deleted,
+        date_format(a.updated_time, '%Y-%m-%d %H:%i:%s') as updated_time_format, date_format(a.created_time, '%Y-%m-%d %H:%i:%s') as created_time_format,
+        a.author_id
         from article a
         inner join user u on u.id = a.author_id
         where a.author_id = #{userID} and a.is_deleted = 0 and is_published = 0;
+    </select>
+    <select id="selectThumbsArticles" resultMap="ArticleMap">
+        select a.id, a.title, a.content, a.html, a.summary, a.summary_image, a.liked_nums, a.collected_nums, a.comment_nums, a.is_published, a.is_deleted,
+        date_format(a.updated_time, '%Y-%m-%d %H:%i:%s') as updated_time_format,
+        date_format(a.created_time, '%Y-%m-%d %H:%i:%s') as created_time_format,
+        date_format(la.updated_time, '%Y-%m-%d %H:%i:%s') as thumbs_time_format,
+        a.author_id,
+        u.username, u.avatar
+        from article a
+        inner join user u on u.id = a.author_id
+        inner join liked_article la on la.user_id = #{userID} and la.article_id = a.id
+        where a.is_deleted = 0 and a.is_published = 1 and la.is_liked = 1
+        <if test="search != null">and ( a.title like '%${search}%' or u.username like '%${search}%' )</if>
+        order by la.updated_time desc
+        limit #{offset}, #{limit}
+    </select>
+
+    <select id="countThumbs" resultType="int">
+        select count(a.id)
+        from article a
+        inner join user u on u.id = a.author_id
+        inner join liked_article la on la.user_id = #{userID} and la.article_id = a.id
+        where a.is_deleted = 0 and a.is_published = 1 and la.is_liked = 1
+        <if test="search != null">and ( a.title like '%${search}%' or u.username like '%${search}%' )</if>
     </select>
     <update id="update" parameterType="ArticleBean">
         update article

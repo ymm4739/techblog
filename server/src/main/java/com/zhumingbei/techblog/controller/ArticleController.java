@@ -31,8 +31,17 @@ public class ArticleController {
     }
 
     @GetMapping("/article/list")
-    public List<ArticleBean> getAllArticlesByAuthor(int authorID) {
-        return articleService.getArticlesInOneUser(authorID);
+    public HashMap<String, Object> getAllArticlesByAuthor(int authorID, int offset, int limit, String sort, String order,  String search) {
+        if (search.isEmpty()) {
+            search = null;
+        }
+
+        int total = articleService.count(authorID, search);
+        List<ArticleBean> data = articleService.getArticlesInOneUser(authorID, offset, limit, sort, order, search);
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("total", total);
+        result.put("data", data);
+        return result;
     }
 
     @GetMapping("/article/index/{authorID}")
@@ -44,7 +53,18 @@ public class ArticleController {
         result.put("likes", likedArticleID);
         return ApiResponse.ofSuccess(result);
     }
-
+    @GetMapping("/article/thumbs/list")
+    public HashMap<String, Object> getThumbsArticles(int userID, int offset, int limit, String search) {
+        if (search.isEmpty()) {
+            search =null;
+        }
+        List<ArticleBean> articleBeans = articleService.getThumbsArticles(userID, offset, limit, search);
+        int total = articleService.countThumbs(userID, search);
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("total", total);
+        result.put("data", articleBeans);
+        return result;
+    }
     @PostMapping("/article/create")
     public ApiResponse create(int authorID, String title, String content, String html, String summary, String summaryImage, boolean isPublished) {
         ArticleBean article = new ArticleBean();
