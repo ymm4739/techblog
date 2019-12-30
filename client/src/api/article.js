@@ -58,10 +58,7 @@ export function getThumbsList (data) {
   })
 }
 
-export function getHomeArticles (readerID) {
-  let query = {
-    readerID
-  }
+export function getHomeArticles (query) {
   return request({
     url: '/article?' + qs.stringify(query)
   })

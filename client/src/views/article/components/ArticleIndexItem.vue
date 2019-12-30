@@ -1,16 +1,16 @@
 <template>
   <div>
     <div v-if="!isAuthor">
-      <el-avatar :src="article.author.avatar"></el-avatar>
-      <span>
-        <el-link @click="viewAuthor">{{article.author.username}}</el-link>
-      </span>
+
     </div>
     <div class="title_link">
-      <el-link type="primary"
-               @click="view(article.id)">{{article.title}}</el-link>
+      <h3>
+        <el-link type="primary"
+                 @click="view(article.id)">
+          {{article.title}}
+        </el-link>
+      </h3>
     </div>
-
     <el-row :gutter="10">
       <el-col :span="4"
               v-if="article.summaryImage">
@@ -49,7 +49,13 @@
                  style="color:black">
         <font-awesome-icon :icon="['far', 'comment']" />{{article.commentNums}}
       </el-button>
-      <span class="time">{{article.updatedTime}}</span>
+      <span class="time">
+
+        <el-button size="mini"
+                   type="text"
+                   @click="viewAuthor">{{article.author.username}}</el-button>
+        {{article.updatedTime}}
+      </span>
     </div>
     <el-divider class="divider"></el-divider>
 
