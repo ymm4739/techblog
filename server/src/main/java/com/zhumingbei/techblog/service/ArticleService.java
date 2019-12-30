@@ -6,7 +6,7 @@ import com.zhumingbei.techblog.bean.LikedArticleBean;
 import java.util.List;
 
 public interface ArticleService {
-    List<ArticleBean> getAll();
+    List<ArticleBean> getAll(int offset, int limit);
     void create(ArticleBean article);
     ArticleBean findByID(int articleID);
     ArticleBean findPublishedByID(int articleID);

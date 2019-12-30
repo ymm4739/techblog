@@ -18,8 +18,8 @@ public class ArticleServiceImpl implements ArticleService {
     @Autowired
     private LikedArticleMapper likedArticleMapper;
     @Override
-    public List<ArticleBean> getAll() {
-        return articleMapper.selectAll();
+    public List<ArticleBean> getAll(int offset, int limit) {
+        return articleMapper.selectAll(offset, limit);
     }
     @Override
     public void create(ArticleBean article) {

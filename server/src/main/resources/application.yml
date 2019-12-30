@@ -75,6 +75,8 @@ url:
   ignore:
     get:
       - "/user/email/activate"
+      - "/user/profile/*"
+      - "/article"
     post:
       - "/registry"
       - "/login"

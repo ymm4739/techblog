@@ -7,7 +7,7 @@ import java.util.List;
 
 @Repository
 public interface ArticleMapper {
-    List<ArticleBean> selectAll();
+    List<ArticleBean> selectAll(int offset, int limit);
 
     void insert (ArticleBean article);
 

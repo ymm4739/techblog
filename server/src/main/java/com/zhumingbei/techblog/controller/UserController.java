@@ -15,6 +15,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -141,6 +142,11 @@ public class UserController {
         HttpSession session = request.getSession();
         UserBean user = userService.findByToken(session.getId());
         return user;
+    }
+
+    @GetMapping("/user/profile/{userID}")
+    public UserBean profile(@PathVariable("userID") int userID){
+        return userService.findByID(userID);
     }
 
     @PostMapping("/logout")
