@@ -26,9 +26,9 @@ public class ArticleController {
 
 
     @GetMapping("/article")
-    public HashMap<String, Object> getList(@RequestParam(required = false) int readerID, int offset, int limit) {
+    public HashMap<String, Object> getList(@RequestParam(required = false) Integer readerID, int offset, int limit) {
         List<ArticleBean> articleBeans = articleService.getAll(offset, limit);
-        List<Integer> likedArticleIDs = getLikedArticlesID((Integer) readerID);
+        List<Integer> likedArticleIDs = getLikedArticlesID(readerID);
         HashMap<String, Object> result = new HashMap<>();
         result.put("articles", articleBeans);
         result.put("likes", likedArticleIDs);
