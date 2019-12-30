@@ -6,7 +6,6 @@
         <article-index-item v-for="article in articles"
                             :article="article"
                             :authorID="authorID"
-                            :isAuthor="true"
                             :likes="likes"
                             :key="article.id"></article-index-item>
       </ul>
@@ -15,7 +14,7 @@
 </template>
 <script>
 import ArticleIndexItem from './components/ArticleIndexItem'
-import { index } from '@/api/article'
+import { getHomeArticles } from '@/api/article'
 export default {
   name: 'ArticleIndexView',
   components: {
@@ -30,7 +29,7 @@ export default {
     }
   },
   created () {
-    index(this.authorID, this.readerID).then(res => {
+    getHomeArticles(this.readerID).then(res => {
       let data = res.data
       if (data) {
         this.articles = data.articles

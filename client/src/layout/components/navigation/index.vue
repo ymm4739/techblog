@@ -7,7 +7,7 @@
              router
              active-text-color="yellow">
       <el-menu-item index="/home">首页</el-menu-item>
-      <el-menu-item index="/post">文章</el-menu-item>
+      <el-menu-item index="/article">文章</el-menu-item>
       <el-menu-item :index="adminHome"
                     v-if="login">管理</el-menu-item>
       <el-menu-item index=""
@@ -72,7 +72,7 @@ export default {
   },
   computed: {
     userProfile: function () {
-      return '/user/profile'
+      return '/user/profile/' + this.user.id
     },
     userPassword: function () {
       return '/user/changePassword'

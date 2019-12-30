@@ -20,9 +20,6 @@
         <el-form-item label="邮箱">{{user.email}}
           <el-input v-if="modify"
                     :placeholder="email"></el-input>
-          <el-button v-if="!activated"
-                     type="primary"
-                     @click="activate">激活邮箱</el-button>
         </el-form-item>
         <el-form-item>
           <el-button type="primary"
@@ -34,29 +31,29 @@
 </template>
 <script>
 import { Message } from 'element-ui'
+import { profile } from '@/api/user'
 export default {
   name: 'Profile',
   data () {
     return {
-      user: this.$store.getters.user,
+      user: '',
       modify: false,
-      activated: this.$store.state.user.isValidEmail
+      activated: this.$store.state.user.isValidEmail,
+      userID: this.$route.params.userID
     }
   },
   created () {
-    if (this.username === '') {
-      this.$store.dispatch('user/getInfo')
-    }
+    this.fetchData()
   },
   computed: {
     username () {
-      return this.$store.state.user.username
+      return this.user.username
     },
     email () {
-      return this.$store.state.user.email
+      return this.user.email
     },
     avatar () {
-      return this.$store.state.user.avatar
+      return this.user.avatar
     }
 
   },
@@ -76,6 +73,11 @@ export default {
       console.log(file)
       this.$store.dispatch('user/changeAvatar', file).then(res => {
 
+      })
+    },
+    fetchData () {
+      profile(this.userID).then(res => {
+        this.user = res.data
       })
     }
   }

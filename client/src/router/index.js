@@ -37,12 +37,13 @@ const router = new Router({
       component: Layout,
       children: [
         {
-          path: 'user/profile',
+          path: 'user/profile/:userID',
           name: 'profile',
           component: Profile
         },
         {
-          path: ''
+          path: 'article',
+          component: () => import('@/views/article/home')
         },
         {
           path: 'article/show/:articleID',

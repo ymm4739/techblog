@@ -57,3 +57,12 @@ export function getThumbsList (data) {
     url: '/article/thumbs/list?' + qs.stringify(data)
   })
 }
+
+export function getHomeArticles (readerID) {
+  let query = {
+    readerID
+  }
+  return request({
+    url: '/article?' + qs.stringify(query)
+  })
+}

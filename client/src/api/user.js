@@ -23,7 +23,11 @@ export function getInfo () {
     method: 'get'
   })
 }
-
+export function profile (userID) {
+  return request({
+    url: '/user/profile/' + userID
+  })
+}
 export function logout () {
   return request({
     url: api.logout,

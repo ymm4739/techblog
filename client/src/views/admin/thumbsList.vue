@@ -34,10 +34,15 @@
             </template>
           </el-table-column>
           <el-table-column prop="avatar"
-                           label="作者">
+                           label="头像">
             <template slot-scope="scope">
               <el-avatar :src="scope.row.author.avatar"></el-avatar>
-              {{scope.row.author.username}}
+            </template>
+          </el-table-column>
+          <el-table-column prop="username"
+                           label="作者">
+            <template slot-scope="scope">
+              <el-link @click="viewAuthor(scope.row)">{{scope.row.author.username}}</el-link>
             </template>
           </el-table-column>
           <el-table-column prop="likedNums"
@@ -135,6 +140,10 @@ export default {
         Message.success(res.message)
         this.reload()
       })
+    },
+    viewAuthor (row) {
+      console.log(row.author.id)
+      this.$router.push({ path: '/user/profile/' + row.author.id })
     }
   }
 }

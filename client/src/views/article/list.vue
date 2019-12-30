@@ -1,7 +1,6 @@
 <template>
   <el-main>
-    <div class='article_list'
-         v-loading="loading"
+    <div v-loading="loading"
          element-loading-text="拼命加载中"
          element-loading-spinner="el-icon-loading"
          element-loading-background="white">
@@ -10,86 +9,86 @@
         <el-button class="create_button"
                    @click="create">新建</el-button>
       </el-row>
-      <el-row>
-        <el-col :span="4">
-          <el-input v-model="search"
-                    placeholder="关键字搜索"
-                    clearable
-                    @clear="handlerSearchClear">
-            <el-button slot="append"
-                       size="mini"
-                       @click="handlerSearch">
-              <font-awesome-icon :icon="['fas', 'search']" />
-            </el-button>
-          </el-input>
+      <div v-if="articles.length">
+        <el-row>
+          <el-col :span="4">
+            <el-input v-model="search"
+                      placeholder="关键字搜索"
+                      clearable
+                      @clear="handlerSearchClear">
+              <el-button slot="append"
+                         size="mini"
+                         @click="handlerSearch">
+                <font-awesome-icon :icon="['fas', 'search']" />
+              </el-button>
+            </el-input>
 
-        </el-col>
-      </el-row>
+          </el-col>
+        </el-row>
 
-      <el-table :data="tableData"
-                v-if="articles.length"
-                size="mini"
-                @sort-change="customSort"
-                :row-class-name="tableStyle">
-        <el-table-column prop="title"
-                         label="标题"
-                         min-width="250px">
-          <template slot-scope="scope">
-            <el-button type="text"
-                       size="mini"
-                       @click="handlerView(scope.row)">{{scope.row.title}}</el-button>
-          </template></el-table-column>
+        <el-table :data="tableData"
+                  size="mini"
+                  @sort-change="customSort"
+                  :row-class-name="tableStyle">
+          <el-table-column prop="title"
+                           label="标题"
+                           min-width="250px">
+            <template slot-scope="scope">
+              <el-button type="text"
+                         size="mini"
+                         @click="handlerView(scope.row)">{{scope.row.title}}</el-button>
+            </template></el-table-column>
 
-        <el-table-column prop="updatedTime"
-                         label="时间"
-                         sortable="custom"
-                         width="200px"></el-table-column>
-        <el-table-column label="状态"
-                         width="80px"
-                         prop="isPublished"
-                         sortable="custom"
-                         :formatter="publishedFormatter"
-                         :filters="[{text:'已发布', value: 1}, {text:'草稿', value: 0}]"
-                         :filter-method="publishedFilter">
+          <el-table-column prop="updatedTime"
+                           label="时间"
+                           sortable="custom"
+                           width="200px"></el-table-column>
+          <el-table-column label="状态"
+                           width="80px"
+                           prop="isPublished"
+                           sortable="custom"
+                           :formatter="publishedFormatter"
+                           :filters="[{text:'已发布', value: 1}, {text:'草稿', value: 0}]"
+                           :filter-method="publishedFilter">
 
-        </el-table-column>
-        <el-table-column prop="likedNums"
-                         label="点赞数"
-                         sortable="custom"
-                         width="100px"></el-table-column>
-        <el-table-column prop="commentNums"
-                         label="评论数"
-                         sortable="custom"
-                         width="100px"></el-table-column>
-        <el-table-column prop="collectedNums"
-                         label="收藏数"
-                         sortable="custom"
-                         width="100px"></el-table-column>
-        <el-table-column label="操作"
-                         width="250px">
-          <template slot-scope="scope">
-            <el-button size="mini"
-                       @click="handlerView(scope.row)">查看</el-button>
-            <el-button size="mini"
-                       @click="handlerUpdate(scope.row)">编辑</el-button>
-            <el-button size="mini"
-                       type="danger"
-                       @click="handlerDelete(scope.row)">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <el-pagination :hide-on-single-page="false"
-                     layout="total, sizes, prev, pager, next, jumper"
-                     :page-size="pageSize"
-                     :page-sizes="pageSizes"
-                     :total="total"
-                     :current-page="currentPage"
-                     @size-change="handlerSizeChange"
-                     @current-change="handlerCurrentChange"
-                     class="pagination"></el-pagination>
-
-      <div v-if="!articles.length">暂无数据</div>
+          </el-table-column>
+          <el-table-column prop="likedNums"
+                           label="点赞数"
+                           sortable="custom"
+                           width="100px"></el-table-column>
+          <el-table-column prop="commentNums"
+                           label="评论数"
+                           sortable="custom"
+                           width="100px"></el-table-column>
+          <el-table-column prop="collectedNums"
+                           label="收藏数"
+                           sortable="custom"
+                           width="100px"></el-table-column>
+          <el-table-column label="操作"
+                           width="250px">
+            <template slot-scope="scope">
+              <el-button size="mini"
+                         @click="handlerView(scope.row)">查看</el-button>
+              <el-button size="mini"
+                         @click="handlerUpdate(scope.row)">编辑</el-button>
+              <el-button size="mini"
+                         type="danger"
+                         @click="handlerDelete(scope.row)">删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <el-pagination :hide-on-single-page="false"
+                       layout="total, sizes, prev, pager, next, jumper"
+                       :page-size="pageSize"
+                       :page-sizes="pageSizes"
+                       :total="total"
+                       :current-page="currentPage"
+                       @size-change="handlerSizeChange"
+                       @current-change="handlerCurrentChange"
+                       class="pagination"></el-pagination>
+      </div>
     </div>
+    <div v-if="!articles.length">暂无数据</div>
   </el-main>
 </template>
 <script>
@@ -145,8 +144,10 @@ export default {
       list(data).then(res => {
         this.total = res.data.total || 0
         this.articles = res.data.data || []
+        this.loading = false
+      }).catch(() => {
+        this.loading = false
       })
-      this.loading = false
     },
     handlerSearch () {
       this.currentPage = 1

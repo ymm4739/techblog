@@ -1,6 +1,11 @@
 <template>
   <div>
-
+    <div v-if="!isAuthor">
+      <el-avatar :src="article.author.avatar"></el-avatar>
+      <span>
+        <el-link @click="viewAuthor">{{article.author.username}}</el-link>
+      </span>
+    </div>
     <div class="title_link">
       <el-link type="primary"
                @click="view(article.id)">{{article.title}}</el-link>
@@ -71,6 +76,10 @@ export default {
     likes: {
       type: Array,
       default: null
+    },
+    isAuthor: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -97,6 +106,9 @@ export default {
     },
     collect () {
       this.collected = !this.collected
+    },
+    viewAuthor () {
+      this.$router.push({ path: '/user/profile/' + this.article.author.id })
     }
   }
 }
