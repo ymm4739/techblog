@@ -1,28 +1,28 @@
 <template>
-  <div>
-    <div v-if="!isAuthor">
-
-    </div>
+  <div class="item">
     <div class="title_link">
       <h3>
         <el-link type="primary"
-                 @click="view(article.id)">
+                 @click="view(article.id)"
+                 style="color:black">
           {{article.title}}
         </el-link>
       </h3>
     </div>
     <el-row :gutter="10">
+      <el-col :span="20">
+        <p>
+          {{article.summary}}
+          <el-link type="success"
+                   @click="view(article.id)"
+                   icon="el-icon-view">阅读全文</el-link>
+        </p>
+      </el-col>
       <el-col :span="4"
               v-if="article.summaryImage">
         <el-image :src="article.summaryImage"
                   fit="cover"
-                  style="height:150px"></el-image>
-      </el-col>
-      <el-col :span="20">
-        <p>{{article.summary}} <el-link type="success"
-                   @click="view(article.id)"
-                   icon="el-icon-view">阅读全文</el-link>
-        </p>
+                  style="width:150px;height:100px"></el-image>
       </el-col>
     </el-row>
 
@@ -57,7 +57,6 @@
         {{article.updatedTime}}
       </span>
     </div>
-    <el-divider class="divider"></el-divider>
 
   </div>
 </template>
@@ -120,6 +119,11 @@ export default {
 }
 </script>
 <style scoped>
+.item {
+  max-height: 300px;
+  border-top: 1px solid gray;
+}
+
 .desc_right {
   position: relative;
   margin: 0;

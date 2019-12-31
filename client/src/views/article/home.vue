@@ -1,31 +1,28 @@
 <template>
   <el-main class="main">
-    <div class="infinite">
-      <h2 v-if="!articles.length">暂无博客</h2>
-      <ul style="margin:0px;padding:0px;"
-          v-infinite-scroll="fetchData"
-          infinite-scroll-disabled="scrollDisable">
-        <article-index-item v-for="article in articles"
-                            :article="article"
-                            :authorID="authorID"
-                            :likes="likes"
-                            :key="article.id"></article-index-item>
-      </ul>
-      <p v-if="loading"
-         v-loading="loading"
-         element-loading-text="拼命加载中"
-         element-loading-spinner="el-icon-loading"></p>
-      <p v-if="noMore">没有更多了</p>
-    </div>
+    <h2 v-if="!articles.length && noMore">暂无博客</h2>
+    <article-index-item class="item"
+                        v-for="article in articles"
+                        :article="article"
+                        :authorID="authorID"
+                        :likes="likes"
+                        :key="article.id"></article-index-item>
+    <p v-if="loading"
+       v-loading="loading"
+       element-loading-text="拼命加载中"
+       element-loading-spinner="el-icon-loading"></p>
+    <p v-if="noMore">没有更多了</p>
   </el-main>
 </template>
 <script>
 import ArticleIndexItem from './components/ArticleIndexItem'
 import { getHomeArticles } from '@/api/article'
+import InfiniteLoading from 'vue-infinite-loading'
 export default {
   name: 'ArticleIndexView',
   components: {
-    ArticleIndexItem
+    ArticleIndexItem,
+    InfiniteLoading
   },
   data () {
     return {
@@ -35,12 +32,15 @@ export default {
       likes: [],
       loading: false,
       noMore: false,
-      limit: 10,
+      limit: 5,
       offset: 0
     }
   },
   created () {
-    // this.fetchData()
+    this.fetchData()
+  },
+  mounted () {
+    this.scroll()
   },
   computed: {
     scrollDisable () {
@@ -55,8 +55,6 @@ export default {
         offset: this.offset,
         limit: this.limit
       }
-      console.log(this.noMore)
-      console.log(query)
       setTimeout(() => {
         getHomeArticles(query).then(res => {
           let data = res.data
@@ -74,6 +72,14 @@ export default {
         }).catch(() => {
         })
       }, 500)
+    },
+    scroll () {
+      window.onscroll = () => {
+        let bottomOfWindow = document.documentElement.offsetHeight - document.documentElement.scrollTop - window.innerHeight <= 200
+        if (bottomOfWindow && !this.scrollDisable) {
+          this.fetchData()
+        }
+      }
     }
   }
 }
@@ -81,9 +87,15 @@ export default {
 <style scoped>
 .main {
   background-color: white;
+  margin-bottom: 0px;
 }
-.infinite {
-  overflow: auto;
-  height: 1000px;
+
+.item {
+  max-height: 300px;
+  padding: 10px;
+  margin-top: 0;
+}
+.item:hover {
+  background-color: #f4f5f5;
 }
 </style>

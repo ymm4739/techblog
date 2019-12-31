@@ -58,35 +58,36 @@ const router = new Router({
           component: ArticleIndexView
         },
         {
-          path: '/',
+          path: 'home',
+          name: 'home',
+          component: Home
+        },
+        {
+          path: '/article',
           component: AdminLayout,
           meta: {
             roles: ['user']
           },
           children: [
             {
-              path: 'article/edit/:articleID',
+              path: 'edit/:articleID',
               component: ArticleEditView
             },
             {
-              path: 'article/list',
+              path: 'list',
               component: ArticleListView
             },
             {
-              path: 'article/create',
+              path: 'create',
               component: ArticleEditView
             },
             {
-              path: 'article/thumbs/list',
+              path: 'thumbs/list',
               component: () => import('@/views/admin/thumbsList')
             }
           ]
-        },
-        {
-          path: 'home',
-          name: 'home',
-          component: Home
-        }]
+        }
+      ]
     },
     {
       path: '/*',
