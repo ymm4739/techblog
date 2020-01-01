@@ -27,4 +27,8 @@ public interface ArticleMapper {
     List<ArticleBean> selectThumbsArticles(int userID, int offset, int limit, String search);
 
     int countThumbs(int userID, String search);
+
+    List<ArticleBean> selectCollectedArticles(int userID, int offset, int limit, String search);
+
+    int countCollectedArticles(int userID, String search);
 }

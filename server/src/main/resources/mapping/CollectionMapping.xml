@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org//dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhumingbei.techblog.mapper.CollectionMapper">
+    <update id="update">
+        update collection
+        set is_collected = #{isCollected}
+        where article_id = #{articleID} and user_id = #{userID}
+    </update>
+    <insert id="insert">
+        insert into collection(article_id, user_id, is_collected) values(#{articleID}, #{userID}, #{isCollected})
+    </insert>
+    <select id="selectByUserID" resultType="int">
+        select article_id from collection where user_id = #{userID} and is_collected = 1
+    </select>
+</mapper>

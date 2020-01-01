@@ -3,6 +3,7 @@ package com.zhumingbei.techblog.service.impl;
 import com.zhumingbei.techblog.bean.ArticleBean;
 import com.zhumingbei.techblog.bean.LikedArticleBean;
 import com.zhumingbei.techblog.mapper.ArticleMapper;
+import com.zhumingbei.techblog.mapper.CollectionMapper;
 import com.zhumingbei.techblog.mapper.LikedArticleMapper;
 import com.zhumingbei.techblog.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,10 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Autowired
     private LikedArticleMapper likedArticleMapper;
+
+    @Autowired
+    private CollectionMapper collectionMapper;
+
     @Override
     public List<ArticleBean> getAll(int offset, int limit) {
         return articleMapper.selectAll(offset, limit);
@@ -75,5 +80,29 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public int countThumbs(int userID, String search) {
         return articleMapper.countThumbs(userID, search);
+    }
+
+
+    @Override
+    public List<ArticleBean> getCollectedArticles(int userID, int offset, int limit, String search) {
+        return articleMapper.selectCollectedArticles(userID, offset, limit, search);
+    }
+
+    @Override
+    public int countCollectedArticles(int userID, String search) {
+        return articleMapper.countCollectedArticles(userID, search);
+    }
+
+    @Override
+    public void collect(int articleID, int userID, int isCollected) {
+        int result = collectionMapper.update(articleID, userID, isCollected);
+        if (result == 0) {
+            collectionMapper.insert(articleID, userID, isCollected);
+        }
+    }
+
+    @Override
+    public List<Integer> findCollectedArticleIDs(int userID) {
+        return collectionMapper.selectByUserID(userID);
     }
 }

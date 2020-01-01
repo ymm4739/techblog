@@ -21,6 +21,7 @@ public class ArticleBean implements Serializable {
     private Integer isPublished;
     private Integer isDeleted;
     private String thumbsTime;
+    private String collectedTime;
     private String updatedTime;
     private String createdTime;
 }

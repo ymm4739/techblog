@@ -28,10 +28,12 @@ public class ArticleController {
     @GetMapping("/article")
     public HashMap<String, Object> getList(@RequestParam(required = false) Integer readerID, int offset, int limit) {
         List<ArticleBean> articleBeans = articleService.getAll(offset, limit);
-        List<Integer> likedArticleIDs = getLikedArticlesID(readerID);
+        List<Integer> likedArticleIDs = getLikedArticleIDs(readerID);
+        List<Integer> collectedArticlesIDs = getCollectedArticleIDs(readerID);
         HashMap<String, Object> result = new HashMap<>();
         result.put("articles", articleBeans);
         result.put("likes", likedArticleIDs);
+        result.put("collections", collectedArticlesIDs);
         return result;
     }
 
@@ -53,10 +55,12 @@ public class ArticleController {
     @GetMapping("/article/index/{authorID}")
     public ApiResponse getPublishedArticlesByAuthor(@PathVariable("authorID") int authorID, @RequestParam(required = false) int readerID) {
         List<ArticleBean> articleBeans = articleService.getPublishedArticlesInOneUser(authorID);
-        List<Integer> likedArticleID = getLikedArticlesID(readerID);
+        List<Integer> likedArticleIDs = getLikedArticleIDs(readerID);
+        List<Integer> collectedArticleIDs = getCollectedArticleIDs(readerID);
         HashMap result = new HashMap();
         result.put("articles", articleBeans);
-        result.put("likes", likedArticleID);
+        result.put("likes", likedArticleIDs);
+        result.put("collections", collectedArticleIDs);
         return ApiResponse.ofSuccess(result);
     }
 
@@ -117,11 +121,12 @@ public class ArticleController {
     @GetMapping("/article/show/{articleID}")
     public ApiResponse show(@PathVariable("articleID") int articleID, @RequestParam(required = false) Integer readerID) {
         ArticleBean articleBean = articleService.findPublishedByID(articleID);
-        List<Integer> likedArticlesID = getLikedArticlesID(readerID);
-
+        List<Integer> likedArticleIDs = getLikedArticleIDs(readerID);
+        List<Integer> collectedArticleIDs = getCollectedArticleIDs(readerID);
         HashMap result = new HashMap();
         result.put("article", articleBean);
-        result.put("likes", likedArticlesID);
+        result.put("likes", likedArticleIDs);
+        result.put("collections", collectedArticleIDs);
         return ApiResponse.ofSuccess(result);
     }
 
@@ -156,7 +161,7 @@ public class ArticleController {
         return summary;
     }
 
-    private List<Integer> getLikedArticlesID(Integer readerID) {
+    private List<Integer> getLikedArticleIDs(Integer readerID) {
         if (readerID == null) {
             return new ArrayList<>();
         }
@@ -166,5 +171,12 @@ public class ArticleController {
             likedArticleID.add(article.getArticleID());
         }
         return likedArticleID;
+    }
+
+    private List<Integer> getCollectedArticleIDs(Integer userID) {
+        if (userID == null) {
+            return new ArrayList<>();
+        }
+        return articleService.findCollectedArticleIDs(userID);
     }
 }

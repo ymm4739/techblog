@@ -18,4 +18,8 @@ public interface ArticleService {
     List<LikedArticleBean> findLikedArticlesByUserID(int readerID);
     List<ArticleBean> getThumbsArticles(int userID, int offset, int limit, String search);
     int countThumbs(int userID, String search);
+    List<ArticleBean> getCollectedArticles(int userID, int offset, int limit, String search);
+    int countCollectedArticles(int userID, String search);
+    void collect(int article, int userID, int isCollected);
+    List<Integer> findCollectedArticleIDs(int userID);
 }
