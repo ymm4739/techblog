@@ -61,6 +61,7 @@
 <script>
 import { show, get } from '@/api/article'
 import { thumbs } from '@/api/user'
+import { collect } from '@/api/collection'
 import { Message } from 'element-ui'
 export default {
   name: 'ArticleShowView',
@@ -70,7 +71,9 @@ export default {
       author: '',
       liked: false,
       collected: false,
-      isShow: this.$route.path.split('/')[2] === 'show'
+      isShow: this.$route.path.split('/')[2] === 'show',
+      articleID: this.$route.params.articleID,
+      userID: this.$store.getters.userID
     }
   },
   created () {
@@ -82,6 +85,7 @@ export default {
           this.article = res.data.article
           this.author = this.article.author
           this.liked = res.data.likes.includes(parseInt(articleID))
+          this.collected = res.data.collections.includes(parseInt(articleID))
         }
       }).catch(() => { })
     } else {
@@ -110,7 +114,17 @@ export default {
       }).catch(() => { })
     },
     _collect () {
-      this.collected = !this.collected
+      let data = {
+        articleID: this.articleID,
+        userID: this.userID,
+        addOne: !this.collected
+      }
+      collect(data).then(res => {
+        this.collected = !this.collected
+        let num = this.collected ? 1 : -1
+        this.article.collectedNums += num
+        Message.success(res.message)
+      }).catch(() => { })
     }
   }
 }

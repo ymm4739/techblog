@@ -6,6 +6,7 @@
                         :article="article"
                         :authorID="authorID"
                         :likes="likes"
+                        :collections="collections"
                         :key="article.id"></article-index-item>
     <p v-if="loading"
        v-loading="loading"
@@ -30,6 +31,7 @@ export default {
       authorID: this.$route.params.authorID,
       readerID: this.$store.getters.userID,
       likes: [],
+      collections: [],
       loading: false,
       noMore: false,
       limit: 5,
@@ -61,6 +63,7 @@ export default {
           if (data) {
             let result = data.articles
             this.likes = data.likes
+            this.collections = data.collections
             if (result && result.length > 0) {
               this.articles = this.articles.concat(result)
               this.offset += result.length

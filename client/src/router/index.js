@@ -86,6 +86,19 @@ const router = new Router({
               component: () => import('@/views/admin/thumbsList')
             }
           ]
+        },
+        {
+          path: '/collection',
+          component: AdminLayout,
+          meta: {
+            roles: ['user']
+          },
+          children: [
+            {
+              path: 'list',
+              component: () => import('@/views/collection/list.vue')
+            }
+          ]
         }
       ]
     },

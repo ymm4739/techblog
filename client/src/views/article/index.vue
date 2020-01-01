@@ -8,6 +8,7 @@
                             :authorID="authorID"
                             :isAuthor="true"
                             :likes="likes"
+                            :collections="collections"
                             :key="article.id"></article-index-item>
       </ul>
     </div>
@@ -26,7 +27,8 @@ export default {
       articles: [],
       authorID: this.$route.params.authorID,
       readerID: this.$store.getters.userID,
-      likes: []
+      likes: [],
+      collections: []
     }
   },
   created () {
@@ -35,6 +37,7 @@ export default {
       if (data) {
         this.articles = data.articles
         this.likes = data.likes
+        this.collections = data.collections
       }
     })
   },

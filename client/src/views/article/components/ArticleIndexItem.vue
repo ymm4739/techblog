@@ -62,6 +62,7 @@
 </template>
 <script>
 import { thumbs } from '@/api/user'
+import { collect } from '@/api/collection'
 import { Message } from 'element-ui'
 import VClamp from 'vue-clamp'
 export default {
@@ -82,6 +83,10 @@ export default {
       type: Array,
       default: null
     },
+    collections: {
+      type: Array,
+      default: null
+    },
     isAuthor: {
       type: Boolean,
       default: false
@@ -90,7 +95,8 @@ export default {
   data () {
     return {
       liked: this.likes.includes(this.article.id),
-      collected: false
+      collected: this.collections.includes(this.article.id),
+      userID: this.$store.getters.userID
     }
   },
   methods: {
@@ -110,7 +116,17 @@ export default {
       }).catch(() => { })
     },
     collect () {
-      this.collected = !this.collected
+      let data = {
+        articleID: this.article.id,
+        userID: this.userID,
+        addOne: !this.collected
+      }
+      collect(data).then(res => {
+        this.collected = !this.collected
+        let num = this.collected ? 1 : -1
+        this.article.collectedNums += num
+        Message.success(res.message)
+      }).catch(() => { })
     },
     viewAuthor () {
       this.$router.push({ path: '/user/profile/' + this.article.author.id })
