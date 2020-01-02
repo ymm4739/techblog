@@ -7,10 +7,10 @@
            element-loading-background="white"
            v-if="articles.length">
         <el-row>
-          <span class="desc_left">点赞文文章列表</span>
+          <span class="desc_left">点赞列表</span>
         </el-row>
         <el-row>
-          <el-col :span="4">
+          <el-col :span="5">
             <el-input v-model="search"
                       placeholder="标题或作者搜索"
                       clearable
@@ -108,7 +108,7 @@ export default {
       }
       getThumbsList(data).then(res => {
         let data = res.data
-        this.articles = data.data
+        this.articles = data.articles
         this.total = data.total
         this.loading = false
       }).catch(() => { this.loading = false })

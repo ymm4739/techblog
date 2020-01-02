@@ -143,7 +143,7 @@ export default {
       }
       list(data).then(res => {
         this.total = res.data.total || 0
-        this.articles = res.data.data || []
+        this.articles = res.data.articles || []
         this.loading = false
       }).catch(() => {
         this.loading = false

@@ -54,6 +54,25 @@
                                size="2x" />
           </el-button>
         </div>
+        <div class="comment_input">
+          <el-form :model="form"
+                   ref="comment_form">
+            <el-form-item label="发表评论">
+              <el-input type="textarea"
+                        v-model="form.comment"></el-input>
+            </el-form-item>
+            <el-button type="primary"
+                       size="mini"
+                       @click="_comment(0)">评论</el-button>
+          </el-form>
+        </div>
+        <div class="comment_detail">
+          <div v-for="comment in comments"
+               :key="comment.id">
+            <p>{{comment.commenter.username}} <span v-if="comment.responseID">回复 {{comment.response.username}}</span> ：</p>
+            <p>{{comment.content}}</p>
+          </div>
+        </div>
       </div>
     </div>
   </el-main>
@@ -62,9 +81,11 @@
 import { show, get } from '@/api/article'
 import { thumbs } from '@/api/user'
 import { collect } from '@/api/collection'
+import { comment } from '@/api/comment'
 import { Message } from 'element-ui'
 export default {
   name: 'ArticleShowView',
+  inject: ['reload'],
   data () {
     return {
       article: '',
@@ -73,7 +94,11 @@ export default {
       collected: false,
       isShow: this.$route.path.split('/')[2] === 'show',
       articleID: this.$route.params.articleID,
-      userID: this.$store.getters.userID
+      userID: this.$store.getters.userID,
+      comments: [],
+      form: {
+        'comment': ''
+      }
     }
   },
   created () {
@@ -86,6 +111,7 @@ export default {
           this.author = this.article.author
           this.liked = res.data.likes.includes(parseInt(articleID))
           this.collected = res.data.collections.includes(parseInt(articleID))
+          this.comments = res.data.comments
         }
       }).catch(() => { })
     } else {
@@ -125,6 +151,18 @@ export default {
         this.article.collectedNums += num
         Message.success(res.message)
       }).catch(() => { })
+    },
+    _comment (responseID) {
+      let data = {
+        content: this.form.comment,
+        userID: this.userID,
+        articleID: this.articleID,
+        responseID: responseID
+      }
+      comment(data).then(res => {
+        Message.success(res.message)
+        this.reload()
+      })
     }
   }
 }

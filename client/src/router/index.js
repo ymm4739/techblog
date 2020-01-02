@@ -96,7 +96,20 @@ const router = new Router({
           children: [
             {
               path: 'list',
-              component: () => import('@/views/collection/list.vue')
+              component: () => import('@/views/admin/collectionList.vue')
+            }
+          ]
+        },
+        {
+          path: '/comment',
+          component: AdminLayout,
+          meta: {
+            roles: ['user']
+          },
+          children: [
+            {
+              path: 'list',
+              component: () => import('@/views/admin/commentList.vue')
             }
           ]
         }

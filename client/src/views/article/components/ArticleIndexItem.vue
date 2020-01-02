@@ -46,7 +46,8 @@
                            style="color:gold" />{{article.collectedNums}}
       </el-button>
       <el-button type="text"
-                 style="color:black">
+                 style="color:black"
+                 @click="comment">
         <font-awesome-icon :icon="['far', 'comment']" />{{article.commentNums}}
       </el-button>
       <span class="time">
@@ -130,6 +131,9 @@ export default {
     },
     viewAuthor () {
       this.$router.push({ path: '/user/profile/' + this.article.author.id })
+    },
+    comment () {
+      this.$router.push({ path: '/article/show/' + this.article.id })
     }
   }
 }
