@@ -3,6 +3,7 @@ package com.zhumingbei.techblog.bean;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Data
 public class ArticleBean implements Serializable {
@@ -14,7 +15,6 @@ public class ArticleBean implements Serializable {
     private String summary;
     private String summaryImage;
     private Integer authorID;
-    private UserBean author;
     private Integer likedNums;
     private Integer collectedNums;
     private Integer commentNums;
@@ -22,6 +22,10 @@ public class ArticleBean implements Serializable {
     private Integer isDeleted;
     private String thumbsTime;
     private String collectedTime;
+    private String commentTime;
     private String updatedTime;
     private String createdTime;
+
+    private UserBean author;
+    private List<CommentBean> comments;
 }

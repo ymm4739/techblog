@@ -24,7 +24,7 @@ public class CollectionController {
         int total = articleService.countCollectedArticles(userID, search);
         HashMap<String, Object> result = new HashMap<>();
         result.put("total", total);
-        result.put("data", articleBeans);
+        result.put("articles", articleBeans);
         return result;
     }
 

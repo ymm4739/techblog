@@ -4,6 +4,7 @@ import com.zhumingbei.techblog.bean.ArticleBean;
 import com.zhumingbei.techblog.bean.LikedArticleBean;
 import com.zhumingbei.techblog.mapper.ArticleMapper;
 import com.zhumingbei.techblog.mapper.CollectionMapper;
+import com.zhumingbei.techblog.mapper.CommentMapper;
 import com.zhumingbei.techblog.mapper.LikedArticleMapper;
 import com.zhumingbei.techblog.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Autowired
     private CollectionMapper collectionMapper;
+
+    @Autowired
+    private CommentMapper commentMapper;
 
     @Override
     public List<ArticleBean> getAll(int offset, int limit) {
@@ -104,5 +108,20 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public List<Integer> findCollectedArticleIDs(int userID) {
         return collectionMapper.selectByUserID(userID);
+    }
+
+    @Override
+    public List<ArticleBean> getCommentArticles(int userID, int offset, int limit, String search) {
+        return articleMapper.selectCommentArticles(userID, offset, limit, search);
+    }
+
+    @Override
+    public int countCommentArticles(int userID, String search) {
+        return articleMapper.countCommentArticles(userID, search);
+    }
+
+    @Override
+    public void comment(int userID, int articleID, int responseID, String content) {
+        commentMapper.insert(userID, articleID, responseID, content);
     }
 }

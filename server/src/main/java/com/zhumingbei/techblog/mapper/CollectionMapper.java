@@ -1,7 +1,9 @@
 package com.zhumingbei.techblog.mapper;
 
-import java.util.List;
+import org.springframework.stereotype.Repository;
 
+import java.util.List;
+@Repository
 public interface CollectionMapper {
     int update(int articleID, int userID, int isCollected);
     void insert(int articleID, int userID, int isCollected);

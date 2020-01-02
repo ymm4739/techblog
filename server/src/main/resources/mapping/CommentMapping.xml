@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org//dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhumingbei.techblog.mapper.CommentMapper">
+
+    <resultMap id="CommentMap" type="com.zhumingbei.techblog.bean.CommentBean">
+        <id property="id" column="id" />
+        <result property="articleID" column="article_id" />
+        <result property="userID" column="user_id" />
+        <result property="responseID" column="response_id" />
+        <result property="content" column="comment_content" />
+        <result property="isDeleted" column="comment_is_deleted" />
+        <result property="updatedTime" column="comment_update_time_format" />
+        <association property="commenter" column="user_id" resultMap="UserMap" />
+        <association property="response" column="response_id" resultMap="ResponseMap" />
+    </resultMap>
+    <resultMap id="UserMap" type="com.zhumingbei.techblog.bean.UserBean">
+        <id property="id" column="user_id" />
+        <result property="username" column="commenter_username"/>
+        <result property="avatar" column="commenter_avatar" />
+    </resultMap>
+    <resultMap id="ResponseMap" type="com.zhumingbei.techblog.bean.UserBean">
+        <id property="id" column="response_id" />
+        <result property="username" column="response_username" />
+        <result property="avatar" column="response_avatar"/>
+    </resultMap>
+    <insert id="insert" >
+        insert into comment(user_id, article_id, response_id, content) values (#{userID}, #{articleID}, #{responseID}, #{content})
+    </insert>
+
+    <select id="selectByID" resultMap="CommentMap">
+        select id, article_id, user_id, response_id, content as comment_content, is_deleted as comment_is_deleted,
+        date_format(updated_time, '%Y-%m-%d %H:%i:%s') as comment_update_time_format
+        from comment where id = #{commentID}
+    </select>
+
+    <select id="selectByArticleID" resultMap="CommentMap">
+        select c.id, c.article_id, c.user_id, c.response_id, c.content as comment_content,
+        date_format(c.updated_time, '%Y-%m-%d %H:%i:%s') as comment_update_time_format,
+        u1.username as commenter_username, u1.avatar as commenter_avatar,
+        u2.username as response_username, u2.avatar as response_avatar
+        from comment c
+        inner join  user u1 on u1.id = c.user_id
+        left join  user u2 on c.response_id = u2.id
+        where c.article_id = #{articleID} and c.is_deleted = 0
+    </select>
+
+    <update id="update" parameterType="com.zhumingbei.techblog.bean.CommentBean">
+        update comment
+        <set>
+            <if test="userID != null">user_id = #{userID},</if>
+            <if test="articleID != null">article_id = #{articleID},</if>
+            <if test="responseID != null">response_id = #{responseID},</if>
+            <if test="isDeleted != null">is_deleted = #{isDeleted},</if>
+            <if test="content != null">content = #{content}</if>
+        </set>
+        where id = #{id}
+    </update>
+</mapper>

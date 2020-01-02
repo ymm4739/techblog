@@ -31,4 +31,8 @@ public interface ArticleMapper {
     List<ArticleBean> selectCollectedArticles(int userID, int offset, int limit, String search);
 
     int countCollectedArticles(int userID, String search);
+
+    List<ArticleBean> selectCommentArticles(int userID, int offset, int limit, String search);
+
+    int countCommentArticles(int userID, String search);
 }

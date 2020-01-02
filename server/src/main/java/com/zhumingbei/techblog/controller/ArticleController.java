@@ -1,11 +1,13 @@
 package com.zhumingbei.techblog.controller;
 
 import com.zhumingbei.techblog.bean.ArticleBean;
+import com.zhumingbei.techblog.bean.CommentBean;
 import com.zhumingbei.techblog.bean.LikedArticleBean;
 import com.zhumingbei.techblog.bean.UserBean;
 import com.zhumingbei.techblog.common.ApiResponse;
 import com.zhumingbei.techblog.common.CustomUserPrincipal;
 import com.zhumingbei.techblog.service.ArticleService;
+import com.zhumingbei.techblog.service.CommentService;
 import com.zhumingbei.techblog.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +24,7 @@ public class ArticleController {
     private ArticleService articleService;
 
     @Autowired
-    private UserService userService;
+    private CommentService commentService;
 
 
     @GetMapping("/article")
@@ -73,7 +75,7 @@ public class ArticleController {
         int total = articleService.countThumbs(userID, search);
         HashMap<String, Object> result = new HashMap<>();
         result.put("total", total);
-        result.put("data", articleBeans);
+        result.put("articles", articleBeans);
         return result;
     }
 
@@ -121,12 +123,17 @@ public class ArticleController {
     @GetMapping("/article/show/{articleID}")
     public ApiResponse show(@PathVariable("articleID") int articleID, @RequestParam(required = false) Integer readerID) {
         ArticleBean articleBean = articleService.findPublishedByID(articleID);
+        if (articleBean == null) {
+            return ApiResponse.of(40000, "文章不存在");
+        }
         List<Integer> likedArticleIDs = getLikedArticleIDs(readerID);
         List<Integer> collectedArticleIDs = getCollectedArticleIDs(readerID);
+        List<CommentBean> commentBeans = getComments(articleID);
         HashMap result = new HashMap();
         result.put("article", articleBean);
         result.put("likes", likedArticleIDs);
         result.put("collections", collectedArticleIDs);
+        result.put("comments", commentBeans);
         return ApiResponse.ofSuccess(result);
     }
 
@@ -178,5 +185,9 @@ public class ArticleController {
             return new ArrayList<>();
         }
         return articleService.findCollectedArticleIDs(userID);
+    }
+
+    private List<CommentBean> getComments(int articleID) {
+        return commentService.getCommentsOfArticle(articleID);
     }
 }

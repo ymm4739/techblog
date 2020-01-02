@@ -20,7 +20,13 @@
         <result property="updatedTime" column="updated_time_format" />
         <result property="createdTime" column="created_time_format" />
         <association property="author" column="author_id"  resultMap="AuthorMap" />
+        <collection property="comments" ofType="com.zhumingbei.techblog.bean.CommentBean">
+            <id property="id" column="comment_id" />
+            <result property="content" column="comment_content" />
+            <result property="updatedTime" column="comment_time_format" />
+        </collection>
     </resultMap>
+
 
     <resultMap id="AuthorMap" type="com.zhumingbei.techblog.bean.UserBean">
         <id property="id" column="author_id" />
@@ -133,6 +139,31 @@
         inner join collection c on c.user_id = #{userID} and c.article_id = a.id
         where a.is_deleted = 0 and a.is_published = 1 and c.is_collected = 1
         <if test="search != null">and (a.title like '%${search}%' or u.username like '%${search}%' )</if>
+    </select>
+    <select id="selectCommentArticles" resultMap="ArticleMap">
+        select a.id, a.title, a.content, a.html, a.summary, a.summary_image, a.liked_nums, a.collected_nums, a.comment_nums, a.is_published, a.is_deleted,
+        date_format(a.updated_time, '%Y-%m-%d %H:%i:%s') as updated_time_format,
+        date_format(a.created_time, '%Y-%m-%d %H:%i:%s') as created_time_format,
+        a.author_id,
+        u.username, u.avatar,
+        c.id as comment_id,
+        c.content as comment_content,
+        date_format(c.updated_time, '%Y-%m-%d %H:%i:%s') as comment_time_format
+        from article a
+        inner join user u on u.id = a.author_id
+        inner join comment c on c.user_id = #{userID} and c.article_id = a.id
+        where a.is_deleted = 0 and a.is_published = 1 and c.is_deleted = 0
+        <if test="search != null">and ( a.title like '%${search}%' or u.username like '%${search}%' or c.content like '%${search}%' )</if>
+        order by c.updated_time desc
+        limit #{offset}, #{limit}
+    </select>
+    <select id="countCommentArticles" resultType="int">
+        select count(a.id)
+        from article a
+        inner join user u on u.id = a.author_id
+        inner join comment c on a.id = c.article_id
+        where c.user_id = #{userID} and c.is_deleted = 0
+        <if test="search != null">and (a.title like '%${search}%' or u.username like '%${search}%' or c.content like '%${search}%')</if>
     </select>
     <update id="update" parameterType="ArticleBean">
         update article

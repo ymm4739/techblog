@@ -22,4 +22,9 @@ public interface ArticleService {
     int countCollectedArticles(int userID, String search);
     void collect(int article, int userID, int isCollected);
     List<Integer> findCollectedArticleIDs(int userID);
+    List<ArticleBean> getCommentArticles(int userID, int offset, int limit, String search);
+    int countCommentArticles(int userID, String search);
+
+
+    void comment(int userID, int articleID, int responseID, String content);
 }
