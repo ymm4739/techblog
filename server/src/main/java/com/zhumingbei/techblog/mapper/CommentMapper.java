@@ -7,12 +7,23 @@ import java.util.List;
 
 @Repository
 public interface CommentMapper {
-    void insert(int userID, int articleID, int responseID, String content);
+    int insert(CommentBean commentBean);
 
     CommentBean selectByID(int commentID);
 
     void update(CommentBean commentBean);
 
-    List<CommentBean> selectByArticleID(int articleID);
+    List<CommentBean> selectCommentsByArticleID(int articleID, int offset, int limit);
 
+    List<CommentBean> selectRepliesByParent(int articleID, int commentIndex, int offset, int limit);
+
+    int countCommentsOfArticle(int article);
+
+    int deleteByParent(int articleID, int commentIndex);
+
+    CommentBean selectParent(int articleID, int commentIndex);
+
+    int countRepliesOfComment(int articleID, int commentIndex);
+
+    int getMaxCommentIndexOfArticle(int articleID);
 }

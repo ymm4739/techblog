@@ -49,7 +49,7 @@ public class ArticleController {
         List<ArticleBean> data = articleService.getArticlesInOneUser(authorID, offset, limit, sort, order, search);
         HashMap<String, Object> result = new HashMap<>();
         result.put("total", total);
-        result.put("data", data);
+        result.put("articles", data);
         return result;
     }
 
@@ -128,12 +128,13 @@ public class ArticleController {
         }
         List<Integer> likedArticleIDs = getLikedArticleIDs(readerID);
         List<Integer> collectedArticleIDs = getCollectedArticleIDs(readerID);
-        List<CommentBean> commentBeans = getComments(articleID);
+
         HashMap result = new HashMap();
         result.put("article", articleBean);
         result.put("likes", likedArticleIDs);
         result.put("collections", collectedArticleIDs);
-        result.put("comments", commentBeans);
+        result.put("comments", commentService.getCommentsAndReplies(articleID, 0, 2));
+        result.put("commentTotal", commentService.countCommentsOfArticle(articleID));
         return ApiResponse.ofSuccess(result);
     }
 
@@ -187,7 +188,5 @@ public class ArticleController {
         return articleService.findCollectedArticleIDs(userID);
     }
 
-    private List<CommentBean> getComments(int articleID) {
-        return commentService.getCommentsOfArticle(articleID);
-    }
+
 }

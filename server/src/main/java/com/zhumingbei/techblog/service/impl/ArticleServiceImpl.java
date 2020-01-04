@@ -120,8 +120,5 @@ public class ArticleServiceImpl implements ArticleService {
         return articleMapper.countCommentArticles(userID, search);
     }
 
-    @Override
-    public void comment(int userID, int articleID, int responseID, String content) {
-        commentMapper.insert(userID, articleID, responseID, content);
-    }
+
 }

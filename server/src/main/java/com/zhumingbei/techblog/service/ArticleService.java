@@ -26,5 +26,4 @@ public interface ArticleService {
     int countCommentArticles(int userID, String search);
 
 
-    void comment(int userID, int articleID, int responseID, String content);
 }
