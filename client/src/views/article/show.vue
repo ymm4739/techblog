@@ -58,20 +58,20 @@
           <el-form :model="form"
                    ref="comment_form">
             <el-form-item label="发表评论">
-              <el-input type="textarea"
-                        v-model="form.comment"></el-input>
+              <el-input v-model="form.comment"></el-input>
             </el-form-item>
             <el-button type="primary"
                        size="mini"
-                       @click="_comment(0)">评论</el-button>
+                       @click="_comment(0, 0)">评论</el-button>
           </el-form>
         </div>
         <div class="comment_detail">
-          <div v-for="comment in comments"
-               :key="comment.id">
-            <p>{{comment.commenter.username}} <span v-if="comment.responseID">回复 {{comment.response.username}}</span> ：</p>
-            <p>{{comment.content}}</p>
-          </div>
+          <comment-item v-for="item in comments"
+                        :key="item.id"
+                        :comment="item.comment"
+                        :replies="item.replies" />
+          <el-link v-if="more"
+                   @click="moreComment">查看更多评论</el-link>
         </div>
       </div>
     </div>
@@ -81,11 +81,15 @@
 import { show, get } from '@/api/article'
 import { thumbs } from '@/api/user'
 import { collect } from '@/api/collection'
-import { comment } from '@/api/comment'
+import { comment, index } from '@/api/comment'
 import { Message } from 'element-ui'
+import CommentItem from '@/views/article/components/commentItem.vue'
 export default {
   name: 'ArticleShowView',
   inject: ['reload'],
+  components: {
+    CommentItem
+  },
   data () {
     return {
       article: '',
@@ -96,6 +100,9 @@ export default {
       articleID: this.$route.params.articleID,
       userID: this.$store.getters.userID,
       comments: [],
+      commentTotal: 0,
+      offset: 0,
+      limit: 5,
       form: {
         'comment': ''
       }
@@ -112,6 +119,10 @@ export default {
           this.liked = res.data.likes.includes(parseInt(articleID))
           this.collected = res.data.collections.includes(parseInt(articleID))
           this.comments = res.data.comments
+          this.commentTotal = res.data.commentTotal
+          if (this.comments.length > 0) {
+            this.offset += this.comments.length
+          }
         }
       }).catch(() => { })
     } else {
@@ -124,7 +135,9 @@ export default {
     }
   },
   computed: {
-
+    more () {
+      return this.commentTotal > this.offset
+    }
   },
   methods: {
     _thumbs () {
@@ -152,16 +165,37 @@ export default {
         Message.success(res.message)
       }).catch(() => { })
     },
-    _comment (responseID) {
+    _comment (commentIndex, answerID) {
       let data = {
         content: this.form.comment,
         userID: this.userID,
         articleID: this.articleID,
-        responseID: responseID
+        commentIndex: commentIndex,
+        answerID: answerID
       }
       comment(data).then(res => {
-        Message.success(res.message)
-        this.reload()
+        this.limit = this.offset + 1
+        this.offset = 0
+        this.comments = []
+        this.moreComment()
+        this.form.comment = ''
+        this.article.commentNums += 1
+      })
+    },
+    moreComment () {
+      let data = {
+        articleID: this.articleID,
+        offset: this.offset,
+        limit: this.limit
+      }
+      index(data).then(res => {
+        let data = res.data
+        if (data && data.length > 0) {
+          this.offset += data.length
+          data.forEach(item => {
+            this.comments.push(item)
+          })
+        }
       })
     }
   }

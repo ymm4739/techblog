@@ -104,7 +104,7 @@ export default {
       }
       list(data).then(res => {
         let data = res.data
-        this.articles = data.data
+        this.articles = data.articles
         this.total = data.total
         this.loading = false
       }).catch(() => { this.loading = false })

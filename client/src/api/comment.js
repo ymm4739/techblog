@@ -21,3 +21,24 @@ export function comment (data) {
     data: qs.stringify(data)
   })
 }
+
+export function moreReply (data) {
+  return request({
+    url: '/comment/reply?' + qs.stringify(data),
+    method: 'get'
+  })
+}
+
+export function thumbs (data) {
+  return request({
+    url: '/comment/thumbs',
+    method: 'post',
+    data: qs.stringify(data)
+  })
+}
+
+export function index (data) {
+  return request({
+    url: '/comment/index?' + qs.stringify(data)
+  })
+}
