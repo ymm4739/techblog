@@ -63,7 +63,6 @@ export default {
       author: 'fadedfat3',
       title: '编程技术博客',
       description: '学习技术，分享经验，提升能力，快乐生活',
-      user: this.$store.getters.user,
       loginVisible: false,
       registryVisible: false,
       changePasswordVisible: false,
@@ -71,6 +70,9 @@ export default {
     }
   },
   computed: {
+    user () {
+      return this.$store.getters.user
+    },
     userProfile: function () {
       return '/user/profile/' + this.user.id
     },

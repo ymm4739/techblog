@@ -79,7 +79,7 @@ export default {
     scroll () {
       window.onscroll = () => {
         let bottomOfWindow = document.documentElement.offsetHeight - document.documentElement.scrollTop - window.innerHeight <= 200
-        if (bottomOfWindow && !this.scrollDisable) {
+        if (bottomOfWindow && !this.scrollDisable && this.$route.path === '/article') {
           this.fetchData()
         }
       }
