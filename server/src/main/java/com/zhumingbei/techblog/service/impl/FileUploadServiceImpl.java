@@ -38,8 +38,14 @@ public class FileUploadServiceImpl implements FileUploadService {
         String accessParentFilepath = parentFilepath.substring(root.length());
 
         String filename = file.getOriginalFilename();
-        String newFilename = filename;
-        String filepath = parentFilepath + "/" + file.getOriginalFilename();
+        int index = filename.lastIndexOf('.');
+        String fileExtention = ".jpg";
+        if (index > 0 ) {
+            fileExtention = filename.substring(index);
+            filename = filename.substring(0, index);
+        }
+        String newFilename = filename + "_" + System.currentTimeMillis() + fileExtention;
+        String filepath = parentFilepath + "/" + newFilename;
         log.debug("filepath: {}", filepath);
         File newFile = new File(filepath);
         try {
