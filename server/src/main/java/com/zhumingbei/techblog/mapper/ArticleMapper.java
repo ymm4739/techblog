@@ -1,15 +1,16 @@
 package com.zhumingbei.techblog.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zhumingbei.techblog.bean.ArticleBean;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface ArticleMapper {
+public interface ArticleMapper extends BaseMapper<ArticleBean> {
     List<ArticleBean> selectAll(int offset, int limit);
 
-    void insert (ArticleBean article);
+    int insert (ArticleBean article);
 
     ArticleBean selectByIds(int userID, int articleID);
     ArticleBean selectByID(int articleID);

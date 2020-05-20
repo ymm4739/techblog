@@ -77,6 +77,7 @@ url:
       - "/user/email/activate"
       - "/user/profile/*"
       - "/article"
+      - "/test"
     post:
       - "/registry"
       - "/login"
