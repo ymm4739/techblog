@@ -1,14 +1,12 @@
 package com.zhumingbei.techblog.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.zhumingbei.techblog.bean.ArticleBean;
-import com.zhumingbei.techblog.bean.CommentBean;
 import com.zhumingbei.techblog.bean.LikedArticleBean;
-import com.zhumingbei.techblog.bean.UserBean;
 import com.zhumingbei.techblog.common.ApiResponse;
-import com.zhumingbei.techblog.common.CustomUserPrincipal;
+import com.zhumingbei.techblog.mapper.ArticleMapper;
 import com.zhumingbei.techblog.service.ArticleService;
 import com.zhumingbei.techblog.service.CommentService;
-import com.zhumingbei.techblog.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +24,9 @@ public class ArticleController {
     @Autowired
     private CommentService commentService;
 
+
+    @Autowired
+    private ArticleMapper articleMapper;
 
     @GetMapping("/article")
     public HashMap<String, Object> getList(@RequestParam(required = false) Integer readerID, int offset, int limit) {
@@ -187,6 +188,16 @@ public class ArticleController {
         }
         return articleService.findCollectedArticleIDs(userID);
     }
+
+    @GetMapping("/test")
+    public List<ArticleBean> test()  throws Exception{
+        QueryWrapper<ArticleBean> qw = new QueryWrapper<>();
+
+        return articleMapper.selectList(qw);
+    }
+
+
+
 
 
 }

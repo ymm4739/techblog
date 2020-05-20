@@ -1,11 +1,13 @@
 package com.zhumingbei.techblog.bean;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.util.List;
 
 @Data
+@TableName("article")
 public class ArticleBean implements Serializable {
     private static final Long serialVersionID = 1L;
     private Integer id;
